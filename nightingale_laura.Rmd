@@ -1,0 +1,40 @@
+```{r}
+rm(list=ls())
+library(readxl)
+data <- read_excel("./nightingale-competition/datos_florence.xlsx", skip=1)
+library(dplyr)
+L <- nrow(data)
+time_period <- seq(0,(L-1))
+data$time_period <- time_period
+data <- as.data.frame(data)
+#Cols 3-5: deaths
+#Cols 6-8: annual mortality rate
+colnames(data)[1] <- "month"
+colnames(data)[2] <- "avg_size_army"
+colnames(data)[3] <- "zymotic"
+colnames(data)[4] <- "wounds_injuries"
+colnames(data)[5] <- "other"
+colnames(data)[6] <- "zymotic_rate"
+colnames(data)[7] <- "wounds_injuries_rate"
+colnames(data)[8] <- "other_rate"
+
+#Plots
+library(dygraphs)
+library(xts)
+data_plot_1 <- data.frame(
+  time=data$time_period,
+  Zymotic=data$zymotic, 
+  Injuries=data$wounds_injuries,
+  Other=data$other)
+dygraph(data_plot_1)
+data_plot_2 <- data.frame(
+  time=data$time_period,
+  Zymotic=data$zymotic, 
+  Injuries=data$wounds_injuries,
+  Other=data$other)
+dygraph(data_plot_2)
+#Mateix gràfic of course. Explicar per què (super basic) i escollir quin deixar, depèn de si comencem treballant amb nombres. Gràfic també amb avg_size_army per posar en perspectiva. Examinar relació avg_size_army amb les altres variables
+
+```
+
+
