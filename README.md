@@ -4,5 +4,6 @@ https://github.com/rladies/spain_nightingale
 
 ## Participants
 
-Esther Manzano 
+Esther Manzano
+
 Laura Ventosa
