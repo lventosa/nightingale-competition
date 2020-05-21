@@ -1,4 +1,3 @@
-```{r}
 rm(list=ls())
 library(readxl)
 data <- read_excel("../nightingale-competition/datos_florence.xlsx", skip=1)
@@ -9,7 +8,7 @@ data$time_period <- time_period
 data <- as.data.frame(data)
 
 #Cols 3-5: deaths
-#Cols 6-8: annual mortality rate
+#Cols 6-8: annual mortality rate (per 1000) ??
 colnames(data)[1] <- "month"
 colnames(data)[2] <- "avg_size_army"
 colnames(data)[3] <- "zymotic"
@@ -56,6 +55,3 @@ dygraph(data_plot_3, main="Accumulated number of deaths")
 
 #Podríem mirar d'informar-nos sobre què va fer realment ella i mirar de replicar-ho (senzill)
 #Examinar relació avg_size_army amb les altres variables
-```
-
-
