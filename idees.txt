@@ -1,5 +1,9 @@
 COSES A AFEGIR:
 - Buscar el que va fer Nightingale en el seu moment i mirar de replicar-ho
-- Plots currats (buscar-ne d'altres més enllà de ggplot)
+- Plots currats (buscar-ne d'altres més enllà de ggplot): entendre les diferents variables que tenim
 - Regressions per buscar impactes/efectes causals
 - Prediccions
+- Preprocessament de les dades: com és el nostre dataset?
+
+
+Note: La llengua del treball serà anglès.
