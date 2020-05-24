@@ -52,6 +52,3 @@ data_plot_3 <- data.frame(
   time=data$time_period,
   Accumulated_deaths=cum_deaths) #No m'acaba d'agradar el nom de la variable top-right. Millor data amb xts()?
 dygraph(data_plot_3, main="Accumulated number of deaths")
-
-#Podríem mirar d'informar-nos sobre què va fer realment ella i mirar de replicar-ho (senzill)
-#Examinar relació avg_size_army amb les altres variables
