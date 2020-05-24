@@ -1,0 +1,5 @@
+COSES A AFEGIR:
+- Buscar el que va fer Nightingale en el seu moment i mirar de replicar-ho
+- Plots currats (buscar-ne d'altres més enllà de ggplot)
+- Regressions per buscar impactes/efectes causals
+- Prediccions
