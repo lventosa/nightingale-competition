@@ -52,7 +52,14 @@ data$total_deaths <- deaths #Morts totals en cada mes
 #Cumulative deaths
 cum_deaths <- vector()
 cum_deaths <- cumsum(deaths)
+data$cum_deaths <- cum_deaths #Cumulative deaths
 data_plot_4 <- data.frame(
   time=data$time_period,
   Accumulated_deaths=cum_deaths) #No m'acaba d'agradar el nom de la variable top-right. Millor data amb xts()?
 dygraph(data_plot_4, main="Accumulated number of deaths")
+
+#Regressions
+library(lmtest)
+tra_death <- data.frame(y=data$total_deaths[2:L], lag1=data$total_deaths[1:(L-1)]) 
+reg1 <- lm(y ~ lag1, data=tra_death) #Regressió morts avui en funció de les morts d'ahir
+summary(reg1)
