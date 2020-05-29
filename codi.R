@@ -3,7 +3,7 @@ library(readxl)
 data <- read_excel("../nightingale-competition/datos_florence.xlsx", skip=1)
 library(dplyr)
 L <- nrow(data)
-time_period <- seq(0,(L-1))
+time_period <- seq(0,(L-1)) #Podríem passar-ho de 1 a L
 data$time_period <- time_period
 data <- as.data.frame(data)
 
@@ -36,7 +36,6 @@ data_plot_2 <- data.frame(
   Other=data$other_rate)
 dygraph(data_plot_2, main="Death causes (rates)")
 
-plot(data$time_period, data$avg_size_army)
 data_plot_3 <- data.frame(
   time=data$time_period,
   Army=data$avg_size_army)
@@ -63,3 +62,20 @@ library(lmtest)
 tra_death <- data.frame(y=data$total_deaths[2:L], lag1=data$total_deaths[1:(L-1)]) 
 reg1 <- lm(y ~ lag1, data=tra_death) #Regressió morts avui en funció de les morts d'ahir
 summary(reg1)
+
+#Accuracy de reg1 per fer prediccions (he provat de fer la del número de morts basant-me només en un lag d'aquesta mateixa variable per provar de fer-ne alguna)
+train_data <- subset(data, time_period<=round(0.7*L)) #70% training data
+test_data <- subset(data, time_period>round(0.7*L)) #30% test/validation data
+training1 <- data.frame(y=train_data$total_deaths, lag1=train_data$total_deaths) 
+model1 <- lm(y ~ lag1, data=training1)
+y.hat1 <- predict(model1, data=test_data)
+error1 <- abs(y.hat1 - test_data$total_deaths)
+rmse1 <- sqrt((sum(error1)**2)/nrow(test_data)) 
+#Fatal performance, tampoc sé si té gaire sentit predir el número de morts futures a partir de les del dia anterior, ens caldria algo amb més chicha
+
+#Prediccions
+T <- 5
+future.periods <- seq((L+1),(L+T))
+future_dates <- 
+pred <- predict(reg1, newdata=future_dates, interval="prediction")
+
