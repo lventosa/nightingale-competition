@@ -1,6 +1,7 @@
 rm(list=ls())
 library(readxl)
 data <- read_excel("../nightingale-competition/datos_florence.xlsx", skip=1)
+str(data)
 library(dplyr)
 L <- nrow(data)
 time_period <- seq(0,(L-1)) #Podríem passar-ho de 1 a L
@@ -57,6 +58,11 @@ data_plot_4 <- data.frame(
   Accumulated_deaths=cum_deaths) #No m'acaba d'agradar el nom de la variable top-right. Millor data amb xts()?
 dygraph(data_plot_4, main="Accumulated number of deaths")
 
+#Correlacions
+cor(data$avg_size_army, data$zymotic)
+cor(data$avg_size_army, data$injuries)
+cor(data$avg_size_army, data$other)
+
 #Regressions
 library(lmtest)
 tra_death <- data.frame(y=data$total_deaths[2:L], lag1=data$total_deaths[1:(L-1)]) 
@@ -74,8 +80,3 @@ rmse1 <- sqrt((sum(error1)**2)/nrow(test_data))
 #Fatal performance, tampoc sé si té gaire sentit predir el número de morts futures a partir de les del dia anterior, ens caldria algo amb més chicha
 
 #Prediccions
-T <- 5
-future.periods <- seq((L+1),(L+T))
-future_dates <- 
-pred <- predict(reg1, newdata=future_dates, interval="prediction")
-
