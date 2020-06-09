@@ -28,7 +28,7 @@ data_plot_1 <- data.frame(
   Zymotic=data$zymotic, 
   Injuries=data$injuries,
   Other=data$other)
-dygraph(data_plot_1, main="Death causes")
+dygraph(data_plot_1, main="Death causes (absolute values)")
 
 data_plot_2 <- data.frame(
   time=data$time_period,
