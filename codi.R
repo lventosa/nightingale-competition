@@ -59,15 +59,19 @@ data_plot_4 <- data.frame(
 dygraph(data_plot_4, main="Accumulated number of deaths")
 
 #Correlacions
-cor(data$avg_size_army, data$zymotic)
-cor(data$avg_size_army, data$injuries)
-cor(data$avg_size_army, data$other)
+corr1 <- cor(data$avg_size_army, data$zymotic) #Poden comparar-se/relacionar-se amb resultats de regressions 
+corr2 <- cor(data$avg_size_army, data$injuries)
+corr3 <- cor(data$avg_size_army, data$other)
+corr4 <- cor(data$avg_size_army, data$total_deaths)
 
 #Regressions
 library(lmtest)
 tra_death <- data.frame(y=data$total_deaths[2:L], lag1=data$total_deaths[1:(L-1)]) 
 reg1 <- lm(y ~ lag1, data=tra_death) #Regressió morts avui en funció de les morts d'ahir
 summary(reg1)
+
+reg2 <- lm(data$total_deaths ~ data$time_period, data=data)
+summary(reg2) #No significació del time period sobre total deaths
 
 #Accuracy de reg1 per fer prediccions (he provat de fer la del número de morts basant-me només en un lag d'aquesta mateixa variable per provar de fer-ne alguna)
 train_data <- subset(data, time_period<=round(0.7*L)) #70% training data

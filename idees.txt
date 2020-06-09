@@ -5,5 +5,8 @@ COSES A AFEGIR:
 - Prediccions
 - Preprocessament de les dades: com és el nostre dataset?
 
+NOVES IDEES (a mesura que he anat avançant):
+- Analitzar d'alguna manera la seasonality 
+
 
 Note: La llengua del treball serà anglès.
