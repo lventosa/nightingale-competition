@@ -2,14 +2,15 @@ rm(list=ls())
 library(readxl)
 data <- read_excel("../nightingale-competition/datos_florence.xlsx", skip=1)
 str(data)
+#Cols 3-5: deaths
+#Cols 6-8: annual mortality rate (per 1000) 
 library(dplyr)
 L <- nrow(data)
 time_period <- seq(0,(L-1)) #Podríem passar-ho de 1 a L
 data$time_period <- time_period
 data <- as.data.frame(data)
 
-#Cols 3-5: deaths
-#Cols 6-8: annual mortality rate (per 1000) 
+#Making everything more readable
 colnames(data)[1] <- "month"
 colnames(data)[2] <- "avg_size_army"
 colnames(data)[3] <- "zymotic"
@@ -21,7 +22,7 @@ colnames(data)[8] <- "other_rate"
 
 #Plots
 library(dygraphs)
-library(xts) #Millor fer servir time_period però transformant la data amb xts() queda l'eix X amb dates al gràfic dinàmic
+library(xts) #Millor fer servir time_period però transformant la data amb xts() queda l'eix x amb dates al gràfic dinàmic
 library(ggplot2)
 data_plot_1 <- data.frame(
   time=data$time_period, 
