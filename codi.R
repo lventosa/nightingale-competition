@@ -20,7 +20,7 @@ colnames(data)[6] <- "zymotic_rate"
 colnames(data)[7] <- "injuries_rate"
 colnames(data)[8] <- "other_rate"
 
-#Plots
+#PLOTS
 library(dygraphs)
 library(xts) #Millor fer servir time_period però transformant la data amb xts() queda l'eix x amb dates al gràfic dinàmic
 library(ggplot2)
@@ -65,7 +65,7 @@ corr2 <- cor(data$avg_size_army, data$injuries)
 corr3 <- cor(data$avg_size_army, data$other)
 corr4 <- cor(data$avg_size_army, data$total_deaths)
 
-#Regressions
+#REGRESSIONS
 library(lmtest)
 tra_death <- data.frame(y=data$total_deaths[2:L], lag1=data$total_deaths[1:(L-1)]) 
 reg1 <- lm(y ~ lag1, data=tra_death) #Regressió morts avui en funció de les morts d'ahir
@@ -84,4 +84,4 @@ error1 <- abs(y.hat1 - test_data$total_deaths)
 rmse1 <- sqrt((sum(error1)**2)/nrow(test_data)) 
 #Fatal performance, tampoc sé si té gaire sentit predir el número de morts futures a partir de les del dia anterior, ens caldria algo amb més chicha
 
-#Prediccions
+#PREDICTIONS
