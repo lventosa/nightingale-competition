@@ -7,6 +7,7 @@ COSES A AFEGIR:
 
 NOVES IDEES (a mesura que he anat avançant):
 - Analitzar d'alguna manera la seasonality 
+- He pensat que el document a presentar sigui en format RNotebook amb RMarkdown. Fins i tot podríem fer servir Shiny per fer-ho interactiu (jo tinc experiència amb les notebooks de R que són fàcils de passar a format pdf però puc investigar com va Shiny. Si tu saps ja fer-ho servir això que guanyem jajaja). A l'hora d epresentar els resultats demanen el codi en si (podríem presentar-ho en la notebook però format Rmd), documents addicionals (podríem adjuntar la notebook "interactiva" ja passada a html) i veig que s'ha de fer també un video (oh god jajajaj)
 
 
 Note: La llengua del treball serà anglès.
