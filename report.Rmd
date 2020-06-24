@@ -62,8 +62,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 We check the different types of data on our dataset. The aim is to understand is there are categorical or numerical variable to be able to develope a better model afterwards. We will check if we have missing values and outliers as well.
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-data <- read_excel("../nightingale-competition/datos_florence.xlsx", skip=1)
-
 # Libraries used:
 library(readxl)
 library(dplyr)
@@ -71,6 +69,8 @@ library(dplyr)
 library(ggplot2)
 #library(ggpubr)
 #library(DescTools)
+
+data <- read_excel("../nightingale-competition/datos_florence.xlsx", skip=1)
 ```
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 # Basic information:
@@ -85,19 +85,20 @@ str(data)
 #Cols 6-8: annual mortality rate (per 1000) 
 ```
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-sapply(data, class)
+sapply(data, class) #Per no repetir-nos amb la funció anterior podem eliminar eliminar str() i deixar sapply() que queda més net jajaja 
 ```
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
 summary(data)
 ```
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
+#Creating a numeric variable to account for time period
 L <- nrow(data)
 time_period <- seq(0,(L-1)) #Podríem passar-ho de 1 a L
 data$time_period <- time_period
 data <- as.data.frame(data)
 ```
 ```{r echo=TRUE, message=FALSE, warning=FALSE}
-#Making everything more readable
+#Making everything more readable and column names more manageable
 colnames(data)[1] <- "month"
 colnames(data)[2] <- "avg_size_army"
 colnames(data)[3] <- "zymotic"
@@ -106,8 +107,6 @@ colnames(data)[5] <- "other"
 colnames(data)[6] <- "zymotic_rate"
 colnames(data)[7] <- "injuries_rate"
 colnames(data)[8] <- "other_rate"
-
-str(data)
 ```
 
 1.1. Analysis of qualitative variables & graphic representation

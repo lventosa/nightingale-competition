@@ -15,11 +15,15 @@ Note: La llengua del treball serà anglès.
 Comentaris Extra:
 - Rmd molt bona idea! A mi també em va molt millor per treballar. He passat tot el codi que tenies fins ara al Rmd.
 - Shiny no hi tinc experiència però m'encataria saber-ne, així que és l'excusa perfecte! Exemple: http://bl.ocks.org/kgryte/raw/5926740/
+	- L: Nice!! Doncs podem mirar a veure si val la pena fer algo així amb Shiny si ens en sortim!:)
 - Podem afegir un índex. Comentem a la trucada i anem afegint punts a mesura que avancem amb el treball.
+	- L: Guai!! Veig que amb el que has afegit cobrim bastanta cosa però si en la trucada de dissabte veiem que cal afegir més punts els afegim!
 - No he trobat exactament el que va Fer Nightingale amb les dades. Alguna idea?
+	- L: Jo vaig etar buscant i tampoc res, probablement va mirar de graficar-ho d'alguna manera o fer algo senzill amb les eines que tenia així que tampoc crec que ens deixem res rellevant que ella no fes. 
 - Need explanation on this:
 L <- nrow(data)
 time_period <- seq(0,(L-1)) #Podríem passar-ho de 1 a L
 data$time_period <- time_period
 data <- as.data.frame(data)
 
+	- L: Yes! Sorry! Era perquè intento evitar treballar amb les time variables en format date/POSIXct i les passo a una variable numèrica quan puc. Si acostumes a treballar en format date ens podem petar aquesta part. Als plots que vaig fer vaig deixar-ho així però si creeus que en els gràfics queda millor deixar-ho en format data els canviem
