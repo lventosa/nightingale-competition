@@ -11,3 +11,15 @@ NOVES IDEES (a mesura que he anat avançant):
 
 
 Note: La llengua del treball serà anglès.
+
+Comentaris Extra:
+- Rmd molt bona idea! A mi també em va molt millor per treballar. He passat tot el codi que tenies fins ara al Rmd.
+- Shiny no hi tinc experiència però m'encataria saber-ne, així que és l'excusa perfecte! Exemple: http://bl.ocks.org/kgryte/raw/5926740/
+- Podem afegir un índex. Comentem a la trucada i anem afegint punts a mesura que avancem amb el treball.
+- No he trobat exactament el que va Fer Nightingale amb les dades. Alguna idea?
+- Need explanation on this:
+L <- nrow(data)
+time_period <- seq(0,(L-1)) #Podríem passar-ho de 1 a L
+data$time_period <- time_period
+data <- as.data.frame(data)
+

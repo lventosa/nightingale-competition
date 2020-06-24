@@ -1,6 +1,271 @@
-```{r}
-hola
-segona prova
+---
+title: 'Nightingale Project'
+author: "Authors: Laura Ventosa & Esther Manzano"
+date: "July 2020"
+output:
+  html_document:
+    highlight: default
+    number_sections: yes
+    theme: cosmo
+    toc: yes
+    toc_depth: 2
+  pdf_document:
+    highlight: zenburn
+    toc: yes
+  word_document: default
+---
+```{r setup, include=FALSE, cache = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
+*****
+## Index
+*****
+
+1. Data file upload and brief description
+
+  1.1.  Analysis of qualitative variables & graphic representation
+
+  1.2.  Analysis of quantitative variables & graphic representation
+
+  1.3.  Missing values
+
+  1.4.  Outliers
+  
+2. Plots
+
+3. Regressions
+
+4. Predictions
+
+5. Conclusions
+
+
+
+2. Inferencial statistics: Confidence intervals of X variable
+
+3. Proporció de nens i nenes
+
+	3.1.	Hypothesis
+
+	3.2.	Method
+
+	3.3.	Calculation
+	
+	3.4.  Interpretation
+
+
+*****
+## 1. Data file upload and brief description
+*****
+
+We check the different types of data on our dataset. The aim is to understand is there are categorical or numerical variable to be able to develope a better model afterwards. We will check if we have missing values and outliers as well.
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+data <- read_excel("../nightingale-competition/datos_florence.xlsx", skip=1)
+
+# Libraries used:
+library(readxl)
+library(dplyr)
+#library(kableExtra)
+library(ggplot2)
+#library(ggpubr)
+#library(DescTools)
+```
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+# Basic information:
+head(data)
+```
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+dim(data)
+```
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+str(data)
+#Cols 3-5: deaths
+#Cols 6-8: annual mortality rate (per 1000) 
+```
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+sapply(data, class)
+```
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+summary(data)
+```
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+L <- nrow(data)
+time_period <- seq(0,(L-1)) #Podríem passar-ho de 1 a L
+data$time_period <- time_period
+data <- as.data.frame(data)
+```
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+#Making everything more readable
+colnames(data)[1] <- "month"
+colnames(data)[2] <- "avg_size_army"
+colnames(data)[3] <- "zymotic"
+colnames(data)[4] <- "injuries"
+colnames(data)[5] <- "other"
+colnames(data)[6] <- "zymotic_rate"
+colnames(data)[7] <- "injuries_rate"
+colnames(data)[8] <- "other_rate"
+
+str(data)
+```
+
+1.1. Analysis of qualitative variables & graphic representation
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+```
+
+1.2. Analysis of quantitative variables & graphic representation
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+```
+
+1.3. Missing values
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+# Checking missing values:
+colSums(is.na(data))
+```
+
+1.4. Outliers
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+boxplot( injuries~avg_size_army, data, main="Injuries vs Avg Size of Army")
+boxplot( zymotic~avg_size_army, data, main="Zymotic vs Avg Size of Army")
+boxplot( other~avg_size_army, data, main="Other vs Avg Size of Army")
+```
+
+
+*****
+## 2. Plots
+*****
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+library(dygraphs)
+library(xts) #Millor fer servir time_period però transformant la data amb xts() queda l'eix x amb dates al gràfic dinàmic
+library(ggplot2)
+data_plot_1 <- data.frame(
+  time=data$time_period, 
+  Zymotic=data$zymotic, 
+  Injuries=data$injuries,
+  Other=data$other)
+dygraph(data_plot_1, main="Death causes (absolute values)")
+
+data_plot_2 <- data.frame(
+  time=data$time_period,
+  Zymotic=data$zymotic_rate, 
+  Injuries=data$injuries_rate,
+  Other=data$other_rate)
+dygraph(data_plot_2, main="Death causes (rates)")
+
+data_plot_3 <- data.frame(
+  time=data$time_period,
+  Army=data$avg_size_army)
+dygraph(data_plot_3, main="Average size of the army")
+```
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+#Aggregated deaths
+deaths <- vector() 
+for(i in 1:L){
+  deaths[i] <- data$zymotic[i] + data$injuries[i] + data$other[i]
+}
+data$total_deaths <- deaths #Morts totals en cada mes
+```
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+#Cumulative deaths
+cum_deaths <- vector()
+cum_deaths <- cumsum(deaths)
+data$cum_deaths <- cum_deaths #Cumulative deaths
+data_plot_4 <- data.frame(
+  time=data$time_period,
+  Accumulated_deaths=cum_deaths) #No m'acaba d'agradar el nom de la variable top-right. Millor data amb xts()?
+dygraph(data_plot_4, main="Accumulated number of deaths")
+```
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+#Correlacions
+corr1 <- cor(data$avg_size_army, data$zymotic) #Poden comparar-se/relacionar-se amb resultats de regressions 
+corr2 <- cor(data$avg_size_army, data$injuries)
+corr3 <- cor(data$avg_size_army, data$other)
+corr4 <- cor(data$avg_size_army, data$total_deaths)
+```
+
+
+*****
+## 3. Regressions
+*****
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+library(lmtest)
+tra_death <- data.frame(y=data$total_deaths[2:L], lag1=data$total_deaths[1:(L-1)]) 
+reg1 <- lm(y ~ lag1, data=tra_death) #Regressió morts avui en funció de les morts d'ahir
+summary(reg1)
+```
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+reg2 <- lm(data$total_deaths ~ data$time_period, data=data)
+summary(reg2) #No significació del time period sobre total deaths
+```
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+#Accuracy de reg1 per fer prediccions (he provat de fer la del número de morts basant-me només en un lag d'aquesta mateixa variable per provar de fer-ne alguna)
+train_data <- subset(data, time_period<=round(0.7*L)) #70% training data
+test_data <- subset(data, time_period>round(0.7*L)) #30% test/validation data
+training1 <- data.frame(y=train_data$total_deaths, lag1=train_data$total_deaths) 
+model1 <- lm(y ~ lag1, data=training1)
+y.hat1 <- predict(model1, data=test_data)
+error1 <- abs(y.hat1 - test_data$total_deaths)
+rmse1 <- sqrt((sum(error1)**2)/nrow(test_data)) 
+#Fatal performance, tampoc sé si té gaire sentit predir el número de morts futures a partir de les del dia anterior, ens caldria algo amb més chicha
+```
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+# Diagnosi dels models:
+residual.values <- rstandard(reg1) 
+adjusted.values <- fitted(reg1) 
+plot(adjusted.values, residual.values)
+```
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+qqnorm(residual.values) 
+qqline(residual.values)
+
+#A la vista del gràfic, no s’observa cap patró especial, de manera que tant la homocedasticitat com la linealitat resulten hipòtesis raonables.
+#D’altra banda, el Q_Q plot mostra que les dades no s’ajusten bé a una normal.
+```
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+reg3 <- glm(formula=data$avg_size_army~data$injuries, data=data) 
+summary(reg3)
+```
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+exp(coefficients(reg3))
+```
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+exp(confint(reg3))
+```
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+reg4 <- glm(formula=data$avg_size_army~data$zymotic, data=data) 
+summary(reg4)
+```
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+# Basant-se l’indicador AIC, s’observa que és més gran que en el model anterior, de manera que NO hi ha una millora en l’ajust. PERQUÈ NI INJURIES NI ZYMOTIC SON FACTORS SIGNIFICATIUS DE ARMY SIZE?
+```
+
+
+*****
+## 4. Predictions
+*****
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+# Ho hem de fer amb un model que funcioni però... Quina seria la probabilitat de X si Y és això i Z és això altre?
+pred<-predict(reg1, data.frame(Y="1",Z=90),type = "response")
+pred
+```
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+# Calculem la bondat de l'ajust: <- s'ha de tocar la data
+library(ResourceSelection)
+hoslem.test(X,fitted(modelX))
+```
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+# Dibuixem la corba ROC: <- s'ha de tocar la data
+library(pROC)
+prob_low=predict(logit_model_2, datA3, type="response")
+r=roc(BW_RE,prob_low, data=datA3)
+```
