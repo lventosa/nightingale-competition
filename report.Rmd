@@ -18,6 +18,8 @@ output:
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE) #Escrivint en aquesta línia el que està entre parèntesis, aquestes opcions es converteixen en globals per tot els blocs de codi del document. Les deixo aquí i les esborro individualment de cada bloc perquè quedi més net
 
 #He fet knit en html de tot el document per veure com anava quedant i anar tocant coses segons com anem veient
+
+# Nice gràcies, no ho sabia <3 :)
 ``` 
 
 
@@ -25,17 +27,9 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE) #Escrivint
 Index (deixant-ho així report en html es veu malament però deixem-ho per saber els apartats a introduir més a sota)
 *****
 
-1. Data file upload and brief description
-
-  1.1.  Analysis of qualitative variables & graphic representation
-
-  1.2.  Analysis of quantitative variables & graphic representation
-
-  1.3.  Missing values
-
-  1.4.  Outliers
+1. Variables analysis
   
-2. Plots --> Podríem petar-nos aquest apartat si ja hem representat plts en els apartats 1.1 i 1.2
+2. Plots
 
 3. Regressions
 
@@ -44,27 +38,14 @@ Index (deixant-ho així report en html es veu malament però deixem-ho per saber
 5. Conclusions
 
 
-(És part de l'índex això o s'ha colat? jajaj)
-2. Inferencial statistics: Confidence intervals of X variable
-
-3. Proporció de nens i nenes
-
-	3.1.	Hypothesis
-
-	3.2.	Method
-
-	3.3.	Calculation
-	
-	3.4.  Interpretation
-
-
 *****
-# Data file upload and brief description
+# Variables analysis
 *****
 
-We check the different types of data on our dataset. The aim is to understand the nature of our variables (i.e. the proportion of numerical and categorical variables) to be able to develope a better model afterwards. We will check if we have missing values and outliers as well.
+We check the different types of data on our dataset. The aim is to understand the nature of our variables (i.e. the proportion of numerical and categorical variables) to be able to develope a better model afterwards. Checks on missing values and outliers will be performed in addition.
+
 ```{r}
-# Libraries used across the whole project:     (haurem de revisar quins no fem servir al final i treure'ls)
+#Libraries used across the whole project:     (haurem de revisar quins no fem servir al final i treure'ls)
 library(readxl)
 library(tidyverse)
 library(viridis)
@@ -73,36 +54,34 @@ library(xts)
 library(lmtest)
 library(ResourceSelection)
 library(pROC)
-#library(kableExtra)
-#library(ggpubr)
-#library(DescTools)
 
-# Importing dataset:
+#Importing dataset:
 data <- read_excel("../nightingale-competition/datos_florence.xlsx", skip=1)
 ```
 ```{r}
-# Basic information:
+#Basic information:
 head(data)
 ```
 ```{r}
-# Dimensions of our dataset
+#Dimensions of the dataset:
 dim(data)
 ```
 ```{r}
-sapply(data, class) #Per no repetir-nos amb la funció anterior podem eliminar eliminar str() i deixar sapply() que queda més net jajaja 
+#Variables:
+sapply(data, class)
 ```
 ```{r}
 summary(data)
 ```
 ```{r}
-#Creating a numeric variable to account for time period
+#Creating a numeric variable to account for time period:
 L <- nrow(data)
 time_period <- seq(0,(L-1)) #Podríem passar-ho de 1 a L
 data$time_period <- time_period
 data <- as.data.frame(data)
 ```
 ```{r}
-#Making everything more readable and column names more manageable
+#Making everything more readable and column names more manageable:
 colnames(data)[1] <- "month"
 colnames(data)[2] <- "avg_size_army"
 colnames(data)[3] <- "zymotic"
@@ -124,54 +103,29 @@ cum_deaths <- vector()
 cum_deaths <- cumsum(deaths)
 data$cum_deaths <- cum_deaths #Cumulative deaths over time
 ```
-
-## Analysis of qualitative variables & graphic representation
-
-```{r}
-
-```
-
-## Analysis of quantitative variables & graphic representation
-
-```{r}
-# Correlations (mirar com ho deixem)
-cor(data$avg_size_army, data$zymotic)  
-cor(data$avg_size_army, data$injuries)
-cor(data$avg_size_army, data$other)
-cor(data$avg_size_army, data$total_deaths)
-```
 ```{r}
 data %>% 
-  arrange(desc(total_deaths)) #Mesos ordenats de més morts totals a menys
+  arrange(desc(total_deaths)) #Months arranged from higher to lower number of deaths
 ```
-
-
-## Missing values
-
 ```{r}
-# Checking missing values:
+#Checking missing values:
 colSums(is.na(data)) 
 ```
 As we can see, there are no NA values in our dataset.
 
-## Outliers
-
 ```{r}
-boxplot(injuries~avg_size_army, data, main="Injuries vs Avg Size of Army", xlab="Avg size of army", ylab="Deaths by injury")
-boxplot(zymotic~avg_size_army, data, main="Zymotic vs Avg Size of Army", xlab="Avg size of army", ylab="Deaths by zymotic disease")
-boxplot(other~avg_size_army, data, main="Other vs Avg Size of Army", xlab="Avg size of army", ylab="Deaths by other causes")
-#Els boxplots se'm veuen com només ratlles horitzontals. Probablement sigui perquè avg_size_army no categoritza lo suficient. Millor així?:
-
+#Checking outliers:
 boxplot(data$injuries, col="lightgoldenrod", main="Deaths by injuries")
 boxplot(data$zymotic, col="mistyrose", main="Deaths by zymotic disease")
 boxplot(data$other, col="powderblue", main="Deaths by other causes")
 #He intentat encabir les tres caixes en un sol plot però no he aconseguit que quedessin quadrades les labels a l'eix horitzontal amb el nom de cada variable
 ```
 
-
 *****
 # Plots
 *****
+
+ --> (Afegim plots amb Shiny) i comentem els gràfics. Què s'hi pot veure? Quins conclusions en treiem?
 
 ```{r}
 #Millor fer servir time_period però transformant la data amb xts() queda l'eix x amb dates al gràfic dinàmic
@@ -206,6 +160,13 @@ dygraph(data_plot_4, main="Accumulated number of deaths")
 *****
 
 ```{r}
+# Correlations (mirar com ho deixem)
+cor(data$avg_size_army, data$zymotic)  
+cor(data$avg_size_army, data$injuries)
+cor(data$avg_size_army, data$other)
+cor(data$avg_size_army, data$total_deaths)
+
+
 tra_death <- data.frame(y=data$total_deaths[2:L], lag1=data$total_deaths[1:(L-1)]) 
 reg1 <- lm(y ~ lag1, data=tra_death) #Regressió morts avui en funció de les morts d'ahir
 summary(reg1)

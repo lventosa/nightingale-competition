@@ -38,4 +38,7 @@ data <- as.data.frame(data)
 - Data limit d'entrega i lloc/email d'entrega?
 - Definim timings per anar acabant les diferents parts de l'índex?
 - Fem neteja del codi en .Rmd que tenim fins ara?
+- Posaries comentaris sota el codi per anar explicant els findings?
+- Penso que seria guai, postre mês cap a les conclusions, lligar els findings amb el que realment va passar (necessito llegir-me una mica la història i el temps en el que passa).
+
 
