@@ -18,12 +18,24 @@ Comentaris Extra:
 	- L: Nice!! Doncs podem mirar a veure si val la pena fer algo així amb Shiny si ens en sortim!:)
 - Podem afegir un índex. Comentem a la trucada i anem afegint punts a mesura que avancem amb el treball.
 	- L: Guai!! Veig que amb el que has afegit cobrim bastanta cosa però si en la trucada de dissabte veiem que cal afegir més punts els afegim!
+	- E: Perfect!
 - No he trobat exactament el que va Fer Nightingale amb les dades. Alguna idea?
 	- L: Jo vaig etar buscant i tampoc res, probablement va mirar de graficar-ho d'alguna manera o fer algo senzill amb les eines que tenia així que tampoc crec que ens deixem res rellevant que ella no fes. 
+	- E: D'acord :)
 - Need explanation on this:
 L <- nrow(data)
 time_period <- seq(0,(L-1)) #Podríem passar-ho de 1 a L
 data$time_period <- time_period
 data <- as.data.frame(data)
 
-	- L: Yes! Sorry! Era perquè intento evitar treballar amb les time variables en format date/POSIXct i les passo a una variable numèrica quan puc. Si acostumes a treballar en format date ens podem petar aquesta part. Als plots que vaig fer vaig deixar-ho així però si creeus que en els gràfics queda millor deixar-ho en format data els canviem
+	- L: Yes! Sorry! Era perquè intento evitar treballar amb les time variables en format date/POSIXct i les passo a una variable numèrica quan puc. Si acostumes a treballar en format date ens podem petar aquesta part. Als plots que vaig fer vaig deixar-ho així però si creeus que en els gràfics queda millor deixar-ho en format data els canviem.
+	- E: Jeje m'està bé si funciona millor, però no entenia exactament què hi feies. Merci per l'explicatif.
+
+
+*** Update situació a 26/06 i agenda meeting 27/06***
+- Acabar de definir índex (anàlisi del dataset, regressions, prediccions i plots (provem amb Shiny).
+- Quins docs s'han d'entregar per la competició i en quins formats?
+- Data limit d'entrega i lloc/email d'entrega?
+- Definim timings per anar acabant les diferents parts de l'índex?
+- Fem neteja del codi en .Rmd que tenim fins ara?
+
