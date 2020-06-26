@@ -15,12 +15,14 @@ output:
   word_document: default
 ---
 ```{r setup, include = FALSE, cache = FALSE}
-knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE) #Escrivint en aquesta línia el que està entre parèntesis, aquestes opcions es converteixen en globals per tot els blocs de codi del document. Les deixo aquí i les esborro individualment de cada bloc perquè quedi més net
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE) #Escrivint en aquesta línia el que està entre parèntesis, aquestes opcions es converteixen en globals per tot els blocs de codi del document. Les deixo aquí i les esborro individualment de cada bloc perquè quedi més net
+
+#He fet knit en html de tot el document per veure com anava quedant i anar tocant coses segons com anem veient
 ``` 
 
 
 *****
-## Index
+Index (deixant-ho així report en html es veu malament però deixem-ho per saber els apartats a introduir més a sota)
 *****
 
 1. Data file upload and brief description
@@ -57,7 +59,7 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE) #Escrivint 
 
 
 *****
-## 1. Data file upload and brief description
+# Data file upload and brief description
 *****
 
 We check the different types of data on our dataset. The aim is to understand the nature of our variables (i.e. the proportion of numerical and categorical variables) to be able to develope a better model afterwards. We will check if we have missing values and outliers as well.
@@ -123,13 +125,13 @@ cum_deaths <- cumsum(deaths)
 data$cum_deaths <- cum_deaths #Cumulative deaths over time
 ```
 
-1.1. Analysis of qualitative variables & graphic representation
+## Analysis of qualitative variables & graphic representation
 
 ```{r}
 
 ```
 
-1.2. Analysis of quantitative variables & graphic representation
+## Analysis of quantitative variables & graphic representation
 
 ```{r}
 # Correlations (mirar com ho deixem)
@@ -138,8 +140,13 @@ cor(data$avg_size_army, data$injuries)
 cor(data$avg_size_army, data$other)
 cor(data$avg_size_army, data$total_deaths)
 ```
+```{r}
+data %>% 
+  arrange(desc(total_deaths)) #Mesos ordenats de més morts totals a menys
+```
 
-1.3. Missing values
+
+## Missing values
 
 ```{r}
 # Checking missing values:
@@ -147,7 +154,7 @@ colSums(is.na(data))
 ```
 As we can see, there are no NA values in our dataset.
 
-1.4. Outliers
+## Outliers
 
 ```{r}
 boxplot(injuries~avg_size_army, data, main="Injuries vs Avg Size of Army", xlab="Avg size of army", ylab="Deaths by injury")
@@ -163,7 +170,7 @@ boxplot(data$other, col="powderblue", main="Deaths by other causes")
 
 
 *****
-## 2. Plots
+# Plots
 *****
 
 ```{r}
@@ -195,7 +202,7 @@ dygraph(data_plot_4, main="Accumulated number of deaths")
 ```
 
 *****
-## 3. Regressions
+# Regressions
 *****
 
 ```{r}
@@ -222,10 +229,11 @@ rmse1 <- sqrt((sum(error1)**2)/nrow(test_data))
 # Diagnosi dels models:
 residual.values <- rstandard(reg1) 
 adjusted.values <- fitted(reg1) 
-plot(adjusted.values, residual.values)
+plot(adjusted.values, residual.values, main="Residual plot reg1 (canviar nom maybe)", ylab="Residual Values", xlab="Adjusted Values", col="lightsalmon3", abline(0, 0), pch=19)
+#He afegit colors al gràfic, poden ser aquests o es poden canviar. Podríem utilitzar els mateixos colors per tots els plots d'un mateix tipus
 ```
 ```{r}
-qqnorm(residual.values) 
+qqnorm(residual.values) #posar-li colors també
 qqline(residual.values)
 
 #A la vista del gràfic, no s’observa cap patró especial, de manera que tant la homocedasticitat com la linealitat resulten hipòtesis raonables.
@@ -249,22 +257,25 @@ summary(reg4)
 # Basant-se l’indicador AIC, s’observa que és més gran que en el model anterior, de manera que NO hi ha una millora en l’ajust. PERQUÈ NI INJURIES NI ZYMOTIC SON FACTORS SIGNIFICATIUS DE ARMY SIZE?
 ```
 
-
 *****
-## 4. Predictions
+# Predictions
 *****
 
 ```{r}
 # Ho hem de fer amb un model que funcioni però... Quina seria la probabilitat de X si Y és això i Z és això altre?
-pred<-predict(reg1, data.frame(Y="1",Z=90),type = "response")
-pred
+#pred<-predict(reg1, data.frame(Y="1",Z=90),type = "response")
+#pred
 ```
 ```{r}
 # Calculem la bondat de l'ajust: <- s'ha de tocar la data
-hoslem.test(X,fitted(modelX))
+#hoslem.test(X,fitted(modelX))
 ```
 ```{r}
 # Dibuixem la corba ROC: <- s'ha de tocar la data
-prob_low=predict(logit_model_2, datA3, type="response")
-r=roc(BW_RE,prob_low, data=datA3)
+#prob_low=predict(logit_model_2, datA3, type="response")
+#r=roc(BW_RE,prob_low, data=datA3)
 ```
+
+*****
+# Conclusions
+*****
