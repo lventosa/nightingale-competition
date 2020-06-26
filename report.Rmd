@@ -160,13 +160,28 @@ dygraph(data_plot_4, main="Accumulated number of deaths")
 *****
 
 ```{r}
-# Correlations (mirar com ho deixem)
+#Univariant linear regresion between all deaths and the average size of army:
+mod1 <- lm(avg_size_army ~ deaths, data=data)
+summary(mod1)
+```
+```{r}
+#Analysis of correlation for all deaths:
+cor(data$avg_size_army, data$total_deaths)
+
+#És deaths i totaldeaths el mateix?
+```
+```{r}
+#Multivariant linear regresion between all deaths (segregated) and the average size of army:
+mod2 <- lm(avg_size_army ~ data$zymotic+data$injuries+data$other, data=data)
+summary(mod2)
+```
+```{r}
+#Analysis of correlations per different types of deaths segregated: (mirar com ho deixem)
 cor(data$avg_size_army, data$zymotic)  
 cor(data$avg_size_army, data$injuries)
 cor(data$avg_size_army, data$other)
-cor(data$avg_size_army, data$total_deaths)
-
-
+```
+```{r}
 tra_death <- data.frame(y=data$total_deaths[2:L], lag1=data$total_deaths[1:(L-1)]) 
 reg1 <- lm(y ~ lag1, data=tra_death) #Regressió morts avui en funció de les morts d'ahir
 summary(reg1)
@@ -187,14 +202,14 @@ rmse1 <- sqrt((sum(error1)**2)/nrow(test_data))
 #Fatal performance, tampoc sé si té gaire sentit predir el número de morts futures a partir de les del dia anterior, ens caldria algo amb més chicha
 ```
 ```{r}
-# Diagnosi dels models:
+# Diagnosi dels models: --> Pen so que potser hauriem d'escollir el model que funciona millor/té més correlació i fer-ho sobre aquest!
 residual.values <- rstandard(reg1) 
 adjusted.values <- fitted(reg1) 
 plot(adjusted.values, residual.values, main="Residual plot reg1 (canviar nom maybe)", ylab="Residual Values", xlab="Adjusted Values", col="lightsalmon3", abline(0, 0), pch=19)
 #He afegit colors al gràfic, poden ser aquests o es poden canviar. Podríem utilitzar els mateixos colors per tots els plots d'un mateix tipus
 ```
 ```{r}
-qqnorm(residual.values) #posar-li colors també
+qqnorm(residual.values, col="blue")
 qqline(residual.values)
 
 #A la vista del gràfic, no s’observa cap patró especial, de manera que tant la homocedasticitat com la linealitat resulten hipòtesis raonables.

@@ -18,10 +18,12 @@ Comentaris Extra:
 	- L: Nice!! Doncs podem mirar a veure si val la pena fer algo així amb Shiny si ens en sortim!:)
 - Podem afegir un índex. Comentem a la trucada i anem afegint punts a mesura que avancem amb el treball.
 	- L: Guai!! Veig que amb el que has afegit cobrim bastanta cosa però si en la trucada de dissabte veiem que cal afegir més punts els afegim!
-	- E: Perfect!
+	- E: Perfect! Ja... poster masses jajaja, ara n'he borrat algunes que em semblaven overlapping.
 - No he trobat exactament el que va Fer Nightingale amb les dades. Alguna idea?
 	- L: Jo vaig etar buscant i tampoc res, probablement va mirar de graficar-ho d'alguna manera o fer algo senzill amb les eines que tenia així que tampoc crec que ens deixem res rellevant que ella no fes. 
 	- E: D'acord :)
+
+
 - Need explanation on this:
 L <- nrow(data)
 time_period <- seq(0,(L-1)) #Podríem passar-ho de 1 a L
@@ -32,13 +34,26 @@ data <- as.data.frame(data)
 	- E: Jeje m'està bé si funciona millor, però no entenia exactament què hi feies. Merci per l'explicatif.
 
 
-*** Update situació a 26/06 i agenda meeting 27/06***
+*** Update situació a 26/06 i agenda meeting 27/06: ***
 - Acabar de definir índex (anàlisi del dataset, regressions, prediccions i plots (provem amb Shiny).
 - Quins docs s'han d'entregar per la competició i en quins formats?
 - Data limit d'entrega i lloc/email d'entrega?
 - Definim timings per anar acabant les diferents parts de l'índex?
 - Fem neteja del codi en .Rmd que tenim fins ara?
 - Posaries comentaris sota el codi per anar explicant els findings?
-- Penso que seria guai, postre mês cap a les conclusions, lligar els findings amb el que realment va passar (necessito llegir-me una mica la història i el temps en el que passa).
+- Penso que seria guai, potser mês cap a les conclusions, lligar els findings amb el que realment va passar (necessito llegir-me una mica la història i el temps en el que passa).
+- Afegir seasonality. Punt nou al l'índex?
+- "He pensat que el document a presentar sigui en format RNotebook amb RMarkdown". Això no és RMarkdown normal oi? És pujar-ho al web com fan amb Shiny? He mirat algun video.
+- Netejem la .txt?
+- Necessito un refresh de com s'analitzen les regressions u.u hehe
+- Podriem analitzar les regressions que donen millor resultat i sobre aquestes fer predict, punt 4. Així també aniriem ajustant més les conclusions.
+
+Resum: xD
+1. Per mi esta ok, només comentaria que anem fent i anem trobant millor.
+2. Intentem plots amb Shiny. Quines variables seria guai analitzar i donariem bons resultats gràficament? Comentar-los.
+3. Entendre si els models ens esta dient alguna cosa. En sobra o en falta algún? Comentar.
+4. Agafaria un model que donés bons resultats per fer aquesta part. Comentar.
+5. Relacionar les conclusions amb el que realment va pasar històricament.
 
 
+*** Minutes meeting 27/06: ***
