@@ -57,6 +57,17 @@ library(pROC)
 data <- read_excel("../nightingale-competition/datos_florence.xlsx", skip=1)
 ```
 ```{r}
+#Making everything more readable and column names more manageable:
+colnames(data)[1] <- "month"
+colnames(data)[2] <- "avg_size_army"
+colnames(data)[3] <- "zymotic"
+colnames(data)[4] <- "injuries"
+colnames(data)[5] <- "other"
+colnames(data)[6] <- "zymotic_rate"
+colnames(data)[7] <- "injuries_rate"
+colnames(data)[8] <- "other_rate"
+```
+```{r}
 #Basic information:
 head(data)
 ```
@@ -77,17 +88,6 @@ L <- nrow(data)
 time_period <- seq(0,(L-1)) #Podríem passar-ho de 1 a L
 data$time_period <- time_period
 data <- as.data.frame(data)
-```
-```{r}
-#Making everything more readable and column names more manageable:
-colnames(data)[1] <- "month"
-colnames(data)[2] <- "avg_size_army"
-colnames(data)[3] <- "zymotic"
-colnames(data)[4] <- "injuries"
-colnames(data)[5] <- "other"
-colnames(data)[6] <- "zymotic_rate"
-colnames(data)[7] <- "injuries_rate"
-colnames(data)[8] <- "other_rate"
 ```
 ```{r}
 #Adding new variables to the dataset:
@@ -129,27 +129,29 @@ boxplot(data$other, col="powderblue", main="Deaths by other causes")
 #Millor fer servir time_period però transformant la data amb xts() queda l'eix x amb dates al gràfic dinàmic. Provar-ho!
 # Podem provar amb altres tipus de gràfic a veure com queda. Si és redundant, els treiem i deixem els que tenim fins ara.
 data_plot_1 <- data.frame(
-  time=data$time_period, 
+  Time=data$time_period, 
   Zymotic=data$zymotic, 
   Injuries=data$injuries,
   Other=data$other)
 dygraph(data_plot_1, main="Death causes (absolute values)")
-
+```
+```{r}
 data_plot_2 <- data.frame(
-  time=data$time_period,
+  Time=data$time_period,
   Zymotic=data$zymotic_rate, 
   Injuries=data$injuries_rate,
   Other=data$other_rate)
 dygraph(data_plot_2, main="Death causes (rates)")
-
+```
+```{r}
 data_plot_3 <- data.frame(
-  time=data$time_period,
+  Time=data$time_period,
   Army=data$avg_size_army)
 dygraph(data_plot_3, main="Average size of the army")
 ```
 ```{r}
 data_plot_4 <- data.frame(
-  time=data$time_period,
+  Time=data$time_period,
   Accumulated_deaths=cum_deaths) #No m'acaba d'agradar el nom de la variable top-right. Millor data amb xts()?
 dygraph(data_plot_4, main="Accumulated number of deaths")
 ```
@@ -163,32 +165,32 @@ Fer regresio de les causes per separat i analisi amb grafics.
 Fer regresio multivariant amb totes les deaths juntes
 
 ```{r}
+#Analysis of correlation for all deaths:
+cor(data$avg_size_army, data$total_deaths)
+
+#Valor absolut entre 0 i 1? Com més properes a 1 en valor absolut més correlacionaddes estan.
+```
+```{r}
 #Univariant linear regresion between all deaths and the average size of army:
 mod1 <- lm(avg_size_army ~ total_deaths, data=data)
 summary(mod1)
 ```
 Dades dels soldats nous que entraven? Com afectava que morissin i entressin soldats nous?
 Aquestes dues variables no estan correlacionades.
-
-```{r}
-#Analysis of correlation for all deaths:
-cor(data$avg_size_army, data$total_deaths)
-
-#Valor absolut entre 0 i 1? Com més properes a 1 en valor absolut més correlacionaddes estan.
-```
 Comentem que no tenen relació. Possibles raons de perquè no tenen correlació. Info que podria faltar i no tenim?
 
-```{r}
-#Multivariant linear regresion between all deaths (segregated) and the average size of army:
-mod2 <- lm(avg_size_army ~ data$zymotic+data$injuries+data$other, data=data)
-summary(mod2)
-```
 ```{r}
 #Analysis of correlations per different types of deaths segregated: (mirar com ho deixem)
 cor(data$avg_size_army, data$zymotic)  
 cor(data$avg_size_army, data$injuries)
 cor(data$avg_size_army, data$other)
 ```
+```{r}
+#Multivariant linear regresion between all deaths (segregated) and the average size of army:
+mod2 <- lm(avg_size_army ~ data$zymotic+data$injuries+data$other, data=data)
+summary(mod2)
+```
+
 Comentem que totes son negatives excepte una. Les morts d'aquesta causa van fer que reclutessin més soldats?
 
 ```{r}
@@ -205,18 +207,6 @@ summary(reg2) #No significació del time period sobre total deaths
 Seasonality: mirar si hi ha algun time period que té mñés significació que alguna altra!
 Timeseries o forecast llibreries!
 
-```{r}
-# Posar-lo a la part de prediccions!
-#Accuracy de reg1 per fer prediccions (he provat de fer la del número de morts basant-me només en un lag d'aquesta mateixa variable per provar de fer-ne alguna)
-train_data <- subset(data, time_period<=round(0.7*L)) #70% training data
-test_data <- subset(data, time_period>round(0.7*L)) #30% test/validation data
-training1 <- data.frame(y=train_data$total_deaths, lag1=train_data$total_deaths) 
-model1 <- lm(y ~ lag1, data=training1)
-y.hat1 <- predict(model1, data=test_data)
-error1 <- abs(y.hat1 - test_data$total_deaths)
-rmse1 <- sqrt((sum(error1)**2)/nrow(test_data)) 
-#Fatal performance, tampoc sé si té gaire sentit predir el número de morts futures a partir de les del dia anterior, ens caldria algo amb més chicha
-```
 ```{r}
 # Diagnosi dels models: --> Pen so que potser hauriem d'escollir el model que funciona millor/té més correlació i fer-ho sobre aquest!
 residual.values <- rstandard(reg1) 
@@ -248,6 +238,17 @@ Provem amb regressions logistiques?
 # Predictions
 *****
 
+```{r}
+#Accuracy de reg1 per fer prediccions (he provat de fer la del número de morts basant-me només en un lag d'aquesta mateixa variable per provar de fer-ne alguna)
+train_data <- subset(data, time_period<=round(0.7*L)) #70% training data
+test_data <- subset(data, time_period>round(0.7*L)) #30% test/validation data
+training1 <- data.frame(y=train_data$total_deaths, lag1=train_data$total_deaths) 
+model1 <- lm(y ~ lag1, data=training1)
+y.hat1 <- predict(model1, data=test_data)
+error1 <- abs(y.hat1 - test_data$total_deaths)
+rmse1 <- sqrt((sum(error1)**2)/nrow(test_data)) 
+#Fatal performance, tampoc sé si té gaire sentit predir el número de morts futures a partir de les del dia anterior, ens caldria algo amb més chicha
+```
 ```{r}
 # Ho hem de fer amb un model que funcioni però... Quina seria la probabilitat de X si Y és això i Z és això altre?
 #pred<-predict(reg1, data.frame(Y="1",Z=90),type = "response")
