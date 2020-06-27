@@ -37,8 +37,15 @@ data <- as.data.frame(data)
 *** Update situació a 26/06 i agenda meeting 27/06: ***
 - Acabar de definir índex (anàlisi del dataset, regressions, prediccions i plots (provem amb Shiny).
 - Quins docs s'han d'entregar per la competició i en quins formats?
+	El código R utilizado para analizar los datos.
+	Una grabación en vídeo presentando los resultados (máx 5 minutos).
+	Material suplementario (opcional).
 - Data limit d'entrega i lloc/email d'entrega?
+	La fecha límite de envío de los documentos requeridos para participar al premio será el 12 de 		julio de 2020 (11:59PM, CEST).
+	Enviar un correo electrónico a bcn@rladies.org con el asunto “FLORENCE_COMPETITION_2020” 		indicando los datos del equipo: participantes (nombre del equipo, nombre participantes, y correo 	electrónico de contacto).
+	Também Dropbox o Wetransfer. Al mail s'hauram d'adjuntar els docs mencionats abans.
 - Definim timings per anar acabant les diferents parts de l'índex?
+	Ara queden aprox dues setmanes :) El video poster el podem fer parlant i gravant la pantalla en 	una trucada de Meets?
 - Fem neteja del codi en .Rmd que tenim fins ara?
 - Posaries comentaris sota el codi per anar explicant els findings?
 - Penso que seria guai, potser mês cap a les conclusions, lligar els findings amb el que realment va passar (necessito llegir-me una mica la història i el temps en el que passa).
