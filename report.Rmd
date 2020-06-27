@@ -46,17 +46,17 @@ We check the different types of data on our dataset. The aim is to understand th
 #Libraries used across the whole project:     (haurem de revisar quins no fem servir al final i treure'ls)
 library(readxl)
 library(tidyverse)
-library(viridis)
+library(gt)
 library(dygraphs)
 library(xts) 
 library(lmtest)
+library(sandwich)
 library(ResourceSelection)
 library(pROC)
 
 #Importing dataset:
 data <- read_excel("../nightingale-competition/datos_florence.xlsx", skip=1)
-```
-```{r}
+
 #Making everything more readable and column names more manageable:
 colnames(data)[1] <- "month"
 colnames(data)[2] <- "avg_size_army"
@@ -82,12 +82,21 @@ sapply(data, class)
 ```{r}
 summary(data)
 ```
+
+As the periods in our dataset are prior to January 1900, R cannot handle them as proper dates. For this reason, we are going to treat time as a numerical variable taking integer value from 0 to 23 in chronological order. This table of equivalences may be useful for the interpretation of the results in this report.
+
 ```{r}
 #Creating a numeric variable to account for time period:
 L <- nrow(data)
 time_period <- seq(0,(L-1)) #Podríem passar-ho de 1 a L
 data$time_period <- time_period
 data <- as.data.frame(data)
+table <- select(data, month, time_period) 
+table %>%
+  gt() %>%
+  tab_header(title = md("**Equivalence between time period variables**")
+  ) 
+# Estic en procés de fer-la més maca jajaja
 ```
 ```{r}
 #Adding new variables to the dataset:
@@ -165,21 +174,6 @@ Fer regresio de les causes per separat i analisi amb grafics.
 Fer regresio multivariant amb totes les deaths juntes
 
 ```{r}
-#Analysis of correlation for all deaths:
-cor(data$avg_size_army, data$total_deaths)
-
-#Valor absolut entre 0 i 1? Com més properes a 1 en valor absolut més correlacionaddes estan.
-```
-```{r}
-#Univariant linear regresion between all deaths and the average size of army:
-mod1 <- lm(avg_size_army ~ total_deaths, data=data)
-summary(mod1)
-```
-Dades dels soldats nous que entraven? Com afectava que morissin i entressin soldats nous?
-Aquestes dues variables no estan correlacionades.
-Comentem que no tenen relació. Possibles raons de perquè no tenen correlació. Info que podria faltar i no tenim?
-
-```{r}
 #Analysis of correlations per different types of deaths segregated: (mirar com ho deixem)
 cor(data$avg_size_army, data$zymotic)  
 cor(data$avg_size_army, data$injuries)
@@ -189,14 +183,37 @@ cor(data$avg_size_army, data$other)
 #Multivariant linear regresion between all deaths (segregated) and the average size of army:
 mod2 <- lm(avg_size_army ~ data$zymotic+data$injuries+data$other, data=data)
 summary(mod2)
-```
 
+#Amb Newey-West per tenir en compte l'autocorrelació:
+coeftest(mod2,NeweyWest(mod2))
+```
 Comentem que totes son negatives excepte una. Les morts d'aquesta causa van fer que reclutessin més soldats?
+
+```{r}
+#Univariant linear regresion between all deaths and the average size of army:
+mod1 <- lm(avg_size_army ~ total_deaths, data=data)
+summary(mod1)
+
+#Amb Newey-West per tenir en compte l'autocorrelació:
+coeftest(mod1,NeweyWest(mod1))
+```
+```{r}
+#Analysis of correlation for all deaths:
+cor(data$avg_size_army, data$total_deaths)
+
+#Valor absolut entre 0 i 1? Com més properes a 1 en valor absolut més correlacionades estan.
+```
+Dades dels soldats nous que entraven? Com afectava que morissin i entressin soldats nous?
+Aquestes dues variables no estan correlacionades.
+Comentem que no tenen relació. Possibles raons de perquè no tenen correlació. Info que podria faltar i no tenim?
 
 ```{r}
 tra_death <- data.frame(y=data$total_deaths[2:L], lag1=data$total_deaths[1:(L-1)]) 
 reg1 <- lm(y ~ lag1, data=tra_death) #Regressió morts avui en funció de les morts d'ahir
 summary(reg1)
+
+#Amb Newey-West per tenir en compte l'autocorrelació:
+coeftest(reg1,NeweyWest(reg1))
 ```
 Les morts d'ahir tenen efecte sobre les morts d'avui.
 
@@ -204,6 +221,7 @@ Les morts d'ahir tenen efecte sobre les morts d'avui.
 reg2 <- lm(data$total_deaths ~ data$time_period, data=data)
 summary(reg2) #No significació del time period sobre total deaths
 ```
+
 Seasonality: mirar si hi ha algun time period que té mñés significació que alguna altra!
 Timeseries o forecast llibreries!
 
