@@ -32,3 +32,22 @@ Resum: xD
 3. Entendre si els models ens esta dient alguna cosa. En sobra o en falta algún? Comentar.
 4. Agafaria un model que donés bons resultats per fer aquesta part. Comentar.
 5. Relacionar les conclusions amb el que realment va pasar històricament.
+
+*** Laura says ***
+
+El drama de les dates:
+Vale okay el que passa amb les dates és que no es poden tractar com a Date/POSIXct ja que fan referència a mesos anteriors a 1900 (l'1 de gener de 1900 es considera l'"inici dels temps" per qualsevol cosa que involucri computació) per tant R (i Excel, el format amb el qual van passar les dates) consideren les dates del dataset que tenim com caràcters i és impossible passar-les a format Date/POSIXct i tractar-les com a dates. Crec que haurem d'utilitzar l'"apanyo" aquell de la variable numèrica del 0 al 23. He afegit una taula d'equivalències entre el valor numèric i el mes que representa perquè siguin més fàcils d'interpretar els gràfics. De moment no se m'acut altra manera de fer-ho...
+
+Una altra cosa important: 
+He estat buscant què són exactament les "zymotic diseases" i són un grup de malalties infeccioses i contagioses. Per tant, es podria esperar certa correlació entre les morts d'un mes per aquestes malalties i les morts del següent. De fet, a l'estar tractant amb series temporals podríem esperar autocorrelació en les pròpies variables. Per tant, potser hauríem d'avaluar els models amb standard errors que siguin robustos a aquesta autocorrelació. No canviarà els valors estimats dels paràmetres però sí que poden haver canvis en els standard errors i per tant en la significació. En les regressions que hi ha fetes afegiré els standard errors calculats amb newey west per  veure com canvien. Makes sense to you?
+
+Pel que fa a les regressions, jo faria (almenys ara de moment):
+- Efecte de cada causa de mort sobre l'average size of the army per separat (univariate regression)
+- Same però efecte de les tres causes (multivariate regression)
+- Same però incloent només la variabe total_deaths (univariate regression)
+- Efecte del time period sobre cada causa de mort per separat (univariate regression)
+- Same però sobre les tres causes (multivariate regression)
+- Same però sobre la variable total_deaths (univariate regression)
+- Model autoregressiu amb lags de les variables --> caldrà comprovar que la data és estacionària o diferenciar-la perquè ho sigui
+
+Per totes provaré de calcular els coef amb els standard errors normals i amb els més robustos per autocorrelació --> demà reordenaré els que tenim actualment i els posaré en aquest ordre per no deixar-nos cap cas 
