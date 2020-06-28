@@ -40,9 +40,13 @@ Index (deixant-ho així report en html es veu malament però deixem-ho per saber
 
 Alguns punts extres?
 
+Faltarà també comentar cada tros d'output que aparegui en el report passat a html, així com també afegir comentaris per que quedi tot el codi clar
+
 We check the different types of data on our dataset. The aim is to understand the nature of our variables (i.e. the proportion of numerical and categorical variables) to be able to develope a better model afterwards. Checks on missing values and outliers will be performed in addition.
 
 ```{r}
+rm(list=ls()) #Per esborrar tot el que estigui carregat d'algun environment que haguem tingut anteriorment (podem esborrar-ho un cop ho entreguem però jo sempre ho deixo just in case)
+
 #Libraries used across the whole project:     (haurem de revisar quins no fem servir al final i treure'ls)
 library(readxl)
 library(tidyverse)
@@ -67,6 +71,8 @@ colnames(data)[6] <- "zymotic_rate"
 colnames(data)[7] <- "injuries_rate"
 colnames(data)[8] <- "other_rate"
 ```
+
+The following table shows the first rows of our dataset, including the names of the variables we have worked with.
 ```{r}
 #Basic information:
 head(data)
@@ -90,13 +96,12 @@ As the periods in our dataset are prior to January 1900, R cannot handle them as
 L <- nrow(data)
 time_period <- seq(0,(L-1)) #Podríem passar-ho de 1 a L
 data$time_period <- time_period
-data <- as.data.frame(data)
-table <- select(data, month, time_period) 
-table %>%
+#data <- as.data.frame(data)
+time_vars <- select(data, month, time_period)
+time_vars %>% 
   gt() %>%
-  tab_header(title = md("**Equivalence between time period variables**")
-  ) 
-# Estic en procés de fer-la més maca jajaja
+    tab_header(title = md("**Time periods**"), subtitle = md("Equivalence between both variables"))
+#He intentat fer-la més maca però el meu coneixement de taules és limitat. Trobo que queda potser una mica estreta però altres dissenys tampoc m'han acabat de fer el pes
 ```
 ```{r}
 #Adding new variables to the dataset:
@@ -112,8 +117,12 @@ data$cum_deaths <- cum_deaths #Cumulative deaths over time
 ```
 ```{r}
 data %>% 
-  arrange(desc(total_deaths)) #Months arranged from higher to lower number of deaths
+  arrange(desc(data$total_deaths)) #Months arranged from higher to lower number of deaths
+#No sé si deixar que s'imprimeixi la taula tal qual queda cutre un cop fem knit del report
 ```
+The above table shows our dataset but sorted by the number of total deaths in descending order. We can observe that
+the time period with the highest number of deaths is January 1855, the 10th time period in chronological order. 
+
 ```{r}
 #Checking missing values:
 colSums(is.na(data)) 
@@ -214,8 +223,10 @@ summary(reg1)
 
 #Amb Newey-West per tenir en compte l'autocorrelació:
 coeftest(reg1,NeweyWest(reg1))
+
+#Les morts d'ahir tenen efecte sobre les morts d'avui.
 ```
-Les morts d'ahir tenen efecte sobre les morts d'avui.
+
 
 ```{r}
 reg2 <- lm(data$total_deaths ~ data$time_period, data=data)
