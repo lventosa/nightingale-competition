@@ -187,54 +187,55 @@ Fer regresio de les causes per separat i analisi amb grafics.
 Fer regresio multivariant amb totes les deaths juntes
 
 ```{r}
-#Analysis of correlations per different types of deaths segregated: (mirar com ho deixem)
 cor(data$avg_size_army, data$zymotic)  
+reg1 <- lm(avg_size_army ~ zymotic, data=data)
+summary(reg1)
+#Amb Newey-West per tenir en compte l'autocorrelació:
+coeftest(reg1, NeweyWest(reg1))
+```
+```{r}
 cor(data$avg_size_army, data$injuries)
+reg2 <- lm(avg_size_army ~ injuries, data=data)
+summary(reg2)
+coeftest(reg2, NeweyWest(reg2))
+```
+```{r}
 cor(data$avg_size_army, data$other)
+reg3 <- lm(avg_size_army ~ other, data=data)
+summary(reg3)
+coeftest(reg3, NeweyWest(reg3))
 ```
 ```{r}
 #Multivariant linear regresion between all deaths (segregated) and the average size of army:
-mod2 <- lm(avg_size_army ~ data$zymotic+data$injuries+data$other, data=data)
-summary(mod2)
-
-#Amb Newey-West per tenir en compte l'autocorrelació:
-coeftest(mod2,NeweyWest(mod2))
-```
-Comentem que totes son negatives excepte una. Les morts d'aquesta causa van fer que reclutessin més soldats?
-
-```{r}
-#Univariant linear regresion between all deaths and the average size of army:
-mod1 <- lm(avg_size_army ~ total_deaths, data=data)
-summary(mod1)
-
-#Amb Newey-West per tenir en compte l'autocorrelació:
-coeftest(mod1,NeweyWest(mod1))
+reg4 <- lm(avg_size_army ~ data$zymotic+data$injuries+data$other, data=data)
+summary(reg4)
+coeftest(reg4, NeweyWest(reg4))
+#Comentem que totes son negatives excepte una. Les morts d'aquesta causa van fer que reclutessin més soldats?
 ```
 ```{r}
-#Analysis of correlation for all deaths:
-cor(data$avg_size_army, data$total_deaths)
-
-#Valor absolut entre 0 i 1? Com més properes a 1 en valor absolut més correlacionades estan.
+cor(data$avg_size_army, data$total_deaths) #Valor absolut entre 0 i 1? Com més properes a 1 en valor absolut més correlacionades estan.
+reg5 <- lm(avg_size_army ~ total_deaths, data=data)
+summary(reg5)
+coeftest(reg5, NeweyWest(reg5))
 ```
+
 Dades dels soldats nous que entraven? Com afectava que morissin i entressin soldats nous?
 Aquestes dues variables no estan correlacionades.
 Comentem que no tenen relació. Possibles raons de perquè no tenen correlació. Info que podria faltar i no tenim?
 
 ```{r}
 tra_death <- data.frame(y=data$total_deaths[2:L], lag1=data$total_deaths[1:(L-1)]) 
-reg1 <- lm(y ~ lag1, data=tra_death) #Regressió morts avui en funció de les morts d'ahir
-summary(reg1)
-
-#Amb Newey-West per tenir en compte l'autocorrelació:
-coeftest(reg1,NeweyWest(reg1))
-
+cor(tra_death$y, tra_death$lag1)
+reg6 <- lm(y ~ lag1, data=tra_death) #Regressió morts avui en funció de les morts d'ahir
+summary(reg6)
+coeftest(reg6, NeweyWest(reg6))
 #Les morts d'ahir tenen efecte sobre les morts d'avui.
 ```
-
-
 ```{r}
-reg2 <- lm(data$total_deaths ~ data$time_period, data=data)
-summary(reg2) #No significació del time period sobre total deaths
+#cor(data$total_deaths, data$time_period)
+reg7 <- lm(data$total_deaths ~ data$time_period, data=data)
+summary(reg7) #No significació del time period sobre total deaths
+coeftest(reg7, NeweyWest(reg7))
 ```
 
 Seasonality: mirar si hi ha algun time period que té mñés significació que alguna altra!
