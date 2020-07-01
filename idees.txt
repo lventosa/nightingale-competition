@@ -49,5 +49,6 @@ Pel que fa a les regressions, jo faria (almenys ara de moment):
 - Same però sobre les tres causes (multivariate regression)
 - Same però sobre la variable total_deaths (univariate regression)
 - Model autoregressiu amb lags de les variables --> caldrà comprovar que la data és estacionària o diferenciar-la perquè ho sigui
+UPDATE: He ordenat les regressions que ja teníem, em falta afegir algun d'aquests models al report
 
-Per totes provaré de calcular els coef amb els standard errors normals i amb els més robustos per autocorrelació --> demà reordenaré els que tenim actualment i els posaré en aquest ordre per no deixar-nos cap cas 
+Per totes provaré de calcular els coef amb els standard errors normals i amb els més robustos per autocorrelació --> reordenaré els que tenim actualment i els posaré en aquest ordre per no deixar-nos cap cas 
