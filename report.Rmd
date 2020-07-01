@@ -88,7 +88,6 @@ sapply(data, class)
 ```{r}
 summary(data)
 ```
-
 As the periods in our dataset are prior to January 1900, R cannot handle them as proper dates. For this reason, we are going to treat time as a numerical variable taking integer value from 0 to 23 in chronological order. This table of equivalences may be useful for the interpretation of the results in this report.
 
 ```{r}
@@ -116,12 +115,17 @@ cum_deaths <- cumsum(deaths)
 data$cum_deaths <- cum_deaths #Cumulative deaths over time
 ```
 ```{r}
-data %>% 
-  arrange(desc(data$total_deaths)) #Months arranged from higher to lower number of deaths
-#No sé si deixar que s'imprimeixi la taula tal qual queda cutre un cop fem knit del report
+deaths_evol <- select(data, month, total_deaths, time_period)
+ordered_deaths <- deaths_evol %>% 
+  arrange(desc(deaths_evol$total_deaths)) #Months arranged from higher to lower number of deaths
+
+ordered_deaths %>% 
+  gt() %>%
+    tab_header(title = md("**Total deaths by month**"), subtitle = md("Data sorted in descending order"))
+#Again, no sé fer la taula més mona jajajaja
 ```
 The above table shows our dataset but sorted by the number of total deaths in descending order. We can observe that
-the time period with the highest number of deaths is January 1855, the 10th time period in chronological order. 
+the time period with the highest number of deaths is January 1855, the 10th time period in chronological order. Not surprisingly, April 1854, the first period in our dataset, is the one with the fewest deaths.
 
 ```{r}
 #Checking missing values:
