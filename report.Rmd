@@ -54,6 +54,7 @@ library(gt)
 library(dygraphs)
 library(xts) 
 library(lmtest)
+library(tseries)
 library(sandwich)
 library(ResourceSelection)
 library(pROC)
@@ -168,11 +169,18 @@ dygraph(data_plot_2, main="Death causes (rates)")
 ```{r}
 data_plot_3 <- data.frame(
   Time=data$time_period,
+  Total=data$total_deaths)
+dygraph(data_plot_3, main="Total deaths (all causes aggregated)")
+#No sé si deixar aquest gràfic aquí o graficar les morts totals a l'apartat 4 mentre expliquem l'estacionarietat de la variable per aplicar un model autoregressiu 
+```
+```{r}
+data_plot_4 <- data.frame(
+  Time=data$time_period,
   Army=data$avg_size_army)
 dygraph(data_plot_3, main="Average size of the army")
 ```
 ```{r}
-data_plot_4 <- data.frame(
+data_plot_r <- data.frame(
   Time=data$time_period,
   Accumulated_deaths=cum_deaths) #No m'acaba d'agradar el nom de la variable top-right. Millor data amb xts()?
 dygraph(data_plot_4, main="Accumulated number of deaths")
@@ -185,6 +193,11 @@ dygraph(data_plot_4, main="Accumulated number of deaths")
 Fer regresio de les causes per separat i analisi amb grafics.
 (Deixem tots deaths model)
 Fer regresio multivariant amb totes les deaths juntes
+
+A tenir en compte per quan fem les interpretacions dels models
+Dades dels soldats nous que entraven? Com afectava que morissin i entressin soldats nous?
+Aquestes dues variables no estan correlacionades.
+Comentem que no tenen relació. Possibles raons de perquè no tenen correlació. Info que podria faltar i no tenim?
 
 ```{r}
 cor(data$avg_size_army, data$zymotic)  
@@ -218,18 +231,46 @@ reg5 <- lm(avg_size_army ~ total_deaths, data=data)
 summary(reg5)
 coeftest(reg5, NeweyWest(reg5))
 ```
-
-Dades dels soldats nous que entraven? Com afectava que morissin i entressin soldats nous?
-Aquestes dues variables no estan correlacionades.
-Comentem que no tenen relació. Possibles raons de perquè no tenen correlació. Info que podria faltar i no tenim?
-
 ```{r}
-tra_death <- data.frame(y=data$total_deaths[2:L], lag1=data$total_deaths[1:(L-1)]) 
-cor(tra_death$y, tra_death$lag1)
-reg6 <- lm(y ~ lag1, data=tra_death) #Regressió morts avui en funció de les morts d'ahir
+cor(data$zymotic, data$time_period)
+reg6 <- lm(zymotic ~ time_period, data=data)
 summary(reg6)
 coeftest(reg6, NeweyWest(reg6))
-#Les morts d'ahir tenen efecte sobre les morts d'avui.
+```
+```{r}
+cor(data$injuries, data$time_period)
+reg7 <- lm(injuries ~ time_period, data=data)
+summary(reg7)
+coeftest(reg7, NeweyWest(reg7))
+```
+```{r}
+cor(data$other, data$time_period)
+reg8 <- lm(other ~ time_period, data=data)
+summary(reg8)
+coeftest(reg8, NeweyWest(reg8))
+```
+```{r}
+reg9 <- lm(total_deaths ~ time_period, data=data)
+summary(reg9)
+coeftest(reg9, NeweyWest(reg9))
+```
+```{r}
+#Si no fem plot de total_deaths a l'apartat 2 fer-lo aquí juntament amb l'estudi de l'estacionarietat (si no és estacionària no podem aplicar-li un model autoregressiu)
+adf.test(data$total_deaths)
+# Segons el test és estacionària però tbh mirant el gràfic a mi no m'ho sembla
+
+tra_death <- data.frame(y=data$total_deaths[2:L], lag1=data$total_deaths[1:(L-1)]) 
+cor(tra_death$y, tra_death$lag1)
+reg10 <- lm(y ~ lag1, data=tra_death)
+summary(reg10)
+coeftest(reg10, NeweyWest(reg10))
+
+#Una altra manera de crear models autoregressius:
+acf(data$total_deaths) #Exponential decay
+pacf(data$total_deaths) #Només hi ha un lag que sigui significatiu 
+#Pel que ens mostren les funcions d'autocorrelació, el més adequat és un model AR(1)
+reg11 <- arima(data$total_deaths, c(1,0,0))
+coeftest(reg11)
 ```
 ```{r}
 #cor(data$total_deaths, data$time_period)

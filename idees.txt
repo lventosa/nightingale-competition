@@ -42,13 +42,13 @@ Una altra cosa important:
 He estat buscant què són exactament les "zymotic diseases" i són un grup de malalties infeccioses i contagioses. Per tant, es podria esperar certa correlació entre les morts d'un mes per aquestes malalties i les morts del següent. De fet, a l'estar tractant amb series temporals podríem esperar autocorrelació en les pròpies variables. Per tant, potser hauríem d'avaluar els models amb standard errors que siguin robustos a aquesta autocorrelació. No canviarà els valors estimats dels paràmetres però sí que poden haver canvis en els standard errors i per tant en la significació. En les regressions que hi ha fetes afegiré els standard errors calculats amb newey west per  veure com canvien. Makes sense to you?
 
 Pel que fa a les regressions, jo faria (almenys ara de moment):
-- Efecte de cada causa de mort sobre l'average size of the army per separat (univariate regression)
-- Same però efecte de les tres causes (multivariate regression)
-- Same però incloent només la variabe total_deaths (univariate regression)
-- Efecte del time period sobre cada causa de mort per separat (univariate regression)
-- Same però sobre les tres causes (multivariate regression)
-- Same però sobre la variable total_deaths (univariate regression)
-- Model autoregressiu amb lags de les variables --> caldrà comprovar que la data és estacionària o diferenciar-la perquè ho sigui
-UPDATE: He ordenat les regressions que ja teníem, em falta afegir algun d'aquests models al report
+- Efecte de cada causa de mort sobre l'average size of the army per separat (univariate regression) DONE
+- Same però efecte de les tres causes (multivariate regression) DONE
+- Same però incloent només la variabe total_deaths (univariate regression) DONE
+- Efecte del time period sobre cada causa de mort per separat (univariate regression) DONE
+- Same però sobre la variable total_deaths (univariate regression) DONE
+- Model autoregressiu amb lags de les variables DONE (he fet el model amb el lag manual i també amb la funció arima i donen el mateix)
 
-Per totes provaré de calcular els coef amb els standard errors normals i amb els més robustos per autocorrelació --> reordenaré els que tenim actualment i els posaré en aquest ordre per no deixar-nos cap cas 
+Per totes (l'últim model autoregressiu no) he provat de calcular els coef amb els standard errors normals i amb els més robustos per autocorrelació 
+
+Si se t'acut alguna altra relació que pot ser interessant investigar afegeix-la a la llista i en fem una regressió
