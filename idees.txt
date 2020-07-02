@@ -33,6 +33,7 @@ Resum: xD
 4. Agafaria un model que donés bons resultats per fer aquesta part. Comentar.
 5. Relacionar les conclusions amb el que realment va pasar històricament.
 
+
 *** Laura says ***
 
 El drama de les dates:
@@ -49,6 +50,15 @@ Pel que fa a les regressions, jo faria (almenys ara de moment):
 - Same però sobre la variable total_deaths (univariate regression) DONE
 - Model autoregressiu amb lags de les variables DONE (he fet el model amb el lag manual i també amb la funció arima i donen el mateix)
 
-Per totes (l'últim model autoregressiu no) he provat de calcular els coef amb els standard errors normals i amb els més robustos per autocorrelació 
+Per totes (l'últim model autoregressiu no) he provat de calcular els coef amb els standard errors normals i amb els més robustos per autocorrelació. També he calculat i fet QQplots dels residus de tots els models. No sé si és òptim deixar-los tots perquè de moment portem 11 models i potser es fa pesat. Potser es podrien encabir en un sol gràfic i veure's més petits. O, si de cas, ja els traurem. 
+
+Una altra cosa, hi ha a saco de comentaris al codi que es barregen amb anotacions random, les explicacions/interpretacions etc, potser podríem fer neteja d'aquells comentaris que no siguin necessaris. 
+
+Pendent de fer pel proper cop (si creus que falta res més feel free d'afegir-ho):
+- Pensar més coses a fer a la part d'exploració de les dades
+- Pensar maybe algun altre plot o manera de fer-los?
+- Regressions (completar les que ja hi ha i afegir nous models)
+- Prediccions (en funció del millor o millors models regressius que trobem)
+- Interpretacions i anar comentant resultats de les coses que ens hagin anat sortint 
 
 Si se t'acut alguna altra relació que pot ser interessant investigar afegeix-la a la llista i en fem una regressió
