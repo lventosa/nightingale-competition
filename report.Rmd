@@ -177,13 +177,13 @@ dygraph(data_plot_3, main="Total deaths (all causes aggregated)")
 data_plot_4 <- data.frame(
   Time=data$time_period,
   Army=data$avg_size_army)
-dygraph(data_plot_3, main="Average size of the army")
+dygraph(data_plot_4, main="Average size of the army")
 ```
 ```{r}
-data_plot_r <- data.frame(
+data_plot_5 <- data.frame(
   Time=data$time_period,
-  Accumulated_deaths=cum_deaths) #No m'acaba d'agradar el nom de la variable top-right. Millor data amb xts()?
-dygraph(data_plot_4, main="Accumulated number of deaths")
+  Accumulated_deaths=cum_deaths) 
+dygraph(data_plot_5, main="Accumulated number of deaths")
 ```
 
 *****
@@ -205,18 +205,30 @@ reg1 <- lm(avg_size_army ~ zymotic, data=data)
 summary(reg1)
 #Amb Newey-West per tenir en compte l'autocorrelació:
 coeftest(reg1, NeweyWest(reg1))
+
+resid1 <- as.numeric(reg1$residuals) #Veig que tu calcules els residus d'una altra manera (comparant-ho amb el bloc de codi on vas fer el QQplot dels residus d'un model). Decidim de quina manera ho deixem
+qqnorm(resid1, col="tomato", main="Model 1: Avg Size Army vs. Zymotic")
+qqline(resid1, lwd=2, lty=3)
 ```
 ```{r}
 cor(data$avg_size_army, data$injuries)
 reg2 <- lm(avg_size_army ~ injuries, data=data)
 summary(reg2)
 coeftest(reg2, NeweyWest(reg2))
+
+resid2 <- as.numeric(reg2$residuals)
+qqnorm(resid2, col="tomato", main="Model 2: Avg Size Army vs. Injuries")
+qqline(resid2, lwd=2, lty=3)
 ```
 ```{r}
 cor(data$avg_size_army, data$other)
 reg3 <- lm(avg_size_army ~ other, data=data)
 summary(reg3)
 coeftest(reg3, NeweyWest(reg3))
+
+resid3 <- as.numeric(reg3$residuals)
+qqnorm(resid3, col="tomato", main="Model 3: Avg Size Army vs. Other")
+qqline(resid3, lwd=2, lty=3)
 ```
 ```{r}
 #Multivariant linear regresion between all deaths (segregated) and the average size of army:
@@ -224,35 +236,59 @@ reg4 <- lm(avg_size_army ~ data$zymotic+data$injuries+data$other, data=data)
 summary(reg4)
 coeftest(reg4, NeweyWest(reg4))
 #Comentem que totes son negatives excepte una. Les morts d'aquesta causa van fer que reclutessin més soldats?
+
+resid4 <- as.numeric(reg4$residuals)
+qqnorm(resid4, col="tomato", main="Model 4: Avg Size Army vs. Zymotic, Injuries and Other")
+qqline(resid4, lwd=2, lty=3)
 ```
 ```{r}
 cor(data$avg_size_army, data$total_deaths) #Valor absolut entre 0 i 1? Com més properes a 1 en valor absolut més correlacionades estan.
 reg5 <- lm(avg_size_army ~ total_deaths, data=data)
 summary(reg5)
 coeftest(reg5, NeweyWest(reg5))
+
+resid5 <- as.numeric(reg5$residuals)
+qqnorm(resid5, col="tomato", main="Model 5: Avg Size Army vs. Total Deaths")
+qqline(resid5, lwd=2, lty=3)
 ```
 ```{r}
 cor(data$zymotic, data$time_period)
 reg6 <- lm(zymotic ~ time_period, data=data)
 summary(reg6)
 coeftest(reg6, NeweyWest(reg6))
+
+resid6 <- as.numeric(reg6$residuals)
+qqnorm(resid6, col="tomato", main="Model 6: Zymotic vs. Time Period")
+qqline(resid6, lwd=2, lty=3)
 ```
 ```{r}
 cor(data$injuries, data$time_period)
 reg7 <- lm(injuries ~ time_period, data=data)
 summary(reg7)
 coeftest(reg7, NeweyWest(reg7))
+
+resid7 <- as.numeric(reg7$residuals)
+qqnorm(resid7, col="tomato", main="Model 7: Injuries vs. Time Period")
+qqline(resid7, lwd=2, lty=3)
 ```
 ```{r}
 cor(data$other, data$time_period)
 reg8 <- lm(other ~ time_period, data=data)
 summary(reg8)
 coeftest(reg8, NeweyWest(reg8))
+
+resid8 <- as.numeric(reg8$residuals)
+qqnorm(resid8, col="tomato", main="Model 8: Other vs. Time Period")
+qqline(resid8, lwd=2, lty=3)
 ```
 ```{r}
 reg9 <- lm(total_deaths ~ time_period, data=data)
 summary(reg9)
 coeftest(reg9, NeweyWest(reg9))
+
+resid9 <- as.numeric(reg9$residuals)
+qqnorm(resid9, col="tomato", main="Model 9: Total Deaths vs. Time Period")
+qqline(resid9, lwd=2, lty=3)
 ```
 ```{r}
 #Si no fem plot de total_deaths a l'apartat 2 fer-lo aquí juntament amb l'estudi de l'estacionarietat (si no és estacionària no podem aplicar-li un model autoregressiu)
@@ -265,25 +301,29 @@ reg10 <- lm(y ~ lag1, data=tra_death)
 summary(reg10)
 coeftest(reg10, NeweyWest(reg10))
 
+resid10 <- as.numeric(reg10$residuals)
+qqnorm(resid10, col="tomato", main="Model 10: Total Deaths vs. Total Deaths Lagged")
+qqline(resid10, lwd=2, lty=3)
+
 #Una altra manera de crear models autoregressius:
-acf(data$total_deaths) #Exponential decay
-pacf(data$total_deaths) #Només hi ha un lag que sigui significatiu 
+acf(data$total_deaths, ylim=c(-0.2,1), lwd=5, xlim=c(0,25), col="darkorange2", main="Autocorrelation function total deaths") #Exponential decay
+pacf(data$total_deaths, ylim=c(-0.2,1), lwd=5, xlim=c(0,25), col="darkorange2", main="Parcial autocorrelation function total deaths") #Només hi ha un lag que sigui significatiu 
 #Pel que ens mostren les funcions d'autocorrelació, el més adequat és un model AR(1)
 reg11 <- arima(data$total_deaths, c(1,0,0))
 coeftest(reg11)
-```
-```{r}
-#cor(data$total_deaths, data$time_period)
-reg7 <- lm(data$total_deaths ~ data$time_period, data=data)
-summary(reg7) #No significació del time period sobre total deaths
-coeftest(reg7, NeweyWest(reg7))
+
+resid11 <- as.numeric(reg11$residuals)
+qqnorm(resid11, col="tomato", main="Model 11: Total Deaths vs. Total Deaths Lagged AR(1)") 
+qqline(resid11, lwd=2, lty=3)
+
+#Veiem que tant una regressió lineal calculada amb la funció lm() dóna el mateix model que quan apliquem un model AR(1) aplicant la funció arima()
 ```
 
 Seasonality: mirar si hi ha algun time period que té mñés significació que alguna altra!
 Timeseries o forecast llibreries!
 
 ```{r}
-# Diagnosi dels models: --> Pen so que potser hauriem d'escollir el model que funciona millor/té més correlació i fer-ho sobre aquest!
+# Diagnosi dels models: --> Penso que potser hauriem d'escollir el model que funciona millor/té més correlació i fer-ho sobre aquest!
 residual.values <- rstandard(reg1) 
 adjusted.values <- fitted(reg1) 
 plot(adjusted.values, residual.values, main="Residual plot reg1 (canviar nom maybe)", ylab="Residual Values", xlab="Adjusted Values", col="lightsalmon3", abline(0, 0), pch=19)
