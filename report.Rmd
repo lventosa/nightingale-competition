@@ -147,6 +147,7 @@ formattable(df2, list(
     #tab_header(title = md("**Total deaths by month**"), subtitle = md("Data sorted in descending order"))
 #Again, no sé fer la taula més mona jajajaja
 ```
+
 The above table shows our dataset but sorted by the number of total deaths in descending order. We can observe that
 the time period with the highest number of deaths is January 1855, the 10th time period in chronological order. Not surprisingly, April 1854, the first period in our dataset, is the one with the fewest deaths.
 
@@ -154,6 +155,7 @@ the time period with the highest number of deaths is January 1855, the 10th time
 #Checking missing values:
 colSums(is.na(data)) 
 ```
+
 As we can see, there are no missing values in our dataset.
 
 ```{r}
@@ -163,14 +165,21 @@ boxplot(data$zymotic, col="mistyrose", main="Deaths by zymotic disease")
 boxplot(data$other, col="powderblue", main="Deaths by other causes")
 ```
 
+Let's recall what we can appreciate in the plots above:
+- The majority of deaths by injury are compressed by 0 and 130 approximately. Additionally, there are some cases up to 300, however excepcional.
+- The majority of deaths by zymotic disease are compressed between 50 and 800 approximately. However, we can see a long tail of cases up to 1700, with some additional outliers of 2000 and 2800.
+- The majority of deaths by other alternative causes are compressed between 25 and 75 approximately. We can also appreciate a long tail up to 175 and some outliers of 300 and 350.
+To sum up, it seems for now that the majority of deaths were caused by zymotic diseases.
+
 
 *****
 # Plots
 *****
 
+We are going to explore the dataset in a visual way to see the different impacts that some variables had on others:
+
 ```{r}
-#Millor fer servir time_period però transformant la data amb xts() queda l'eix x amb dates al gràfic dinàmic. Provar-ho!
-# Podem provar amb altres tipus de gràfic a veure com queda. Si és redundant, els treiem i deixem els que tenim fins ara.
+#How did the different type of deaths measured in absolute values evolve in time?
 data_plot_1 <- data.frame(
   Time=data$time_period, 
   Zymotic=data$zymotic, 
@@ -178,7 +187,11 @@ data_plot_1 <- data.frame(
   Other=data$other)
 dygraph(data_plot_1, main="Death causes (absolute values)")
 ```
+
+Zymotic disease, with the exception of preriod 17, is the disease that generated more deaths per period. In period 9, the number of deaths for zymotic disease were more than 5 times higher than injuries and other disease.
+
 ```{r}
+#How did the different type of deaths measured in rate values evolve in time?
 data_plot_2 <- data.frame(
   Time=data$time_period,
   Zymotic=data$zymotic_rate, 
@@ -186,44 +199,62 @@ data_plot_2 <- data.frame(
   Other=data$other_rate)
 dygraph(data_plot_2, main="Death causes (rates)")
 ```
+
+The results achieved are very similar than in the graph above.
+
 ```{r}
-data_plot_3 <- data.frame(
-  Time=data$time_period,
-  Total=data$total_deaths)
-dygraph(data_plot_3, main="Total deaths (all causes aggregated)")
-#No sé si deixar aquest gràfic aquí o graficar les morts totals a l'apartat 4 mentre expliquem l'estacionarietat de la variable per aplicar un model autoregressiu 
-```
-```{r}
+#How did the size of the army evolve in time?
 data_plot_4 <- data.frame(
   Time=data$time_period,
   Army=data$avg_size_army)
 dygraph(data_plot_4, main="Average size of the army")
 ```
+
+Despite the high amount in deaths that we could saw in the graphs before, especially in period 9, the size of the army seems not to be that much affected. This can be given by some hidden information that we might not have, such as for example the incorporation of new soldier along the war.
+
 ```{r}
+#How did the accumulated number of deaths evolve in time?
 data_plot_5 <- data.frame(
   Time=data$time_period,
   Accumulated_deaths=cum_deaths) 
 dygraph(data_plot_5, main="Accumulated number of deaths")
 ```
 
+The number of deaths just keeps increasing as long as the war takes place. Especially from periods 9 to 15 we can appreciate an accelerated increase in the accumulated deaths of the army. However, in the last period, we can see a stabilization of sich number, meaning that the war is arriving at its end.
+
+```{r}
+
+# Compute percentages with dplyr
+library(dplyr)
+data <- data  %>%
+  group_by(data$time_period, data$total_deaths) %>%
+  summarise(n = sum(value)) %>%
+  mutate(percentage = n / sum(n))
+
+# Plot
+ggplot(data, aes(x=data$time_period, y=percentage, fill=group)) + 
+    geom_area(alpha=0.6 , size=1, colour="black")
+
+# Note: compute percentages without dplyr:
+my_fun <- function(vec){ 
+  as.numeric(vec[2]) / sum(data$value[data$time_period==vec[1]]) *100 
+}
+data$percentage <- apply(data , 1 , my_fun)
+```
+
+
 *****
 # Regressions
 *****
 
-Fer regresio de les causes per separat i analisi amb grafics.
-(Deixem tots deaths model)
-Fer regresio multivariant amb totes les deaths juntes
-
-A tenir en compte per quan fem les interpretacions dels models
-Dades dels soldats nous que entraven? Com afectava que morissin i entressin soldats nous?
-Aquestes dues variables no estan correlacionades.
-Comentem que no tenen relació. Possibles raons de perquè no tenen correlació. Info que podria faltar i no tenim?
+F
 
 ```{r}
+#Regression and residuals values calculations of average size army vs zymotic disease:
 cor(data$avg_size_army, data$zymotic)  
 reg1 <- lm(avg_size_army ~ zymotic, data=data)
 summary(reg1)
-#Amb Newey-West per tenir en compte l'autocorrelació:
+#Correlation with Newey-West to have into account the autocorrelation
 coeftest(reg1, NeweyWest(reg1))
 
 resid1 <- as.numeric(reg1$residuals) #Veig que tu calcules els residus d'una altra manera (comparant-ho amb el bloc de codi on vas fer el QQplot dels residus d'un model). Decidim de quina manera ho deixem
@@ -231,6 +262,7 @@ qqnorm(resid1, col="tomato", main="Model 1: Avg Size Army vs. Zymotic")
 qqline(resid1, lwd=2, lty=3)
 ```
 ```{r}
+#Regression and residuals values calculations of average size army vs injuries:
 cor(data$avg_size_army, data$injuries)
 reg2 <- lm(avg_size_army ~ injuries, data=data)
 summary(reg2)
@@ -241,6 +273,7 @@ qqnorm(resid2, col="tomato", main="Model 2: Avg Size Army vs. Injuries")
 qqline(resid2, lwd=2, lty=3)
 ```
 ```{r}
+#Regression and residuals values calculations of average size army vs other disease:
 cor(data$avg_size_army, data$other)
 reg3 <- lm(avg_size_army ~ other, data=data)
 summary(reg3)
@@ -365,6 +398,15 @@ reg3 <- lm(formula=data$avg_size_army~data$injuries, data=data)
 summary(reg3)
 ```
 
+
+```{r}
+#Podem posar-lo abaix si vols a regressions.
+data_plot_3 <- data.frame(
+  Time=data$time_period,
+  Total=data$total_deaths)
+dygraph(data_plot_3, main="Total deaths (all causes aggregated)")
+#No sé si deixar aquest gràfic aquí o graficar les morts totals a l'apartat 4 mentre expliquem l'estacionarietat de la variable per aplicar un model autoregressiu
+```
 
 Provem amb regressions logistiques?
 

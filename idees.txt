@@ -63,17 +63,27 @@ Si se t'acut alguna altra relació que pot ser interessant investigar afegeix-la
 NOTES ESTHER:
 
 1. Variables Analysis:
-- Falta comentar el que hem trobat. Mini conclusions després de veure els resultats.
+- Per mi està acabat. Podem acabar de comentar a la trucada. Pensem quin tips de taula podem deixar o si podem millorar-les.
 
 2. Plots:
-- Falta comentar el que hem trobat. Mini conclusions després de veure els resultats.
-- Falten plots amb Shiny. Provem. Comentar abana quines variables seria guai analitzar i donariem bons resultats gràficament.
+- Em sembla bé moure el punt 3 a regressions si vols.
+- Estic mirant si puc fer alguns tipus de gràfics xulus diferents amb R, si no surt seguim amb Shiny.
+- Falten plots amb Shiny. Provem. Comentar abans quines variables seria guai analitzar i donarien bons resultats gràficament.
 
 3. Regressions:
 - Falta comentar el que hem trobat. Mini conclusions després de veure els resultats.
 - Falta acabar-me de mirar el que ha agefit la Laura recentment + nous comentaris.
 - Afegir seasonality (mirar nota .Rmd).
 - Entendre si els models ens esta dient alguna cosa. En sobra o en falta algún? Comentar.
+
+(Fer regresio de les causes per separat i analisi amb grafics.
+(Deixem tots deaths model)
+Fer regresio multivariant amb totes les deaths juntes
+
+A tenir en compte per quan fem les interpretacions dels models
+Dades dels soldats nous que entraven? Com afectava que morissin i entressin soldats nous?
+Aquestes dues variables no estan correlacionades.
+Comentem que no tenen relació. Possibles raons de perquè no tenen correlació. Info que podria faltar i no tenim?)
 
 4. Predictions:
 - Falta comentar el que hem trobat. Mini conclusions després de veure els resultats.
