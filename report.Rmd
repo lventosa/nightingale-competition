@@ -20,7 +20,7 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 
 
 *****
-Index (deixant-ho així report en html es veu malament però deixem-ho per saber els apartats a introduir més a sota)
+Index (ÍNDEX PER ESBORRAR ABANS D'ENTREGAR!!)
 *****
 
 1. Variables analysis
@@ -38,10 +38,6 @@ Index (deixant-ho així report en html es veu malament però deixem-ho per saber
 # Variables analysis
 *****
 
-Alguns punts extres?
-
-Faltarà també comentar cada tros d'output que aparegui en el report passat a html, així com també afegir comentaris per que quedi tot el codi clar
-
 We check the different types of data on our dataset. The aim is to understand the nature of our variables (i.e. the proportion of numerical and categorical variables) to be able to develope a better model afterwards. Checks on missing values and outliers will be performed in addition.
 
 ```{r}
@@ -52,6 +48,7 @@ library(readxl)
 library(tidyverse)
 library(gt)
 library(dygraphs)
+library(formattable)
 library(xts) 
 library(lmtest)
 library(tseries)
@@ -74,6 +71,7 @@ colnames(data)[8] <- "other_rate"
 ```
 
 The following table shows the first rows of our dataset, including the names of the variables we have worked with.
+
 ```{r}
 #Basic information:
 head(data)
@@ -89,6 +87,7 @@ sapply(data, class)
 ```{r}
 summary(data)
 ```
+
 As the periods in our dataset are prior to January 1900, R cannot handle them as proper dates. For this reason, we are going to treat time as a numerical variable taking integer value from 0 to 23 in chronological order. This table of equivalences may be useful for the interpretation of the results in this report.
 
 ```{r}
@@ -96,12 +95,23 @@ As the periods in our dataset are prior to January 1900, R cannot handle them as
 L <- nrow(data)
 time_period <- seq(0,(L-1)) #Podríem passar-ho de 1 a L
 data$time_period <- time_period
-#data <- as.data.frame(data)
-time_vars <- select(data, month, time_period)
-time_vars %>% 
-  gt() %>%
-    tab_header(title = md("**Time periods**"), subtitle = md("Equivalence between both variables"))
-#He intentat fer-la més maca però el meu coneixement de taules és limitat. Trobo que queda potser una mica estreta però altres dissenys tampoc m'han acabat de fer el pes
+data <- as.data.frame(data)
+
+#Visualizing in a colorful data table the changes performed:
+df <- data.frame(
+  month = c("Apr 1854", "May 1854", "Jun 1854", "Jul 1854", "Aug 1854", "Sep 1854", "Oct 1854", "Nov 1854", "Dec 1854", "Jan              1855", "Feb 1855", "Mar 1855", "Apr 1855", "May 1855", "Jun 1855", "Jul 1855", "Aug 1855", "Sep 1855", "Oct 1855", "Nov 1855", "Dec 1855", "Jan 1856", "Feb 1856", "Mar 1856"),
+  time_period = 0:23)
+
+formattable(df, list(area(col = month:time_period) ~ color_tile("lightpink", "lightblue")))
+
+#He intentat fer una taula una mica més colorida. No he trobar com posar-li títol. Per cert, per fer visualitzacions amb R aquest package que he trobat em sembla super cool, sobretot si les variables són numèriques! hehe Podem jugar amb els colors també.
+
+#time_vars <- select(data, month, time_period)
+#time_vars %>% 
+  #gt() %>%
+    #tab_header(title = md("**Time periods**"), subtitle = md("Equivalence between both variables"))
+
+#He intentat fer-la més maca però el meu coneixement de taules és limitat. Trobo que queda potser una mica estreta però altres dissenys tampoc m'han acabat de fer el pes.
 ```
 ```{r}
 #Adding new variables to the dataset:
@@ -120,9 +130,21 @@ deaths_evol <- select(data, month, total_deaths, time_period)
 ordered_deaths <- deaths_evol %>% 
   arrange(desc(deaths_evol$total_deaths)) #Months arranged from higher to lower number of deaths
 
-ordered_deaths %>% 
-  gt() %>%
-    tab_header(title = md("**Total deaths by month**"), subtitle = md("Data sorted in descending order"))
+#Visualizing in a colorful data table the changes performed:
+df2 <- data.frame(
+  month = c("Apr 1854", "May 1854", "Jun 1854", "Jul 1854", "Aug 1854", "Sep 1854", "Oct 1854", "Nov 1854", "Dec 1854", "Jan              1855", "Feb 1855", "Mar 1855", "Apr 1855", "May 1855", "Jun 1855", "Jul 1855", "Aug 1855", "Sep 1855", "Oct 1855", "Nov 1855", "Dec 1855", "Jan 1856", "Feb 1856", "Mar 1856"),
+  total_deaths = accounting(c(3168, 2523, 1970, 1409, 1237, 1042, 939, 859, 763, 672, 594, 582, 549, 485, 382, 243, 199, 137, 92, 50, 43, 21, 17, 6), format = "d"),
+  time_period = 0:23)
+
+formattable(df2, list(
+  month = color_tile("transparent", "lightpink"),
+  total_deaths = color_bar("lightgreen")))
+
+#He tornat a provar amb aquesta taula hehe, però again sense títol.
+
+#ordered_deaths %>% 
+  #gt() %>%
+    #tab_header(title = md("**Total deaths by month**"), subtitle = md("Data sorted in descending order"))
 #Again, no sé fer la taula més mona jajajaja
 ```
 The above table shows our dataset but sorted by the number of total deaths in descending order. We can observe that
@@ -139,14 +161,12 @@ As we can see, there are no NA values in our dataset.
 boxplot(data$injuries, col="lightgoldenrod", main="Deaths by injuries")
 boxplot(data$zymotic, col="mistyrose", main="Deaths by zymotic disease")
 boxplot(data$other, col="powderblue", main="Deaths by other causes")
-#He intentat encabir les tres caixes en un sol plot però no he aconseguit que quedessin quadrades les labels a l'eix horitzontal amb el nom de cada variable. Provar de fer-ho!
 ```
+
 
 *****
 # Plots
 *****
-
- --> (Afegim plots amb Shiny) i comentem els gràfics. Què s'hi pot veure? Quins conclusions en treiem?
 
 ```{r}
 #Millor fer servir time_period però transformant la data amb xts() queda l'eix x amb dates al gràfic dinàmic. Provar-ho!
