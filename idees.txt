@@ -57,7 +57,7 @@ Pendent de fer pel proper cop (si creus que falta res més feel free d'afegir-ho
 
 Si se t'acut alguna altra relació que pot ser interessant investigar afegeix-la a la llista i en fem una regressió.
 
---> E: Guai! Ara em poso a repassar el que tenim fins ara i a fer una Miquela més i afegeixo comentaris sota si calen :)
+--> E: Guai! Ara em poso a repassar el que tenim fins ara i a fer una miqueta més i afegeixo comentaris sota si calen :)
 
 
 NOTES ESTHER:
@@ -86,3 +86,4 @@ NOTES ESTHER:
 
 (6. Comentaris generals):
 - Faltarà esborrar algun troç de condi comentat en varia apartats.
+- Perquè quan fem HTML a vegades no es veu el codi? Crec que s'entén millor amb tot el codi visible. Omg cada vegada que faig HTML veig menys coses hahaha

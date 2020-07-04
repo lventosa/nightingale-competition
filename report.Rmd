@@ -154,7 +154,7 @@ the time period with the highest number of deaths is January 1855, the 10th time
 #Checking missing values:
 colSums(is.na(data)) 
 ```
-As we can see, there are no NA values in our dataset.
+As we can see, there are no missing values in our dataset.
 
 ```{r}
 #Checking outliers:
