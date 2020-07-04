@@ -1,0 +1,64 @@
+
+Note: La llengua del treball serà anglès.
+
+
+*** Update situació a 26/06 i agenda meeting 27/06: ***
+- Acabar de definir índex (anàlisi del dataset, regressions, prediccions i plots (provem amb Shiny).
+- Quins docs s'han d'entregar per la competició i en quins formats?
+	El código R utilizado para analizar los datos.
+	Una grabación en vídeo presentando los resultados (máx 5 minutos).
+	Material suplementario (opcional) --> Report HTML, gràfics amb Shiny.
+- Data limit d'entrega i lloc/email d'entrega?
+	La fecha límite de envío de los documentos requeridos para participar al premio será el 12 de 		julio de 2020 (11:59PM, CEST).
+	Enviar un correo electrónico a bcn@rladies.org con el asunto “FLORENCE_COMPETITION_2020” 		indicando los datos del equipo: participantes (nombre del equipo, nombre participantes, y correo 	electrónico de contacto).
+	Também Dropbox o Wetransfer. Al mail s'hauram d'adjuntar els docs mencionats abans.
+- Definim timings per anar acabant les diferents parts de l'índex?
+	Ara queden aprox dues setmanes :) El video poster el podem fer parlant i gravant la pantalla en 	una trucada de Meets?
+	5 Juliol: tots punts ok, comentem conclusions.
+	6-8 Juliol: Shiny + extres.
+	8-9 Juliol: revivió total	
+	10-12 Juliol: gravar video.
+- Fem neteja del codi en .Rmd que tenim fins ara? Ok
+- Posaries comentaris sota el codi per anar explicant els findings? Ok
+- Penso que seria guai, potser mês cap a les conclusions, lligar els findings amb el que realment va passar (necessito llegir-me una mica la història i el temps en el que passa).
+	Guerra de Crimea. Exèrcit anglès. Buscar una mica més.
+- Afegir seasonality. Punt nou al l'índex? Ok
+- "He pensat que el document a presentar sigui en format RNotebook amb RMarkdown". Ok
+- Podriem analitzar les regressions que donen millor resultat i sobre aquestes fer predict, punt 4. Així també aniriem ajustant més les conclusions. Ok
+
+Resum: xD
+1. Per mi esta ok, només comentaria que anem fent i anem trobant millor.
+2. Intentem plots amb Shiny. Quines variables seria guai analitzar i donariem bons resultats gràficament? Comentar-los.
+3. Entendre si els models ens esta dient alguna cosa. En sobra o en falta algún? Comentar.
+4. Agafaria un model que donés bons resultats per fer aquesta part. Comentar.
+5. Relacionar les conclusions amb el que realment va pasar històricament.
+
+
+*** Laura says ***
+
+El drama de les dates:
+Vale okay el que passa amb les dates és que no es poden tractar com a Date/POSIXct ja que fan referència a mesos anteriors a 1900 (l'1 de gener de 1900 es considera l'"inici dels temps" per qualsevol cosa que involucri computació) per tant R (i Excel, el format amb el qual van passar les dates) consideren les dates del dataset que tenim com caràcters i és impossible passar-les a format Date/POSIXct i tractar-les com a dates. Crec que haurem d'utilitzar l'"apanyo" aquell de la variable numèrica del 0 al 23. He afegit una taula d'equivalències entre el valor numèric i el mes que representa perquè siguin més fàcils d'interpretar els gràfics. De moment no se m'acut altra manera de fer-ho...
+
+Una altra cosa important: 
+He estat buscant què són exactament les "zymotic diseases" i són un grup de malalties infeccioses i contagioses. Per tant, es podria esperar certa correlació entre les morts d'un mes per aquestes malalties i les morts del següent. De fet, a l'estar tractant amb series temporals podríem esperar autocorrelació en les pròpies variables. Per tant, potser hauríem d'avaluar els models amb standard errors que siguin robustos a aquesta autocorrelació. No canviarà els valors estimats dels paràmetres però sí que poden haver canvis en els standard errors i per tant en la significació. En les regressions que hi ha fetes afegiré els standard errors calculats amb newey west per  veure com canvien. Makes sense to you?
+
+Pel que fa a les regressions, jo faria (almenys ara de moment):
+- Efecte de cada causa de mort sobre l'average size of the army per separat (univariate regression) DONE
+- Same però efecte de les tres causes (multivariate regression) DONE
+- Same però incloent només la variabe total_deaths (univariate regression) DONE
+- Efecte del time period sobre cada causa de mort per separat (univariate regression) DONE
+- Same però sobre la variable total_deaths (univariate regression) DONE
+- Model autoregressiu amb lags de les variables DONE (he fet el model amb el lag manual i també amb la funció arima i donen el mateix)
+
+Per totes (l'últim model autoregressiu no) he provat de calcular els coef amb els standard errors normals i amb els més robustos per autocorrelació. També he calculat i fet QQplots dels residus de tots els models. No sé si és òptim deixar-los tots perquè de moment portem 11 models i potser es fa pesat. Potser es podrien encabir en un sol gràfic i veure's més petits. O, si de cas, ja els traurem. 
+
+Una altra cosa, hi ha a saco de comentaris al codi que es barregen amb anotacions random, les explicacions/interpretacions etc, potser podríem fer neteja d'aquells comentaris que no siguin necessaris. 
+
+Pendent de fer pel proper cop (si creus que falta res més feel free d'afegir-ho):
+- Pensar més coses a fer a la part d'exploració de les dades
+- Pensar maybe algun altre plot o manera de fer-los?
+- Regressions (completar les que ja hi ha i afegir nous models)
+- Prediccions (en funció del millor o millors models regressius que trobem)
+- Interpretacions i anar comentant resultats de les coses que ens hagin anat sortint 
+
+Si se t'acut alguna altra relació que pot ser interessant investigar afegeix-la a la llista i en fem una regressió
