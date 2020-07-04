@@ -18,21 +18,12 @@ output:
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 ``` 
 
-
 *****
-Index (ÍNDEX PER ESBORRAR ABANS D'ENTREGAR!!)
+# Introduction
 *****
 
-1. Variables analysis
-  
-2. Plots
-
-3. Regressions
-
-4. Predictions
-
-5. Conclusions
-
+- Qui era Florence Nightingale
+- De què és la data
 
 *****
 # Variables analysis
@@ -41,10 +32,11 @@ Index (ÍNDEX PER ESBORRAR ABANS D'ENTREGAR!!)
 We check the different types of data on our dataset. The aim is to understand the nature of our variables (i.e. the proportion of numerical and categorical variables) to be able to develope a better model afterwards. Checks on missing values and outliers will be performed in addition.
 
 ```{r}
-rm(list=ls()) #Per esborrar tot el que estigui carregat d'algun environment que haguem tingut anteriorment (podem esborrar-ho un cop ho entreguem però jo sempre ho deixo just in case)
+rm(list=ls()) 
 
 #Libraries used across the whole project:     (haurem de revisar quins no fem servir al final i treure'ls)
 library(readxl)
+library(dplyr)
 library(tidyverse)
 library(gt)
 library(dygraphs)
@@ -58,17 +50,9 @@ library(pROC)
 
 #Importing dataset:
 data <- read_excel("../nightingale-competition/datos_florence.xlsx", skip=1)
-
-#Making everything more readable and column names more manageable:
-colnames(data)[1] <- "month"
-colnames(data)[2] <- "avg_size_army"
-colnames(data)[3] <- "zymotic"
-colnames(data)[4] <- "injuries"
-colnames(data)[5] <- "other"
-colnames(data)[6] <- "zymotic_rate"
-colnames(data)[7] <- "injuries_rate"
-colnames(data)[8] <- "other_rate"
 ```
+
+## General exploration 
 
 The following table shows the first rows of our dataset, including the names of the variables we have worked with.
 
@@ -86,6 +70,21 @@ sapply(data, class)
 ```
 ```{r}
 summary(data)
+```
+(Podem afegir aquí una explicació de cada variable, dir què representa, i explicar que després n'afegim més)
+
+## Data treatment (?)
+
+```{r}
+#Making everything more readable and column names more manageable:
+colnames(data)[1] <- "month"
+colnames(data)[2] <- "avg_size_army"
+colnames(data)[3] <- "zymotic"
+colnames(data)[4] <- "injuries"
+colnames(data)[5] <- "other"
+colnames(data)[6] <- "zymotic_rate"
+colnames(data)[7] <- "injuries_rate"
+colnames(data)[8] <- "other_rate"
 ```
 
 As the periods in our dataset are prior to January 1900, R cannot handle them as proper dates. For this reason, we are going to treat time as a numerical variable taking integer value from 0 to 23 in chronological order. This table of equivalences may be useful for the interpretation of the results in this report.
@@ -125,6 +124,8 @@ cum_deaths <- vector()
 cum_deaths <- cumsum(deaths)
 data$cum_deaths <- cum_deaths #Cumulative deaths over time
 ```
+EXPLICACIO DE LES NOVES VARIABLES
+
 ```{r}
 deaths_evol <- select(data, month, total_deaths, time_period)
 ordered_deaths <- deaths_evol %>% 
@@ -151,6 +152,8 @@ formattable(df2, list(
 The above table shows our dataset but sorted by the number of total deaths in descending order. We can observe that
 the time period with the highest number of deaths is January 1855, the 10th time period in chronological order. Not surprisingly, April 1854, the first period in our dataset, is the one with the fewest deaths.
 
+## Missing values and outliers
+
 ```{r}
 #Checking missing values:
 colSums(is.na(data)) 
@@ -160,6 +163,7 @@ As we can see, there are no missing values in our dataset.
 
 ```{r}
 #Checking outliers:
+par(mfrow=c(1,3)) #Amb això es veuen tots tres boxplots alhora ueeee  
 boxplot(data$injuries, col="lightgoldenrod", main="Deaths by injuries")
 boxplot(data$zymotic, col="mistyrose", main="Deaths by zymotic disease")
 boxplot(data$other, col="powderblue", main="Deaths by other causes")
@@ -173,7 +177,7 @@ To sum up, it seems for now that the majority of deaths were caused by zymotic d
 
 
 *****
-# Plots
+# Data vizualization
 *****
 
 We are going to explore the dataset in a visual way to see the different impacts that some variables had on others:
@@ -223,13 +227,11 @@ dygraph(data_plot_5, main="Accumulated number of deaths")
 The number of deaths just keeps increasing as long as the war takes place. Especially from periods 9 to 15 we can appreciate an accelerated increase in the accumulated deaths of the army. However, in the last period, we can see a stabilization of sich number, meaning that the war is arriving at its end.
 
 ```{r}
-
 # Compute percentages with dplyr
-library(dplyr)
 data <- data  %>%
   group_by(data$time_period, data$total_deaths) %>%
   summarise(n = sum(value)) %>%
-  mutate(percentage = n / sum(n))
+  mutate(percentage = n / sum(n)) #No em deixa córrer aquesta funció:(
 
 # Plot
 ggplot(data, aes(x=data$time_period, y=percentage, fill=group)) + 
@@ -246,8 +248,6 @@ data$percentage <- apply(data , 1 , my_fun)
 *****
 # Regressions
 *****
-
-F
 
 ```{r}
 #Regression and residuals values calculations of average size army vs zymotic disease:
