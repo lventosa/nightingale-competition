@@ -18,62 +18,58 @@ output:
 knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 ``` 
 
-
 *****
-Index (deixant-ho així report en html es veu malament però deixem-ho per saber els apartats a introduir més a sota)
-*****
-
-1. Variables analysis
-  
-2. Plots
-
-3. Regressions
-
-4. Predictions
-
-5. Conclusions
-
-
-*****
-# Variables analysis
+# Introduction
 *****
 
-Alguns punts extres?
+**Florence Nightingale** (1820-1910), known as *The Lady With the Lamp*, was a British nurse, social reformer and statistician best known as the founder of modern nursing. Her experiences as a nurse during the Crimean War were foundational in her views about sanitation. She established St. Thomas’ Hospital and the Nightingale Training School for Nurses in 1860. Her efforts to reform healthcare greatly influenced the quality of care in the 19 and 20 centuries.
 
-Faltarà també comentar cada tros d'output que aparegui en el report passat a html, així com també afegir comentaris per que quedi tot el codi clar
+One of her most important discoveries was when she realized that "deaths due to disease were more than seven times the number of deaths due to combat", because of unsanitary hospital conditions. However, as knowing numbers alone have limited persuasive powers, Nightingale used her skills in statistical communication to convince the British parliament of the need to act. She avoided the dry tables used by most statisticians of the time, and instead devised a novel graph to illustrate the impact of hospital and nursing practice reform on army mortality rates.
+
+Moreover, the data presented in the dataset we are going to analyze refer to Florence Nightingale's count of deaths in the Crimean War, which lasted from October 1853 until March 1856. She accounted for the total number of deaths in the Crimean War caused by injuries and combat wounds, zymotic diseases and other causes. Data were grouped by months since April 1854 to March 1856. These data were going to be later used for her rose plots. 
+
+
+Per esborrar?
+(On hauriem de citar? Aquí o creem bibliografia abaix? 
+L: Jo ho citaria a sota de tot. No sé com es cita a RMarkdown though, ens ho podem mirar
+
+https://theconversation.com/the-healing-power-of-data-florence-nightingales-true-legacy-134649
+
+https://www.history.com/topics/womens-history/florence-nightingale-1
+
+*****
+# Data exploration
+*****
 
 We check the different types of data on our dataset. The aim is to understand the nature of our variables (i.e. the proportion of numerical and categorical variables) to be able to develope a better model afterwards. Checks on missing values and outliers will be performed in addition.
 
 ```{r}
-rm(list=ls()) #Per esborrar tot el que estigui carregat d'algun environment que haguem tingut anteriorment (podem esborrar-ho un cop ho entreguem però jo sempre ho deixo just in case)
+rm(list=ls()) 
 
 #Libraries used across the whole project:     (haurem de revisar quins no fem servir al final i treure'ls)
 library(readxl)
+library(dplyr)
 library(tidyverse)
 library(gt)
 library(dygraphs)
+library(formattable)
 library(xts) 
 library(lmtest)
 library(tseries)
 library(sandwich)
+library(forecast)
 library(ResourceSelection)
 library(pROC)
+library(reshape2)
 
 #Importing dataset:
 data <- read_excel("../nightingale-competition/datos_florence.xlsx", skip=1)
-
-#Making everything more readable and column names more manageable:
-colnames(data)[1] <- "month"
-colnames(data)[2] <- "avg_size_army"
-colnames(data)[3] <- "zymotic"
-colnames(data)[4] <- "injuries"
-colnames(data)[5] <- "other"
-colnames(data)[6] <- "zymotic_rate"
-colnames(data)[7] <- "injuries_rate"
-colnames(data)[8] <- "other_rate"
 ```
 
+## Basic information 
+
 The following table shows the first rows of our dataset, including the names of the variables we have worked with.
+
 ```{r}
 #Basic information:
 head(data)
@@ -89,6 +85,36 @@ sapply(data, class)
 ```{r}
 summary(data)
 ```
+
+In Nightingale's dataset, the following variables come as in:
+- Month (1): Character variable stating the month and year (period).
+- Average size of army (2): Numeric variable that informs the reader about the average size of the army in such period of time.
+- Zymotic diseases (3): Numeric variable which states the number of soldiers who died in such period of time for zymotic disease causes in absolute values.
+- Wounds & injuries (4): Numeric variable which states the number of soldiers who died in such period of time for wounds and injuries causes in absolute values.
+- All other causes (5): Numeric variable which states the number of soldiers who died in such period of time for any other causes in absolute values.
+- Zymotic diseases (6): Numeric variable which states the number of soldiers who died in such period of time for zymotic disease causes in rate values.
+- Wounds & injuries (7): Numeric variable which states the number of soldiers who died in such period of time for wounds and injuries causes in rate values.
+- All other causes (8): Numeric variable which states the number of soldiers who died in such period of time for any other causes in rate values.
+
+In order to make the data more readeable and understandable, we will make some changes in the variables as well as some variable additions.
+
+
+## Feature engineering 
+
+```{r}
+#Making everything more readable and column names more manageable:
+colnames(data)[1] <- "month"
+colnames(data)[2] <- "avg_size_army"
+colnames(data)[3] <- "zymotic"
+colnames(data)[4] <- "injuries"
+colnames(data)[5] <- "other"
+colnames(data)[6] <- "zymotic_rate"
+colnames(data)[7] <- "injuries_rate"
+colnames(data)[8] <- "other_rate"
+
+data[17,1] <- "Aug 1855" #We modify this entry as in the original dataset it appeared as Aug_1855.
+```
+
 As the periods in our dataset are prior to January 1900, R cannot handle them as proper dates. For this reason, we are going to treat time as a numerical variable taking integer value from 0 to 23 in chronological order. This table of equivalences may be useful for the interpretation of the results in this report.
 
 ```{r}
@@ -96,12 +122,12 @@ As the periods in our dataset are prior to January 1900, R cannot handle them as
 L <- nrow(data)
 time_period <- seq(0,(L-1)) #Podríem passar-ho de 1 a L
 data$time_period <- time_period
-#data <- as.data.frame(data)
-time_vars <- select(data, month, time_period)
-time_vars %>% 
-  gt() %>%
-    tab_header(title = md("**Time periods**"), subtitle = md("Equivalence between both variables"))
-#He intentat fer-la més maca però el meu coneixement de taules és limitat. Trobo que queda potser una mica estreta però altres dissenys tampoc m'han acabat de fer el pes
+data <- as.data.frame(data)
+
+#time_vars <- select(data, month, time_period)
+#time_vars %>% 
+  #gt() %>%
+    #tab_header(title = md("**Time periods**"), subtitle = md("Equivalence between both variables"))
 ```
 ```{r}
 #Adding new variables to the dataset:
@@ -115,42 +141,67 @@ cum_deaths <- vector()
 cum_deaths <- cumsum(deaths)
 data$cum_deaths <- cum_deaths #Cumulative deaths over time
 ```
+
+In order to have a better understanding of the data presented, we created a new variable which contains the sum of the different deaths causes (zymotic, injuries and other) combined. Each entry of this variable will be seggregated by period/month of the year. The name of this new variable is "deaths".
+
+In addition, we created another new variable that aims to explain the cumulative deaths over time. Thus, using the new variable of deaths created just before, we create a new one in order to explain how this aggregated deaths perform over time. The name of this variable is "cum_deaths". 
+
 ```{r}
 deaths_evol <- select(data, month, total_deaths, time_period)
 ordered_deaths <- deaths_evol %>% 
   arrange(desc(deaths_evol$total_deaths)) #Months arranged from higher to lower number of deaths
 
-ordered_deaths %>% 
-  gt() %>%
-    tab_header(title = md("**Total deaths by month**"), subtitle = md("Data sorted in descending order"))
-#Again, no sé fer la taula més mona jajajaja
+#Visualizing in a colorful data table the changes performed:
+table_deaths <- data.frame(
+  Month = ordered_deaths$month,
+  TotalDeaths = ordered_deaths$total_deaths,
+  TimePeriod = ordered_deaths$time_period)
+
+formattable(table_deaths, list(
+  Month = color_tile("lightpink", "lightpink4"),
+  TotalDeaths = color_bar("grey")))
 ```
+
 The above table shows our dataset but sorted by the number of total deaths in descending order. We can observe that
 the time period with the highest number of deaths is January 1855, the 10th time period in chronological order. Not surprisingly, April 1854, the first period in our dataset, is the one with the fewest deaths.
+
+## Seasonality analysis
+
+```{r}
+
+```
+
+## Missing values and outliers
 
 ```{r}
 #Checking missing values:
 colSums(is.na(data)) 
 ```
-As we can see, there are no NA values in our dataset.
+
+As we can see, there are no missing values in our dataset.
 
 ```{r}
 #Checking outliers:
+par(mfrow=c(1,3)) 
 boxplot(data$injuries, col="lightgoldenrod", main="Deaths by injuries")
 boxplot(data$zymotic, col="mistyrose", main="Deaths by zymotic disease")
 boxplot(data$other, col="powderblue", main="Deaths by other causes")
-#He intentat encabir les tres caixes en un sol plot però no he aconseguit que quedessin quadrades les labels a l'eix horitzontal amb el nom de cada variable. Provar de fer-ho!
 ```
 
+Let's recall what we can appreciate in the plots above:
+- The majority of deaths by injury are compressed by 0 and 130, approximately. Additionally, there are some exceptional periods where deaths by injury amounted up to 300.
+- The majority of deaths by zymotic disease are compressed between 50 and 800 approximately. However, we can see a long tail of cases up to 1700, with some additional outliers of 2100 and 2800.
+- The majority of deaths by other alternative causes are compressed between 25 and 75 approximately. We can also appreciate a long tail up to 175 and some outliers of 300 and 350.
+To sum up, it seems for now that most of the deaths included in our dataset were caused by zymotic diseases.
+
 *****
-# Plots
+# Data visualization
 *****
 
- --> (Afegim plots amb Shiny) i comentem els gràfics. Què s'hi pot veure? Quins conclusions en treiem?
+We are going to explore the dataset in a visual way to see the impacts some variables had on some others:
 
 ```{r}
-#Millor fer servir time_period però transformant la data amb xts() queda l'eix x amb dates al gràfic dinàmic. Provar-ho!
-# Podem provar amb altres tipus de gràfic a veure com queda. Si és redundant, els treiem i deixem els que tenim fins ara.
+#How did the different type of deaths measured in absolute values evolve in time?
 data_plot_1 <- data.frame(
   Time=data$time_period, 
   Zymotic=data$zymotic, 
@@ -158,7 +209,11 @@ data_plot_1 <- data.frame(
   Other=data$other)
 dygraph(data_plot_1, main="Death causes (absolute values)")
 ```
+
+Zymotic disease, with the exception of preriod 17, is the disease that generated more deaths per period. In period 9, the number of deaths for zymotic disease were more than 5 times higher than injuries and other disease.
+
 ```{r}
+#How did the different type of deaths measured in rate values evolve in time?
 data_plot_2 <- data.frame(
   Time=data$time_period,
   Zymotic=data$zymotic_rate, 
@@ -166,51 +221,100 @@ data_plot_2 <- data.frame(
   Other=data$other_rate)
 dygraph(data_plot_2, main="Death causes (rates)")
 ```
+
+The results achieved are very similar than in the graph above.
+
 ```{r}
-data_plot_3 <- data.frame(
-  Time=data$time_period,
-  Total=data$total_deaths)
-dygraph(data_plot_3, main="Total deaths (all causes aggregated)")
-#No sé si deixar aquest gràfic aquí o graficar les morts totals a l'apartat 4 mentre expliquem l'estacionarietat de la variable per aplicar un model autoregressiu 
-```
-```{r}
+#How did the size of the army evolve in time?
 data_plot_4 <- data.frame(
   Time=data$time_period,
   Army=data$avg_size_army)
 dygraph(data_plot_4, main="Average size of the army")
 ```
+
+Despite the high amount in deaths that we could saw in the graphs before, especially in period 9, the size of the army seems not to be that much affected. This can be given by some hidden information that we might not have, such as for example the incorporation of new soldier along the war.
+
 ```{r}
+#How did the accumulated number of deaths evolve in time?
 data_plot_5 <- data.frame(
   Time=data$time_period,
   Accumulated_deaths=cum_deaths) 
 dygraph(data_plot_5, main="Accumulated number of deaths")
 ```
 
-*****
-# Regressions
-*****
+The number of deaths just keeps increasing as long as the war takes place. Especially from periods 9 to 15 we can appreciate an accelerated increase in the accumulated deaths of the army. However, in the last period, we can see a stabilization of sich number, meaning that the war is arriving at its end.
 
-Fer regresio de les causes per separat i analisi amb grafics.
-(Deixem tots deaths model)
-Fer regresio multivariant amb totes les deaths juntes
 
-A tenir en compte per quan fem les interpretacions dels models
-Dades dels soldats nous que entraven? Com afectava que morissin i entressin soldats nous?
-Aquestes dues variables no estan correlacionades.
-Comentem que no tenen relació. Possibles raons de perquè no tenen correlació. Info que podria faltar i no tenim?
+Comentar si ens agraden els nous gràfics i com treure'n més partit!
 
 ```{r}
+data=data[1:12,]
+data1=data.frame(t(data))
+data2=data1[3:8,]
+colnames(data2)=month.name
+data2$group=row.names(data2)
+data3=melt(data2,id="group")
+data3$value=as.numeric(data3$value)
+head(data3)
+
+#Treballar als gràfics de sota amb les variables en nivell absolut (no rates)
+```
+```{r}
+ggplot(data=data3,aes(x=variable,y=value,fill=group))+
+        geom_bar(stat="identity")
+```
+```{r}
+ggplot(data=data3,aes(x=variable,y=value,fill=group))+
+        geom_bar(stat="identity")+
+        scale_fill_brewer(palette="Greens")+xlab("")+ylab("")
+```
+```{r}
+ggplot(data=data3,aes(x=variable,y=value,fill=group))+
+        geom_bar(stat="identity")+
+        coord_polar()+
+        scale_fill_brewer(palette="Greens")+xlab("")+ylab("")
+```
+```{r}
+ggplot(data=data3,aes(x=variable,y=value,fill=group))+
+        geom_bar(stat="identity",width=1,colour="black",size=0.1)+
+        coord_polar()+
+        scale_fill_brewer(palette="Greens")+
+        xlab("")+ylab("")
+```
+```{r}
+ggplot(data=data3,aes(x=variable,y=group,fill=value))+
+        geom_tile(colour="black",size=0.1)+
+        scale_fill_gradientn(colours=c("white","steelblue"))+
+        coord_polar()+xlab("")+ylab("")
+```
+
+*****
+# Regression analysis
+*****
+
+The aim on this section is to show how the variables correlate to each other. Morever, we explore through regressions whether some variables have a significant impact on other variables.
+
+```{r, include = FALSE}
+#Regression and residuals values calculations of average size army vs zymotic disease:
 cor(data$avg_size_army, data$zymotic)  
 reg1 <- lm(avg_size_army ~ zymotic, data=data)
-summary(reg1)
-#Amb Newey-West per tenir en compte l'autocorrelació:
 coeftest(reg1, NeweyWest(reg1))
 
-resid1 <- as.numeric(reg1$residuals) #Veig que tu calcules els residus d'una altra manera (comparant-ho amb el bloc de codi on vas fer el QQplot dels residus d'un model). Decidim de quina manera ho deixem
+#HAC heteroskedasticity autocorrelation robust std errors
+#Correlation with Newey-West to have into account the autocorrelation: 
+
+
+#Residuals calculation:
+resid1 <- as.numeric(reg1$residuals) 
+
 qqnorm(resid1, col="tomato", main="Model 1: Avg Size Army vs. Zymotic")
 qqline(resid1, lwd=2, lty=3)
 ```
-```{r}
+
+Baixa correlació
+
+```{r, include = FALSE}
+#Regression and residuals values calculations of average size army vs injuries:
 cor(data$avg_size_army, data$injuries)
 reg2 <- lm(avg_size_army ~ injuries, data=data)
 summary(reg2)
@@ -220,7 +324,11 @@ resid2 <- as.numeric(reg2$residuals)
 qqnorm(resid2, col="tomato", main="Model 2: Avg Size Army vs. Injuries")
 qqline(resid2, lwd=2, lty=3)
 ```
-```{r}
+
+Baixa correlació
+
+```{r, include = FALSE}
+#Regression and residuals values calculations of average size army vs other disease:
 cor(data$avg_size_army, data$other)
 reg3 <- lm(avg_size_army ~ other, data=data)
 summary(reg3)
@@ -230,7 +338,10 @@ resid3 <- as.numeric(reg3$residuals)
 qqnorm(resid3, col="tomato", main="Model 3: Avg Size Army vs. Other")
 qqline(resid3, lwd=2, lty=3)
 ```
-```{r}
+
+Baixa correlació
+
+```{r, include = FALSE}
 #Multivariant linear regresion between all deaths (segregated) and the average size of army:
 reg4 <- lm(avg_size_army ~ data$zymotic+data$injuries+data$other, data=data)
 summary(reg4)
@@ -241,7 +352,10 @@ resid4 <- as.numeric(reg4$residuals)
 qqnorm(resid4, col="tomato", main="Model 4: Avg Size Army vs. Zymotic, Injuries and Other")
 qqline(resid4, lwd=2, lty=3)
 ```
-```{r}
+
+Baixa correlació en totes
+
+```{r, include = FALSE}
 cor(data$avg_size_army, data$total_deaths) #Valor absolut entre 0 i 1? Com més properes a 1 en valor absolut més correlacionades estan.
 reg5 <- lm(avg_size_army ~ total_deaths, data=data)
 summary(reg5)
@@ -251,7 +365,10 @@ resid5 <- as.numeric(reg5$residuals)
 qqnorm(resid5, col="tomato", main="Model 5: Avg Size Army vs. Total Deaths")
 qqline(resid5, lwd=2, lty=3)
 ```
-```{r}
+
+Baixa correlació
+
+```{r, include = FALSE}
 cor(data$zymotic, data$time_period)
 reg6 <- lm(zymotic ~ time_period, data=data)
 summary(reg6)
@@ -261,7 +378,10 @@ resid6 <- as.numeric(reg6$residuals)
 qqnorm(resid6, col="tomato", main="Model 6: Zymotic vs. Time Period")
 qqline(resid6, lwd=2, lty=3)
 ```
-```{r}
+
+Alta correlació
+
+```{r, include = FALSE}
 cor(data$injuries, data$time_period)
 reg7 <- lm(injuries ~ time_period, data=data)
 summary(reg7)
@@ -271,7 +391,10 @@ resid7 <- as.numeric(reg7$residuals)
 qqnorm(resid7, col="tomato", main="Model 7: Injuries vs. Time Period")
 qqline(resid7, lwd=2, lty=3)
 ```
-```{r}
+
+Baixa correlació
+
+```{r, include = FALSE}
 cor(data$other, data$time_period)
 reg8 <- lm(other ~ time_period, data=data)
 summary(reg8)
@@ -281,7 +404,10 @@ resid8 <- as.numeric(reg8$residuals)
 qqnorm(resid8, col="tomato", main="Model 8: Other vs. Time Period")
 qqline(resid8, lwd=2, lty=3)
 ```
-```{r}
+
+Alta correlació
+
+```{r, include = FALSE}
 reg9 <- lm(total_deaths ~ time_period, data=data)
 summary(reg9)
 coeftest(reg9, NeweyWest(reg9))
@@ -290,10 +416,14 @@ resid9 <- as.numeric(reg9$residuals)
 qqnorm(resid9, col="tomato", main="Model 9: Total Deaths vs. Time Period")
 qqline(resid9, lwd=2, lty=3)
 ```
-```{r}
-#Si no fem plot de total_deaths a l'apartat 2 fer-lo aquí juntament amb l'estudi de l'estacionarietat (si no és estacionària no podem aplicar-li un model autoregressiu)
-adf.test(data$total_deaths)
-# Segons el test és estacionària però tbh mirant el gràfic a mi no m'ho sembla
+
+Alta correlació
+
+```{r, include = FALSE}
+#Si no fem plot de total_deaths a l'apartat 2 fer-lo aquí juntament amb l'estudi de l'estacionarietat (si no és estacionària no podem aplicar-li un model autoregressiu). decidir!!!!!!!
+
+adf.test(data$total_deaths) --> estacionària vs. estacional
+#Transformar variable (diferències)
 
 tra_death <- data.frame(y=data$total_deaths[2:L], lag1=data$total_deaths[1:(L-1)]) 
 cor(tra_death$y, tra_death$lag1)
@@ -318,9 +448,18 @@ qqline(resid11, lwd=2, lty=3)
 
 #Veiem que tant una regressió lineal calculada amb la funció lm() dóna el mateix model que quan apliquem un model AR(1) aplicant la funció arima()
 ```
+```{r}
+#Podem posar-lo abaix si vols a regressions.
+data_plot_3 <- data.frame(
+  Time=data$time_period,
+  Total=data$total_deaths)
+dygraph(data_plot_3, main="Total deaths (all causes aggregated)")
+#No sé si deixar aquest gràfic aquí o graficar les morts totals a l'apartat 4 mentre expliquem l'estacionarietat de la variable per aplicar un model autoregressiu
+```
 
-Seasonality: mirar si hi ha algun time period que té mñés significació que alguna altra!
-Timeseries o forecast llibreries!
+Comentar: Els títols d'alguns gràfics surten tallats
+
+Deixem aquesta part? Comentar!!
 
 ```{r}
 # Diagnosi dels models: --> Penso que potser hauriem d'escollir el model que funciona millor/té més correlació i fer-ho sobre aquest!
@@ -340,18 +479,11 @@ qqline(residual.values)
 Queden més amunt o més avall en un costat o en un altre? Com a quin costat és més asimètrica?
 Per revisar!
 
-```{r}
-reg3 <- lm(formula=data$avg_size_army~data$injuries, data=data) 
-summary(reg3)
-```
-
-
-Provem amb regressions logistiques?
-
-
 *****
 # Predictions
 *****
+
+Triar model!
 
 ```{r}
 #Accuracy de reg1 per fer prediccions (he provat de fer la del número de morts basant-me només en un lag d'aquesta mateixa variable per provar de fer-ne alguna)
@@ -359,10 +491,9 @@ train_data <- subset(data, time_period<=round(0.7*L)) #70% training data
 test_data <- subset(data, time_period>round(0.7*L)) #30% test/validation data
 training1 <- data.frame(y=train_data$total_deaths, lag1=train_data$total_deaths) 
 model1 <- lm(y ~ lag1, data=training1)
-y.hat1 <- predict(model1, data=test_data)
+y.hat1 <- predict(model1, data=test_data) 
 error1 <- abs(y.hat1 - test_data$total_deaths)
 rmse1 <- sqrt((sum(error1)**2)/nrow(test_data)) 
-#Fatal performance, tampoc sé si té gaire sentit predir el número de morts futures a partir de les del dia anterior, ens caldria algo amb més chicha
 ```
 ```{r}
 # Ho hem de fer amb un model que funcioni però... Quina seria la probabilitat de X si Y és això i Z és això altre?

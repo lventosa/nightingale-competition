@@ -1,37 +1,25 @@
 
-Note: La llengua del treball serà anglès.
+PUNTS IMPORTANTS ENTREGA:
 
+- La llengua del treball serà anglès.
 
-*** Update situació a 26/06 i agenda meeting 27/06: ***
-- Acabar de definir índex (anàlisi del dataset, regressions, prediccions i plots (provem amb Shiny).
 - Quins docs s'han d'entregar per la competició i en quins formats?
 	El código R utilizado para analizar los datos.
 	Una grabación en vídeo presentando los resultados (máx 5 minutos).
 	Material suplementario (opcional) --> Report HTML, gràfics amb Shiny.
+
 - Data limit d'entrega i lloc/email d'entrega?
-	La fecha límite de envío de los documentos requeridos para participar al premio será el 12 de 		julio de 2020 (11:59PM, CEST).
-	Enviar un correo electrónico a bcn@rladies.org con el asunto “FLORENCE_COMPETITION_2020” 		indicando los datos del equipo: participantes (nombre del equipo, nombre participantes, y correo 	electrónico de contacto).
-	Também Dropbox o Wetransfer. Al mail s'hauram d'adjuntar els docs mencionats abans.
-- Definim timings per anar acabant les diferents parts de l'índex?
-	Ara queden aprox dues setmanes :) El video poster el podem fer parlant i gravant la pantalla en 	una trucada de Meets?
+	La fecha límite de envío de los documentos requeridos para participar al premio será el 12 	de 		julio de 2020 (11:59PM, CEST).
+	Enviar un correo electrónico a bcn@rladies.org con el asunto “FLORENCE_COMPETITION_2020” 	indicando los datos del equipo: participantes (nombre del equipo, nombre participantes, y 	correo 	electrónico de contacto).
+	Também Dropbox o Wetransfer. Al mail s'haurem d'adjuntar els docs mencionats abans.
+
+- Timings equip:
 	5 Juliol: tots punts ok, comentem conclusions.
 	6-8 Juliol: Shiny + extres.
 	8-9 Juliol: revivió total	
 	10-12 Juliol: gravar video.
-- Fem neteja del codi en .Rmd que tenim fins ara? Ok
-- Posaries comentaris sota el codi per anar explicant els findings? Ok
-- Penso que seria guai, potser mês cap a les conclusions, lligar els findings amb el que realment va passar (necessito llegir-me una mica la història i el temps en el que passa).
-	Guerra de Crimea. Exèrcit anglès. Buscar una mica més.
-- Afegir seasonality. Punt nou al l'índex? Ok
-- "He pensat que el document a presentar sigui en format RNotebook amb RMarkdown". Ok
-- Podriem analitzar les regressions que donen millor resultat i sobre aquestes fer predict, punt 4. Així també aniriem ajustant més les conclusions. Ok
 
-Resum: xD
-1. Per mi esta ok, només comentaria que anem fent i anem trobant millor.
-2. Intentem plots amb Shiny. Quines variables seria guai analitzar i donariem bons resultats gràficament? Comentar-los.
-3. Entendre si els models ens esta dient alguna cosa. En sobra o en falta algún? Comentar.
-4. Agafaria un model que donés bons resultats per fer aquesta part. Comentar.
-5. Relacionar les conclusions amb el que realment va pasar històricament.
+- Triar nom de l'equip.
 
 
 *** Laura says ***
@@ -71,4 +59,93 @@ Pendent de fer pel proper cop (si creus que falta res més feel free d'afegir-ho
 
 Si se t'acut alguna altra relació que pot ser interessant investigar afegeix-la a la llista i en fem una regressió.
 
---> E: Guai! Ara em poso a repassar el que tenim fins ara i a fer una Miquela més i afegeixo comentaris sota si calen :)
+--> E: Guai! Ara em poso a repassar el que tenim fins ara i a fer una miqueta més i afegeixo comentaris sota si calen :)
+
+
+
+NOTES ESTHER:
+
+
+0. Intro:
+- Afegim alguna cosa més? Repassada final i esborrem el que no necessitem.
+
+
+1. Variables Analysis:
+- Afegim alguna cosa més? Repassada final i esborrem el que no necessitem.
+
+--> L: Jo fins i tot canviaria la manera com està ordenat aquest apartat:
+	1. Data exploration
+		1.1 Basic information
+		1.2 Data treatment/feature engineering
+		1.3 Missing value and outliers
+		1.4 Seasonality
+
+
+2. Plots:
+- Afegim alguna cosa més? Repassada final i esborrem el que no necessitem.
+- Falten plots amb Shiny. Provem. Comentar abans quines variables seria guai analitzar i donarien bons resultats gràficament.
+- Comentar els nous gràfics i com millorar-los si els volem deixar.
+
+
+3. Regressions:
+- Comentar amb Laura si les conclusions/interpretacions del models son correctes.
+- Comentar seasonality apartat. 
+- Entendre si els models ens esta dient alguna cosa. En sobra o en falta algún? Comentar.
+- Revisar si volem la última part o no fa falta. Volem alguna cosa més?
+
+Tenim:
+1. Lm avg size army vs zymotic
+2. Lm avg size army vs injuries
+3. Lm avg size army vs other
+4. Lm avg size army vs zymotic, injuries and other separated
+5. Lm avg size army vs all deaths aggregated
+6. Lm time period vs zymotic
+7. Lm time period vs injuries
+8. Lm time period vs other
+9. Lm time period vs all deaths aggregated
+10. Lm total deaths vs total deaths lagged
+11. Lm total deaths vs total deaths lagged AR 1 ?
+
+--> A tenir en compte per quan fem les interpretacions dels models:
+- Dades dels soldats nous que entraven? Com afectava que morissin i entressin soldats nous?
+- Aquestes dues variables no estan correlacionades.
+- Comentem que no tenen relació. Possibles raons de perquè no tenen correlació. Info que podria faltar i no tenim?
+
+Test per mirar si els resides son normals o no.
+
+
+4. Predictions:
+- Falta comentar el que hem trobat. Mini conclusions després de veure els resultats.
+- Falta acabar de mirar com podem afegir mês coses interessants.
+- Agafaria un model que donés bons resultats per fer aquesta part. Comentar.
+
+La correlcio es positiva porque és superior a 0 (hoef de Corr entre -1 i 1.
+-1 a 0 core neg I 0 a 1 core positiva. Com mes proper a 0 menys intensa la corrupción i com més aprop de 1 o -1 menys intensa es la correlación. Si totes les x pujen, el 0.55 de la y pujaria. Es moura en la mateixa direcció.
+
+Mirar la correlación abano de Fer la regreso
+
+Intercept es beta 0 I coef es beta 1.
+
+Core es una cosa i significado es una altra cosa.
+
+Mirar newywest!! Vol no ignorar que els valors d'ahir impactin en els valor d'avi.
+
+Intercept I estimadors son posits amb graus differente I llavors les enfermerais zymotiques impacten si average size de l'army cries. Pero pq? No te sent I leavers vol dir que ens flat info.
+
+0.05 de significado. Un, dos o tres asterisco.
+
+Establim que el grau de sgnificacio es 0.05. Tres, dos o un asterisco.
+
+
+Per veer ccim haguessin evolucionat les morts si la guerra Hugues continuait. El model de l'estacionalitat.
+
+
+5. Conclusions:
+- Relacionar les conclusions amb el que realment va pasar històricament.
+- Guerra de Crimea. Exèrcit anglès. Relacionar amb info a la intro.
+
+
+(6. Comentaris generals):
+- Faltarà esborrar algun troç de condi comentat en varia apartats.
+- Perquè quan fem HTML a vegades no es veu el codi? Crec que s'entén millor amb tot el codi visible. Omg cada vegada que faig HTML veig menys coses hahaha
+	--> L: Això vaig canviar-ho jo amb les opcions generals posant echo=FALSE per no omplir massa el report. Podem incloure-ho si vols però potser queda més net així. Al final l'arxiu HTML és un extra, l'arxiu obligatori i que més es miraran és l'arxiu en R. Per tant, per no repetir-ho vaig    	desactivar l'opció que es veiés en l'arxiu html però com vegis.
