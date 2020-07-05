@@ -38,7 +38,7 @@ https://theconversation.com/the-healing-power-of-data-florence-nightingales-true
 https://www.history.com/topics/womens-history/florence-nightingale-1
 
 *****
-# Variables analysis
+# Data exploration
 *****
 
 We check the different types of data on our dataset. The aim is to understand the nature of our variables (i.e. the proportion of numerical and categorical variables) to be able to develope a better model afterwards. Checks on missing values and outliers will be performed in addition.
@@ -60,12 +60,13 @@ library(sandwich)
 library(forecast)
 library(ResourceSelection)
 library(pROC)
+library(reshape2)
 
 #Importing dataset:
 data <- read_excel("../nightingale-competition/datos_florence.xlsx", skip=1)
 ```
 
-## General exploration 
+## Basic information 
 
 The following table shows the first rows of our dataset, including the names of the variables we have worked with.
 
@@ -97,9 +98,8 @@ In Nightingale's dataset, the following variables come as in:
 
 In order to make the data more readeable and understandable, we will make some changes in the variables as well as some variable additions.
 
-Per esborrar i tria títol o fem pluja d'idees:
 
-## Feature engineering (?) - Data treatment (?)
+## Feature engineering 
 
 ```{r}
 #Making everything more readable and column names more manageable:
@@ -124,24 +124,10 @@ time_period <- seq(0,(L-1)) #Podríem passar-ho de 1 a L
 data$time_period <- time_period
 data <- as.data.frame(data)
 
-#Visualizing in a colorful data table the changes performed:
-table_time <- data.frame(
-  Month = data$month,
-  TimePeriod = data$time_period)
-
-formattable(table_time, list(area(col = Month:TimePeriod) ~ color_tile("lightpink", "lightpink4")))
-
-
-#Per esborrar o pensar què fem amb aquest gràfic. Com volem deixar els colors?:
-
-#He intentat fer una taula una mica més colorida. No he trobar com posar-li títol. Per cert, per fer visualitzacions amb R aquest package que he trobat em sembla super cool, sobretot si les variables són numèriques! hehe Podem jugar amb els colors també.
-
 #time_vars <- select(data, month, time_period)
 #time_vars %>% 
   #gt() %>%
     #tab_header(title = md("**Time periods**"), subtitle = md("Equivalence between both variables"))
-
-#He intentat fer-la més maca però el meu coneixement de taules és limitat. Trobo que queda potser una mica estreta però altres dissenys tampoc m'han acabat de fer el pes.
 ```
 ```{r}
 #Adding new variables to the dataset:
@@ -171,29 +157,19 @@ table_deaths <- data.frame(
   TotalDeaths = ordered_deaths$total_deaths,
   TimePeriod = ordered_deaths$time_period)
 
-#Per esborrar o pensar què fem amb aquest gràfic. Com volem deixar els colors?:
-
-#A la segona fila per crear el dataframe he canviat accounting(c(3168, 2523, 1970, 1409, 1237, 1042, 939, 859, 763, 672, 594, 582, 549, 485, 382, 243, 199, 137, 92, 50, 43, 21, 17, 6), format = "d") pel que ja hi ha, així queda més net:)
-
 formattable(table_deaths, list(
   Month = color_tile("lightpink", "lightpink4"),
   TotalDeaths = color_bar("grey")))
-
-
-#Per esborrar o pensar què fem amb aquest gràfic. Com volem deixar els colors?:
-
-#He tornat a provar amb aquesta taula hehe, però again sense títol. --> Jo tampoc he pogut jajajaj
-
-#ordered_deaths %>% 
-  #gt() %>%
-    #tab_header(title = md("**Total deaths by month**"), subtitle = md("Data sorted in descending order"))
-#Again, no sé fer la taula més mona jajajaja
-
-#La segona taula m'agrada més d'aquesta manera que l'has feta tu, amb colorins, he modificat els colors per veure com variava però qualsevol joc de colors m'està bé. Per mi la podem deixar així. La primera crec qu elo dels colors queda massa forçat perquè són dues columnes. Podem deixar-la com estava abans o bé mirar de fer-ho d'una altra manera.
 ```
 
 The above table shows our dataset but sorted by the number of total deaths in descending order. We can observe that
 the time period with the highest number of deaths is January 1855, the 10th time period in chronological order. Not surprisingly, April 1854, the first period in our dataset, is the one with the fewest deaths.
+
+## Seasonality analysis
+
+```{r}
+
+```
 
 ## Missing values and outliers
 
@@ -206,7 +182,7 @@ As we can see, there are no missing values in our dataset.
 
 ```{r}
 #Checking outliers:
-par(mfrow=c(1,3)) #Amb això es veuen tots tres boxplots alhora ueeee. Yeeeeeeeeeey!!! :D (L)
+par(mfrow=c(1,3)) 
 boxplot(data$injuries, col="lightgoldenrod", main="Deaths by injuries")
 boxplot(data$zymotic, col="mistyrose", main="Deaths by zymotic disease")
 boxplot(data$other, col="powderblue", main="Deaths by other causes")
@@ -219,7 +195,7 @@ Let's recall what we can appreciate in the plots above:
 To sum up, it seems for now that most of the deaths included in our dataset were caused by zymotic diseases.
 
 *****
-# Data vizualization
+# Data visualization
 *****
 
 We are going to explore the dataset in a visual way to see the impacts some variables had on some others:
@@ -280,6 +256,8 @@ data2$group=row.names(data2)
 data3=melt(data2,id="group")
 data3$value=as.numeric(data3$value)
 head(data3)
+
+#Treballar als gràfics de sota amb les variables en nivell absolut (no rates)
 ```
 ```{r}
 ggplot(data=data3,aes(x=variable,y=value,fill=group))+
@@ -316,17 +294,18 @@ ggplot(data=data3,aes(x=variable,y=group,fill=value))+
 
 The aim on this section is to show how the variables correlate to each other. Morever, we explore through regressions whether some variables have a significant impact on other variables.
 
-```{r}
+```{r, include = FALSE}
 #Regression and residuals values calculations of average size army vs zymotic disease:
 cor(data$avg_size_army, data$zymotic)  
 reg1 <- lm(avg_size_army ~ zymotic, data=data)
-summary(reg1)
-
-#Correlation with Newey-West to have into account the autocorrelation:
 coeftest(reg1, NeweyWest(reg1))
 
+#HAC heteroskedasticity autocorrelation robust std errors
+#Correlation with Newey-West to have into account the autocorrelation: 
+
+
 #Residuals calculation:
-resid1 <- as.numeric(reg1$residuals) #Veig que tu calcules els residus d'una altra manera (comparant-ho amb el bloc de codi on vas fer el QQplot dels residus d'un model). Decidim de quina manera ho deixem!!!!!!!!!!!
+resid1 <- as.numeric(reg1$residuals) 
 
 qqnorm(resid1, col="tomato", main="Model 1: Avg Size Army vs. Zymotic")
 qqline(resid1, lwd=2, lty=3)
@@ -334,7 +313,7 @@ qqline(resid1, lwd=2, lty=3)
 
 Baixa correlació
 
-```{r}
+```{r, include = FALSE}
 #Regression and residuals values calculations of average size army vs injuries:
 cor(data$avg_size_army, data$injuries)
 reg2 <- lm(avg_size_army ~ injuries, data=data)
@@ -348,7 +327,7 @@ qqline(resid2, lwd=2, lty=3)
 
 Baixa correlació
 
-```{r}
+```{r, include = FALSE}
 #Regression and residuals values calculations of average size army vs other disease:
 cor(data$avg_size_army, data$other)
 reg3 <- lm(avg_size_army ~ other, data=data)
@@ -362,7 +341,7 @@ qqline(resid3, lwd=2, lty=3)
 
 Baixa correlació
 
-```{r}
+```{r, include = FALSE}
 #Multivariant linear regresion between all deaths (segregated) and the average size of army:
 reg4 <- lm(avg_size_army ~ data$zymotic+data$injuries+data$other, data=data)
 summary(reg4)
@@ -376,7 +355,7 @@ qqline(resid4, lwd=2, lty=3)
 
 Baixa correlació en totes
 
-```{r}
+```{r, include = FALSE}
 cor(data$avg_size_army, data$total_deaths) #Valor absolut entre 0 i 1? Com més properes a 1 en valor absolut més correlacionades estan.
 reg5 <- lm(avg_size_army ~ total_deaths, data=data)
 summary(reg5)
@@ -389,7 +368,7 @@ qqline(resid5, lwd=2, lty=3)
 
 Baixa correlació
 
-```{r}
+```{r, include = FALSE}
 cor(data$zymotic, data$time_period)
 reg6 <- lm(zymotic ~ time_period, data=data)
 summary(reg6)
@@ -402,7 +381,7 @@ qqline(resid6, lwd=2, lty=3)
 
 Alta correlació
 
-```{r}
+```{r, include = FALSE}
 cor(data$injuries, data$time_period)
 reg7 <- lm(injuries ~ time_period, data=data)
 summary(reg7)
@@ -415,7 +394,7 @@ qqline(resid7, lwd=2, lty=3)
 
 Baixa correlació
 
-```{r}
+```{r, include = FALSE}
 cor(data$other, data$time_period)
 reg8 <- lm(other ~ time_period, data=data)
 summary(reg8)
@@ -428,7 +407,7 @@ qqline(resid8, lwd=2, lty=3)
 
 Alta correlació
 
-```{r}
+```{r, include = FALSE}
 reg9 <- lm(total_deaths ~ time_period, data=data)
 summary(reg9)
 coeftest(reg9, NeweyWest(reg9))
@@ -440,11 +419,11 @@ qqline(resid9, lwd=2, lty=3)
 
 Alta correlació
 
-```{r}
+```{r, include = FALSE}
 #Si no fem plot de total_deaths a l'apartat 2 fer-lo aquí juntament amb l'estudi de l'estacionarietat (si no és estacionària no podem aplicar-li un model autoregressiu). decidir!!!!!!!
 
-adf.test(data$total_deaths)
-# Segons el test és estacionària però tbh mirant el gràfic a mi no m'ho sembla
+adf.test(data$total_deaths) --> estacionària vs. estacional
+#Transformar variable (diferències)
 
 tra_death <- data.frame(y=data$total_deaths[2:L], lag1=data$total_deaths[1:(L-1)]) 
 cor(tra_death$y, tra_death$lag1)
@@ -480,11 +459,6 @@ dygraph(data_plot_3, main="Total deaths (all causes aggregated)")
 
 Comentar: Els títols d'alguns gràfics surten tallats
 
-Seasonality: mirar si hi ha algun time period que té mñés significació que alguna altra!
-Timeseries o forecast llibreries!
-
-Comentar els resultats juntes.
-
 Deixem aquesta part? Comentar!!
 
 ```{r}
@@ -517,10 +491,9 @@ train_data <- subset(data, time_period<=round(0.7*L)) #70% training data
 test_data <- subset(data, time_period>round(0.7*L)) #30% test/validation data
 training1 <- data.frame(y=train_data$total_deaths, lag1=train_data$total_deaths) 
 model1 <- lm(y ~ lag1, data=training1)
-y.hat1 <- predict(model1, data=test_data)
+y.hat1 <- predict(model1, data=test_data) 
 error1 <- abs(y.hat1 - test_data$total_deaths)
 rmse1 <- sqrt((sum(error1)**2)/nrow(test_data)) 
-#Fatal performance, tampoc sé si té gaire sentit predir el número de morts futures a partir de les del dia anterior, ens caldria algo amb més chicha
 ```
 ```{r}
 # Ho hem de fer amb un model que funcioni però... Quina seria la probabilitat de X si Y és això i Z és això altre?
