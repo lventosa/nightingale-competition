@@ -53,7 +53,8 @@ library(forecast)
 library(ResourceSelection)
 library(pROC)
 library(reshape2)
-
+```
+```{r}
 #Importing dataset:
 data <- read_excel("../nightingale-competition/datos_florence.xlsx", skip=1)
 ```
@@ -70,6 +71,9 @@ head(data)
 #Dimensions of the dataset:
 dim(data)
 ```
+
+We can observe that the dimensions of our original dataset are 24x8. That is, 24 rows and 8 columns.
+
 ```{r}
 #Variables:
 sapply(data, class)
@@ -78,14 +82,22 @@ sapply(data, class)
 summary(data)
 ```
 
-In Nightingale's dataset, the following variables come as in:
+Nightingale's original dataset consists of the following variables:
+
 - Month (1): Character variable stating the month and year (period).
+
 - Average size of army (2): Numeric variable that informs the reader about the average size of the army in such period of time.
+
 - Zymotic diseases (3): Numeric variable which states the number of soldiers who died in such period of time for zymotic disease causes in absolute values.
+
 - Wounds & injuries (4): Numeric variable which states the number of soldiers who died in such period of time for wounds and injuries causes in absolute values.
+
 - All other causes (5): Numeric variable which states the number of soldiers who died in such period of time for any other causes in absolute values.
+
 - Zymotic diseases (6): Numeric variable which states the number of soldiers who died in such period of time for zymotic disease causes in rate values.
+
 - Wounds & injuries (7): Numeric variable which states the number of soldiers who died in such period of time for wounds and injuries causes in rate values.
+
 - All other causes (8): Numeric variable which states the number of soldiers who died in such period of time for any other causes in rate values.
 
 In order to make the data more readeable and understandable, we will make some changes in the variables as well as some variable additions.
@@ -116,10 +128,12 @@ time_period <- seq(0,(L-1)) #Podríem passar-ho de 1 a L
 data$time_period <- time_period
 data <- as.data.frame(data)
 
-#time_vars <- select(data, month, time_period)
-#time_vars %>% 
-  #gt() %>%
-    #tab_header(title = md("**Time periods**"), subtitle = md("Equivalence between both variables"))
+time_vars <- select(data, month, time_period)
+time_vars %>% 
+  gt() %>%
+    tab_header(title = md("**Time periods**"), subtitle = md("Equivalence between both variables"))
+
+#Després de la taula no queda espai (salt de línia) i el paràgraf següent està massa enganxat a la taula
 ```
 ```{r}
 #Adding new variables to the dataset:
@@ -133,10 +147,9 @@ cum_deaths <- vector()
 cum_deaths <- cumsum(deaths)
 data$cum_deaths <- cum_deaths #Cumulative deaths over time
 ```
+In order to have a better understanding of the data presented, we created a new variable which contains the sum of the different death causes (zymotic, injuries and other) combined. Each entry of this variable will be seggregated by period/month of the year. The name of this new variable is "total_deaths".
 
-In order to have a better understanding of the data presented, we created a new variable which contains the sum of the different deaths causes (zymotic, injuries and other) combined. Each entry of this variable will be seggregated by period/month of the year. The name of this new variable is "deaths".
-
-In addition, we created another new variable that aims to explain the cumulative deaths over time. Thus, using the new variable of deaths created just before, we create a new one in order to explain how this aggregated deaths perform over time. The name of this variable is "cum_deaths". 
+In addition, we created another new variable that aims to explain the cumulative deaths over time. Thus, using the new variable of deaths generated just before, we create a new one in order to explain how this aggregated deaths perform over time. The name of this variable is "cum_deaths". 
 
 ```{r}
 deaths_evol <- select(data, month, total_deaths, time_period)
@@ -181,9 +194,13 @@ boxplot(data$other, col="powderblue", main="Deaths by other causes")
 ```
 
 Let's recall what we can appreciate in the plots above:
+
 - The majority of deaths by injury are compressed by 0 and 130, approximately. Additionally, there are some exceptional periods where deaths by injury amounted up to 300.
+
 - The majority of deaths by zymotic disease are compressed between 50 and 800 approximately. However, we can see a long tail of cases up to 1700, with some additional outliers of 2100 and 2800.
+
 - The majority of deaths by other alternative causes are compressed between 25 and 75 approximately. We can also appreciate a long tail up to 175 and some outliers of 300 and 350.
+
 To sum up, it seems for now that most of the deaths included in our dataset were caused by zymotic diseases.
 
 *****
