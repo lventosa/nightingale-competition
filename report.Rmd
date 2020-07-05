@@ -29,7 +29,8 @@ One of her most important discoveries was when she realized that "deaths due to 
 Moreover, the data that is presented in the dataset we are going to analyze it refers to Florence Nightingale's count of injuries in the Crimean War. This data was going to be later used for her rose plots.
 
 
-On hauriem de citar? Aquí o creem bibliografia abaix?
+Per esborrar?
+(On hauriem de citar? Aquí o creem bibliografia abaix?
 
 https://theconversation.com/the-healing-power-of-data-florence-nightingales-true-legacy-134649
 
@@ -38,7 +39,7 @@ https://www.history.com/topics/womens-history/florence-nightingale-1
 - Qui era Florence Nightingale
 - De què és la data
 
-(No he posat exactament el tipus de data que conté perquè he pensat que ja ho descriurem abaix)
+(No he posat exactament el tipus de data que conté perquè he pensat que ja ho descriurem abaix))
 
 *****
 # Variables analysis
@@ -86,9 +87,22 @@ sapply(data, class)
 ```{r}
 summary(data)
 ```
-(Podem afegir aquí una explicació de cada variable, dir què representa, i explicar que després n'afegim més)
 
-## Data treatment (?)
+In Nighingale's dataset, the following variables come as is:
+- Month: Character variable stating the month and year (period).
+- Average size of army: Numeric variable that informs the reader about the average size of the army in such period of time.
+- Zymotic diseases (3): Numeric variable which states the number of soldiers who died in such period of time for zymotic disease causes in absolute values.
+- Wounds & injuries (4): Numeric variable which states the number of soldiers who died in such period of time for wounds and injuries causes in absolute values.
+- All other causes (5): Numeric variable which states the number of soldiers who died in such period of time for any other causes in absolute values.
+- Zymotic diseases (6): Numeric variable which states the number of soldiers who died in such period of time for zymotic disease causes in rate values.
+- Wounds & injuries (7): Numeric variable which states the number of soldiers who died in such period of time for wounds and injuries causes in rate values.
+- All other causes (8): Numeric variable which states the number of soldiers who died in such period of time for any other causes in rate values.
+
+In order to make the data more readeable and understandable, we will make some changes in the variables as well as some variable additions.
+
+Per esborrar i tria títol o fem pluja d'idees:
+
+## Feature engineering (?) - Data treatment (?)
 
 ```{r}
 #Making everything more readable and column names more manageable:
@@ -101,7 +115,7 @@ colnames(data)[6] <- "zymotic_rate"
 colnames(data)[7] <- "injuries_rate"
 colnames(data)[8] <- "other_rate"
 
-data[17,1] <- "Aug 1855" #Faig això perquè en el dataset original hi havia escrit Aug_1855
+data[17,1] <- "Aug 1855" #We modify this entry as in the original dataset it appeared as Aug_1855.
 ```
 
 As the periods in our dataset are prior to January 1900, R cannot handle them as proper dates. For this reason, we are going to treat time as a numerical variable taking integer value from 0 to 23 in chronological order. This table of equivalences may be useful for the interpretation of the results in this report.
@@ -119,6 +133,9 @@ table_time <- data.frame(
   TimePeriod = data$time_period)
 
 formattable(table_time, list(area(col = Month:TimePeriod) ~ color_tile("lightpink", "lightpink4")))
+
+
+#Per esborrar o pensar què fem amb aquest gràfic. Com volem deixar els colors?:
 
 #He intentat fer una taula una mica més colorida. No he trobar com posar-li títol. Per cert, per fer visualitzacions amb R aquest package que he trobat em sembla super cool, sobretot si les variables són numèriques! hehe Podem jugar amb els colors també.
 
@@ -141,7 +158,10 @@ cum_deaths <- vector()
 cum_deaths <- cumsum(deaths)
 data$cum_deaths <- cum_deaths #Cumulative deaths over time
 ```
-EXPLICACIO DE LES NOVES VARIABLES
+
+In order to have a better understanding of the data presented, we created a new variable which contains the sum of the different deaths causes (zymotic, injuries and other) combined. Each entry of this variable will be seggregated by period/month of the year. The name of this new variable is "deaths".
+
+In addition, we created another new variable that aims to explain the cumulative deaths over time. Thus, using the new variable of deaths created just before, we create a new one in order to explain how this aggregated deaths perform over time. The name of this variable is "cum_deaths". 
 
 ```{r}
 deaths_evol <- select(data, month, total_deaths, time_period)
@@ -154,11 +174,16 @@ table_deaths <- data.frame(
   TotalDeaths = ordered_deaths$total_deaths,
   TimePeriod = ordered_deaths$time_period)
 
+#Per esborrar o pensar què fem amb aquest gràfic. Com volem deixar els colors?:
+
 #A la segona fila per crear el dataframe he canviat accounting(c(3168, 2523, 1970, 1409, 1237, 1042, 939, 859, 763, 672, 594, 582, 549, 485, 382, 243, 199, 137, 92, 50, 43, 21, 17, 6), format = "d") pel que ja hi ha, així queda més net:)
 
 formattable(table_deaths, list(
   Month = color_tile("lightpink", "lightpink4"),
   TotalDeaths = color_bar("grey")))
+
+
+#Per esborrar o pensar què fem amb aquest gràfic. Com volem deixar els colors?:
 
 #He tornat a provar amb aquesta taula hehe, però again sense títol. --> Jo tampoc he pogut jajajaj
 
@@ -184,7 +209,7 @@ As we can see, there are no missing values in our dataset.
 
 ```{r}
 #Checking outliers:
-par(mfrow=c(1,3)) #Amb això es veuen tots tres boxplots alhora ueeee  
+par(mfrow=c(1,3)) #Amb això es veuen tots tres boxplots alhora ueeee. Yeeeeeeeeeey!!! :D (L)
 boxplot(data$injuries, col="lightgoldenrod", main="Deaths by injuries")
 boxplot(data$zymotic, col="mistyrose", main="Deaths by zymotic disease")
 boxplot(data$other, col="powderblue", main="Deaths by other causes")
@@ -195,7 +220,6 @@ Let's recall what we can appreciate in the plots above:
 - The majority of deaths by zymotic disease are compressed between 50 and 800 approximately. However, we can see a long tail of cases up to 1700, with some additional outliers of 2100 and 2800.
 - The majority of deaths by other alternative causes are compressed between 25 and 75 approximately. We can also appreciate a long tail up to 175 and some outliers of 300 and 350.
 To sum up, it seems for now that most of the deaths included in our dataset were caused by zymotic diseases.
-
 
 *****
 # Data vizualization
