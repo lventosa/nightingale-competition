@@ -22,8 +22,23 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 # Introduction
 *****
 
+Florence Nightingale (1820-1910), known as “The Lady With the Lamp,” was a British nurse, social reformer and statistician best known as the founder of modern nursing. Her experiences as a nurse during the Crimean War were foundational in her views about sanitation. She established St. Thomas’ Hospital and the Nightingale Training School for Nurses in 1860. Her efforts to reform healthcare greatly influenced the quality of care in the 19 and 20 centuries.
+
+One of her most important discoveries was when she realized that "deaths due to disease were more than seven times the number of deaths due to combat", because of unsanitary hospital conditions. However, as knowing numbers alone have limited persuasive powers, Nightingale used her skills in statistical communication to convince the British parliament of the need to act. She avoided the dry tables used by most statisticians of the time, and instead devised a novel graph to illustrate the impact of hospital and nursing practice reform on army mortality rates.
+
+Moreover, the data that is presented in the dataset we are going to analyze it refers to Florence Nightingale's count of injuries in the Crimean War. This data was going to be later used for her rose plots.
+
+
+On hauriem de citar? Aquí o creem bibliografia abaix?
+
+https://theconversation.com/the-healing-power-of-data-florence-nightingales-true-legacy-134649
+
+https://www.history.com/topics/womens-history/florence-nightingale-1
+
 - Qui era Florence Nightingale
 - De què és la data
+
+(No he posat exactament el tipus de data que conté perquè he pensat que ja ho descriurem abaix)
 
 *****
 # Variables analysis
