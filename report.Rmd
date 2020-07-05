@@ -231,24 +231,24 @@ data_plot_2 <- data.frame(
 dygraph(data_plot_2, main="Death causes (rates)")
 ```
 
-The results achieved are very similar than in the graph above.
+As expected, the results achieved are very similar than in the graph above.
 
 ```{r}
 #How did the size of the army evolve in time?
-data_plot_4 <- data.frame(
+data_plot_3 <- data.frame(
   Time=data$time_period,
   Army=data$avg_size_army)
-dygraph(data_plot_4, main="Average size of the army")
+dygraph(data_plot_3, main="Average size of the army")
 ```
 
-Despite the high amount in deaths that we could saw in the graphs before, especially in period 9, the size of the army seems not to be that much affected. This can be given by some hidden information that we might not have, such as for example the incorporation of new soldier along the war.
+Despite the high amount of deaths that we observed in the graphs above, especially in period 9, the size of the army seems not to be that much affected. This can be caused by some hidden information not captured by the variables given in the dataset, such as for example the incorporation of new soldiers along the war to substitute their dead counterparts.
 
 ```{r}
 #How did the accumulated number of deaths evolve in time?
-data_plot_5 <- data.frame(
+data_plot_4 <- data.frame(
   Time=data$time_period,
   Accumulated_deaths=cum_deaths) 
-dygraph(data_plot_5, main="Accumulated number of deaths")
+dygraph(data_plot_4, main="Accumulated number of deaths")
 ```
 
 The number of deaths just keeps increasing as long as the war takes place. Especially from periods 9 to 15 we can appreciate an accelerated increase in the accumulated deaths of the army. However, in the last period, we can see a stabilization of sich number, meaning that the war is arriving at its end.
@@ -428,11 +428,35 @@ qqline(resid9, lwd=2, lty=3)
 
 Alta correlació
 
-```{r, include = FALSE}
-#Si no fem plot de total_deaths a l'apartat 2 fer-lo aquí juntament amb l'estudi de l'estacionarietat (si no és estacionària no podem aplicar-li un model autoregressiu). decidir!!!!!!!
 
-adf.test(data$total_deaths) #estacionària vs. estacional
-#Transformar variable (diferències)
+```{r}
+#For the following model we are interested in total deaths in terms of previous values of the same variable. That is, we want to lag the variable and regress total death on its lags to look for significance. The first step, though, is assess for stationarity of the series.
+
+data_plot_5 <- data.frame(
+  Time=data$time_period,
+  Total=data$total_deaths)
+dygraph(data_plot_5, main="Total deaths (all causes aggregated)")
+```
+```{r, include = FALSE}
+#The series depicted does not seem very stationary. Nonetheless, we counduct a Dickey-Fuller test.
+adf.test(data$total_deaths)
+#As we cannot reject the null hypotheses of non-stationarity, we will differenciate the data in order to obtain stationarity and be able to run an autoregressive model
+
+total_deaths_diff <- diff(data$total_deaths)
+adf.test(total_deaths_diff)
+#By looking at the p-value returned by the test, we can state that the differenced series is not stationary at a 0.05 significance. We differenciate again
+
+total_deaths_diff2 <- diff(total_deaths_diff)
+adf.test(total_deaths_diff2)
+#Now that we have finally obtained a stationary series, we can perform an autoregressive model.
+
+acf(total_deaths_diff, ylim=c(-0.2,1), lwd=5, xlim=c(0,15), col="darkorange2", main="Autocorrelation function total deaths") 
+pacf(total_deaths_diff, ylim=c(-0.2,1), lwd=5, xlim=c(0,15), col="darkorange2", main="Parcial autocorrelation function total deaths") 
+
+acf(total_deaths_diff2, ylim=c(-0.2,1), lwd=5, xlim=c(0,15), col="darkorange2", main="Autocorrelation function total deaths") 
+pacf(total_deaths_diff2, ylim=c(-0.2,1), lwd=5, xlim=c(0,15), col="darkorange2", main="Parcial autocorrelation function total deaths") 
+
+#Drama: amb la data no estacionària no es pot aplicar el model autoregressiu però un cop la diferencio i es converteicx en estacionària (total_deaths_diff) o quasi-estacionària (total_death_diff2) no hi ha cap lag (potencials regressors aquí) que semblin ser significatius. Per tant, a la regressió tampoc ho seran --> No afegim aquests dos models? Jo deixaria el raonament aquest explicant why not
 
 tra_death <- data.frame(y=data$total_deaths[2:L], lag1=data$total_deaths[1:(L-1)]) 
 cor(tra_death$y, tra_death$lag1)
@@ -445,9 +469,6 @@ qqnorm(resid10, col="tomato", main="Model 10: Total Deaths vs. Total Deaths Lagg
 qqline(resid10, lwd=2, lty=3)
 
 #Una altra manera de crear models autoregressius:
-acf(data$total_deaths, ylim=c(-0.2,1), lwd=5, xlim=c(0,25), col="darkorange2", main="Autocorrelation function total deaths") #Exponential decay
-pacf(data$total_deaths, ylim=c(-0.2,1), lwd=5, xlim=c(0,25), col="darkorange2", main="Parcial autocorrelation function total deaths") #Només hi ha un lag que sigui significatiu 
-#Pel que ens mostren les funcions d'autocorrelació, el més adequat és un model AR(1)
 reg11 <- arima(data$total_deaths, c(1,0,0))
 coeftest(reg11)
 
@@ -457,19 +478,8 @@ qqline(resid11, lwd=2, lty=3)
 
 #Veiem que tant una regressió lineal calculada amb la funció lm() dóna el mateix model que quan apliquem un model AR(1) aplicant la funció arima()
 ```
-```{r}
-#Podem posar-lo abaix si vols a regressions.
-data_plot_3 <- data.frame(
-  Time=data$time_period,
-  Total=data$total_deaths)
-dygraph(data_plot_3, main="Total deaths (all causes aggregated)")
-#No sé si deixar aquest gràfic aquí o graficar les morts totals a l'apartat 4 mentre expliquem l'estacionarietat de la variable per aplicar un model autoregressiu
-```
 
-Comentar: Els títols d'alguns gràfics surten tallats
-
-Deixem aquesta part? Comentar!!
-
+Revisar si deixar aquesta part:
 ```{r}
 # Diagnosi dels models: --> Penso que potser hauriem d'escollir el model que funciona millor/té més correlació i fer-ho sobre aquest!
 residual.values <- rstandard(reg1) 
