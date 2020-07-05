@@ -1,6 +1,6 @@
 ---
-title: 'Florence Nightingale Competition 2020 - RLadies Spain'
-author: "Authors: Laura Ventosa & Esther Manzano"
+title: "Florence Nightingale Competition 2020 - RLadies Spain"
+author: "Authors: Laura Ventosa and Esther Manzano"
 date: "July 2020"
 output:
   html_document:
@@ -29,16 +29,8 @@ One of her most important discoveries was when she realized that "deaths due to 
 Moreover, the data presented in the dataset we are going to analyze refer to Florence Nightingale's count of deaths in the Crimean War, which lasted from October 1853 until March 1856. She accounted for the total number of deaths in the Crimean War caused by injuries and combat wounds, zymotic diseases and other causes. Data were grouped by months since April 1854 to March 1856. These data were going to be later used for her rose plots. 
 
 
-Per esborrar?
-(On hauriem de citar? Aquí o creem bibliografia abaix? 
-L: Jo ho citaria a sota de tot. No sé com es cita a RMarkdown though, ens ho podem mirar
-
-https://theconversation.com/the-healing-power-of-data-florence-nightingales-true-legacy-134649
-
-https://www.history.com/topics/womens-history/florence-nightingale-1
-
 *****
-# Data exploration
+# Data Exploration
 *****
 
 We check the different types of data on our dataset. The aim is to understand the nature of our variables (i.e. the proportion of numerical and categorical variables) to be able to develope a better model afterwards. Checks on missing values and outliers will be performed in addition.
@@ -66,7 +58,7 @@ library(reshape2)
 data <- read_excel("../nightingale-competition/datos_florence.xlsx", skip=1)
 ```
 
-## Basic information 
+## Basic Information 
 
 The following table shows the first rows of our dataset, including the names of the variables we have worked with.
 
@@ -99,7 +91,7 @@ In Nightingale's dataset, the following variables come as in:
 In order to make the data more readeable and understandable, we will make some changes in the variables as well as some variable additions.
 
 
-## Feature engineering 
+## Feature Engineering 
 
 ```{r}
 #Making everything more readable and column names more manageable:
@@ -165,13 +157,13 @@ formattable(table_deaths, list(
 The above table shows our dataset but sorted by the number of total deaths in descending order. We can observe that
 the time period with the highest number of deaths is January 1855, the 10th time period in chronological order. Not surprisingly, April 1854, the first period in our dataset, is the one with the fewest deaths.
 
-## Seasonality analysis
+## Seasonality Analysis
 
 ```{r}
 
 ```
 
-## Missing values and outliers
+## Missing Values and Outliers
 
 ```{r}
 #Checking missing values:
@@ -195,7 +187,7 @@ Let's recall what we can appreciate in the plots above:
 To sum up, it seems for now that most of the deaths included in our dataset were caused by zymotic diseases.
 
 *****
-# Data visualization
+# Data Visualization
 *****
 
 We are going to explore the dataset in a visual way to see the impacts some variables had on some others:
@@ -289,7 +281,7 @@ ggplot(data=data3,aes(x=variable,y=group,fill=value))+
 ```
 
 *****
-# Regression analysis
+# Regression Analysis
 *****
 
 The aim on this section is to show how the variables correlate to each other. Morever, we explore through regressions whether some variables have a significant impact on other variables.
@@ -422,7 +414,7 @@ Alta correlació
 ```{r, include = FALSE}
 #Si no fem plot de total_deaths a l'apartat 2 fer-lo aquí juntament amb l'estudi de l'estacionarietat (si no és estacionària no podem aplicar-li un model autoregressiu). decidir!!!!!!!
 
-adf.test(data$total_deaths) --> estacionària vs. estacional
+adf.test(data$total_deaths) #estacionària vs. estacional
 #Transformar variable (diferències)
 
 tra_death <- data.frame(y=data$total_deaths[2:L], lag1=data$total_deaths[1:(L-1)]) 
@@ -513,3 +505,12 @@ rmse1 <- sqrt((sum(error1)**2)/nrow(test_data))
 *****
 # Conclusions
 *****
+
+*****
+# Web References
+*****
+Useful links to learn more about Florence Nightingale and her legacy:
+
+https://theconversation.com/the-healing-power-of-data-florence-nightingales-true-legacy-134649
+
+https://www.history.com/topics/womens-history/florence-nightingale-1
