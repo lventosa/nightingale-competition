@@ -18,8 +18,8 @@ PUNTS IMPORTANTS ENTREGA:
 	6-8 Juliol: Shiny + extres.
 	8-9 Juliol: revivió total	
 	10-12 Juliol: gravar video.
-	
-OMG HEM DE PENSAR NOM DE L'EQUIP JAJAJAJ. E: Good point!
+
+- Triar nom de l'equip.
 
 
 *** Laura says ***
@@ -60,6 +60,7 @@ Pendent de fer pel proper cop (si creus que falta res més feel free d'afegir-ho
 Si se t'acut alguna altra relació que pot ser interessant investigar afegeix-la a la llista i en fem una regressió.
 
 --> E: Guai! Ara em poso a repassar el que tenim fins ara i a fer una miqueta més i afegeixo comentaris sota si calen :)
+
 
 
 NOTES ESTHER:
@@ -110,11 +111,33 @@ Tenim:
 - Aquestes dues variables no estan correlacionades.
 - Comentem que no tenen relació. Possibles raons de perquè no tenen correlació. Info que podria faltar i no tenim?
 
+Test per mirar si els resides son normals o no.
+
 
 4. Predictions:
 - Falta comentar el que hem trobat. Mini conclusions després de veure els resultats.
 - Falta acabar de mirar com podem afegir mês coses interessants.
 - Agafaria un model que donés bons resultats per fer aquesta part. Comentar.
+
+La correlcio es positiva porque és superior a 0 (hoef de Corr entre -1 i 1.
+-1 a 0 core neg I 0 a 1 core positiva. Com mes proper a 0 menys intensa la corrupción i com més aprop de 1 o -1 menys intensa es la correlación. Si totes les x pujen, el 0.55 de la y pujaria. Es moura en la mateixa direcció.
+
+Mirar la correlación abano de Fer la regreso
+
+Intercept es beta 0 I coef es beta 1.
+
+Core es una cosa i significado es una altra cosa.
+
+Mirar newywest!! Vol no ignorar que els valors d'ahir impactin en els valor d'avi.
+
+Intercept I estimadors son posits amb graus differente I llavors les enfermerais zymotiques impacten si average size de l'army cries. Pero pq? No te sent I leavers vol dir que ens flat info.
+
+0.05 de significado. Un, dos o tres asterisco.
+
+Establim que el grau de sgnificacio es 0.05. Tres, dos o un asterisco.
+
+
+Per veer ccim haguessin evolucionat les morts si la guerra Hugues continuait. El model de l'estacionalitat.
 
 
 5. Conclusions:
