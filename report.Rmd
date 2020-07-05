@@ -271,25 +271,47 @@ dygraph(data_plot_5, main="Accumulated number of deaths")
 
 The number of deaths just keeps increasing as long as the war takes place. Especially from periods 9 to 15 we can appreciate an accelerated increase in the accumulated deaths of the army. However, in the last period, we can see a stabilization of sich number, meaning that the war is arriving at its end.
 
+
+Comentar si ens agraden els nous gràfics i com treure'n més partit!
+
 ```{r}
-# Compute percentages with dplyr
-#data <- data  %>%
-  #group_by(data$time_period, data$total_deaths) %>%
-  #summarise(n = sum(value)) %>%
-  #mutate(percentage = n / sum(n)) 
-#No em deixa córrer aquesta funció:(
-
-# Plot
-#ggplot(data, aes(x=data$time_period, y=percentage, fill=group)) + 
-    #geom_area(alpha=0.6 , size=1, colour="black")
-
-# Note: compute percentages without dplyr:
-#my_fun <- function(vec){ 
-  #as.numeric(vec[2]) / sum(data$value[data$time_period==vec[1]]) *100 
-#}
-#data$percentage <- apply(data, 1, my_fun)
+data=data[1:12,]
+data1=data.frame(t(data))
+data2=data1[3:8,]
+colnames(data2)=month.name
+data2$group=row.names(data2)
+data3=melt(data2,id="group")
+data3$value=as.numeric(data3$value)
+head(data3)
 ```
-
+```{r}
+ggplot(data=data3,aes(x=variable,y=value,fill=group))+
+        geom_bar(stat="identity")
+```
+```{r}
+ggplot(data=data3,aes(x=variable,y=value,fill=group))+
+        geom_bar(stat="identity")+
+        scale_fill_brewer(palette="Greens")+xlab("")+ylab("")
+```
+```{r}
+ggplot(data=data3,aes(x=variable,y=value,fill=group))+
+        geom_bar(stat="identity")+
+        coord_polar()+
+        scale_fill_brewer(palette="Greens")+xlab("")+ylab("")
+```
+```{r}
+ggplot(data=data3,aes(x=variable,y=value,fill=group))+
+        geom_bar(stat="identity",width=1,colour="black",size=0.1)+
+        coord_polar()+
+        scale_fill_brewer(palette="Greens")+
+        xlab("")+ylab("")
+```
+```{r}
+ggplot(data=data3,aes(x=variable,y=group,fill=value))+
+        geom_tile(colour="black",size=0.1)+
+        scale_fill_gradientn(colours=c("white","steelblue"))+
+        coord_polar()+xlab("")+ylab("")
+```
 
 *****
 # Regressions
