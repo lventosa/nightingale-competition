@@ -512,6 +512,8 @@ Per revisar!
 # Predictions
 *****
 
+Triar model!
+
 ```{r}
 #Accuracy de reg1 per fer prediccions (he provat de fer la del número de morts basant-me només en un lag d'aquesta mateixa variable per provar de fer-ne alguna)
 train_data <- subset(data, time_period<=round(0.7*L)) #70% training data
