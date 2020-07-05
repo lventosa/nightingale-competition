@@ -22,24 +22,20 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 # Introduction
 *****
 
-Florence Nightingale (1820-1910), known as “The Lady With the Lamp,” was a British nurse, social reformer and statistician best known as the founder of modern nursing. Her experiences as a nurse during the Crimean War were foundational in her views about sanitation. She established St. Thomas’ Hospital and the Nightingale Training School for Nurses in 1860. Her efforts to reform healthcare greatly influenced the quality of care in the 19 and 20 centuries.
+**Florence Nightingale** (1820-1910), known as *The Lady With the Lamp*, was a British nurse, social reformer and statistician best known as the founder of modern nursing. Her experiences as a nurse during the Crimean War were foundational in her views about sanitation. She established St. Thomas’ Hospital and the Nightingale Training School for Nurses in 1860. Her efforts to reform healthcare greatly influenced the quality of care in the 19 and 20 centuries.
 
 One of her most important discoveries was when she realized that "deaths due to disease were more than seven times the number of deaths due to combat", because of unsanitary hospital conditions. However, as knowing numbers alone have limited persuasive powers, Nightingale used her skills in statistical communication to convince the British parliament of the need to act. She avoided the dry tables used by most statisticians of the time, and instead devised a novel graph to illustrate the impact of hospital and nursing practice reform on army mortality rates.
 
-Moreover, the data that is presented in the dataset we are going to analyze it refers to Florence Nightingale's count of injuries in the Crimean War. This data was going to be later used for her rose plots.
+Moreover, the data presented in the dataset we are going to analyze refer to Florence Nightingale's count of deaths in the Crimean War, which lasted from October 1853 until March 1856. She accounted for the total number of deaths in the Crimean War caused by injuries and combat wounds, zymotic diseases and other causes. Data were grouped by months since April 1854 to March 1856. These data were going to be later used for her rose plots. 
 
 
 Per esborrar?
-(On hauriem de citar? Aquí o creem bibliografia abaix?
+(On hauriem de citar? Aquí o creem bibliografia abaix? 
+L: Jo ho citaria a sota de tot. No sé com es cita a RMarkdown though, ens ho podem mirar
 
 https://theconversation.com/the-healing-power-of-data-florence-nightingales-true-legacy-134649
 
 https://www.history.com/topics/womens-history/florence-nightingale-1
-
-- Qui era Florence Nightingale
-- De què és la data
-
-(No he posat exactament el tipus de data que conté perquè he pensat que ja ho descriurem abaix))
 
 *****
 # Variables analysis
@@ -61,6 +57,7 @@ library(xts)
 library(lmtest)
 library(tseries)
 library(sandwich)
+library(forecast)
 library(ResourceSelection)
 library(pROC)
 
@@ -88,9 +85,9 @@ sapply(data, class)
 summary(data)
 ```
 
-In Nighingale's dataset, the following variables come as is:
-- Month: Character variable stating the month and year (period).
-- Average size of army: Numeric variable that informs the reader about the average size of the army in such period of time.
+In Nightingale's dataset, the following variables come as in:
+- Month (1): Character variable stating the month and year (period).
+- Average size of army (2): Numeric variable that informs the reader about the average size of the army in such period of time.
 - Zymotic diseases (3): Numeric variable which states the number of soldiers who died in such period of time for zymotic disease causes in absolute values.
 - Wounds & injuries (4): Numeric variable which states the number of soldiers who died in such period of time for wounds and injuries causes in absolute values.
 - All other causes (5): Numeric variable which states the number of soldiers who died in such period of time for any other causes in absolute values.
@@ -314,10 +311,10 @@ ggplot(data=data3,aes(x=variable,y=group,fill=value))+
 ```
 
 *****
-# Regressions
+# Regression analysis
 *****
 
-The aim on this section is to show the different correlations between variables through regressions.
+The aim on this section is to show how the variables correlate to each other. Morever, we explore through regressions whether some variables have a significant impact on other variables.
 
 ```{r}
 #Regression and residuals values calculations of average size army vs zymotic disease:

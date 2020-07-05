@@ -72,6 +72,13 @@ NOTES ESTHER:
 1. Variables Analysis:
 - Afegim alguna cosa més? Repassada final i esborrem el que no necessitem.
 
+--> L: Jo fins i tot canviaria la manera com està ordenat aquest apartat:
+	1. Data exploration
+		1.1 Basic information
+		1.2 Data treatment/feature engineering
+		1.3 Missing value and outliers
+		1.4 Seasonality
+
 
 2. Plots:
 - Afegim alguna cosa més? Repassada final i esborrem el que no necessitem.
@@ -81,7 +88,7 @@ NOTES ESTHER:
 
 3. Regressions:
 - Comentar amb Laura si les conclusions/interpretacions del models son correctes.
-- Comentar seasonality apartat.
+- Comentar seasonality apartat. 
 - Entendre si els models ens esta dient alguna cosa. En sobra o en falta algún? Comentar.
 - Revisar si volem la última part o no fa falta. Volem alguna cosa més?
 
