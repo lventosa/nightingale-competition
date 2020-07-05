@@ -19,7 +19,7 @@ PUNTS IMPORTANTS ENTREGA:
 	8-9 Juliol: revivió total	
 	10-12 Juliol: gravar video.
 	
-OMG HEM DE PENSAR NOM DE L'EQUIP JAJAJAJ
+OMG HEM DE PENSAR NOM DE L'EQUIP JAJAJAJ. E: Good point!
 
 
 *** Laura says ***
@@ -64,39 +64,56 @@ Si se t'acut alguna altra relació que pot ser interessant investigar afegeix-la
 
 NOTES ESTHER:
 
+
+0. Intro:
+- Afegim alguna cosa més? Repassada final i esborrem el que no necessitem.
+
+
 1. Variables Analysis:
-- Per mi està acabat. Podem acabar de comentar a la trucada. Pensem quin tips de taula podem deixar o si podem millorar-les.
-	---> L: Les noves taules estan super bé, super colorides! Buscaré més maneres de fer-ne d'altres també.
-- He afegit alguns comentaris que faltaven.
+- Afegim alguna cosa més? Repassada final i esborrem el que no necessitem.
+
 
 2. Plots:
-- Em sembla bé moure el punt 3 a regressions si vols.
-- Estic mirant si puc fer alguns tipus de gràfics xulus diferents amb R, si no surt seguim amb Shiny.
+- Afegim alguna cosa més? Repassada final i esborrem el que no necessitem.
 - Falten plots amb Shiny. Provem. Comentar abans quines variables seria guai analitzar i donarien bons resultats gràficament.
+- Comentar els nous gràfics i com millorar-los si els volem deixar.
+
 
 3. Regressions:
-- Falta comentar el que hem trobat. Mini conclusions després de veure els resultats.
-- Falta acabar-me de mirar el que ha agefit la Laura recentment + nous comentaris.
-- Afegir seasonality (mirar nota .Rmd).
+- Comentar amb Laura si les conclusions/interpretacions del models son correctes.
+- Comentar seasonality apartat.
 - Entendre si els models ens esta dient alguna cosa. En sobra o en falta algún? Comentar.
+- Revisar si volem la última part o no fa falta. Volem alguna cosa més?
 
-(Fer regresio de les causes per separat i analisi amb grafics.
-(Deixem tots deaths model)
-Fer regresio multivariant amb totes les deaths juntes
+Tenim:
+1. Lm avg size army vs zymotic
+2. Lm avg size army vs injuries
+3. Lm avg size army vs other
+4. Lm avg size army vs zymotic, injuries and other separated
+5. Lm avg size army vs all deaths aggregated
+6. Lm time period vs zymotic
+7. Lm time period vs injuries
+8. Lm time period vs other
+9. Lm time period vs all deaths aggregated
+10. Lm total deaths vs total deaths lagged
+11. Lm total deaths vs total deaths lagged AR 1 ?
 
-A tenir en compte per quan fem les interpretacions dels models
-Dades dels soldats nous que entraven? Com afectava que morissin i entressin soldats nous?
-Aquestes dues variables no estan correlacionades.
-Comentem que no tenen relació. Possibles raons de perquè no tenen correlació. Info que podria faltar i no tenim?)
+--> A tenir en compte per quan fem les interpretacions dels models:
+- Dades dels soldats nous que entraven? Com afectava que morissin i entressin soldats nous?
+- Aquestes dues variables no estan correlacionades.
+- Comentem que no tenen relació. Possibles raons de perquè no tenen correlació. Info que podria faltar i no tenim?
+
 
 4. Predictions:
 - Falta comentar el que hem trobat. Mini conclusions després de veure els resultats.
 - Falta acabar-me de mirar com podem afegir mês coses interessants.
 - Agafaria un model que donés bons resultats per fer aquesta part. Comentar.
 
+
 5. Conclusions:
 - Relacionar les conclusions amb el que realment va pasar històricament.
 - Guerra de Crimea. Exèrcit anglès. Buscar una mica més.
+
 
 (6. Comentaris generals):
 - Faltarà esborrar algun troç de condi comentat en varia apartats.

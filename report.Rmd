@@ -317,18 +317,26 @@ ggplot(data=data3,aes(x=variable,y=group,fill=value))+
 # Regressions
 *****
 
+The aim on this section is to show the different correlations between variables through regressions.
+
 ```{r}
 #Regression and residuals values calculations of average size army vs zymotic disease:
 cor(data$avg_size_army, data$zymotic)  
 reg1 <- lm(avg_size_army ~ zymotic, data=data)
 summary(reg1)
-#Correlation with Newey-West to have into account the autocorrelation
+
+#Correlation with Newey-West to have into account the autocorrelation:
 coeftest(reg1, NeweyWest(reg1))
 
-resid1 <- as.numeric(reg1$residuals) #Veig que tu calcules els residus d'una altra manera (comparant-ho amb el bloc de codi on vas fer el QQplot dels residus d'un model). Decidim de quina manera ho deixem
+#Residuals calculation:
+resid1 <- as.numeric(reg1$residuals) #Veig que tu calcules els residus d'una altra manera (comparant-ho amb el bloc de codi on vas fer el QQplot dels residus d'un model). Decidim de quina manera ho deixem!!!!!!!!!!!
+
 qqnorm(resid1, col="tomato", main="Model 1: Avg Size Army vs. Zymotic")
 qqline(resid1, lwd=2, lty=3)
 ```
+
+Baixa correlació
+
 ```{r}
 #Regression and residuals values calculations of average size army vs injuries:
 cor(data$avg_size_army, data$injuries)
@@ -340,6 +348,9 @@ resid2 <- as.numeric(reg2$residuals)
 qqnorm(resid2, col="tomato", main="Model 2: Avg Size Army vs. Injuries")
 qqline(resid2, lwd=2, lty=3)
 ```
+
+Baixa correlació
+
 ```{r}
 #Regression and residuals values calculations of average size army vs other disease:
 cor(data$avg_size_army, data$other)
@@ -351,6 +362,9 @@ resid3 <- as.numeric(reg3$residuals)
 qqnorm(resid3, col="tomato", main="Model 3: Avg Size Army vs. Other")
 qqline(resid3, lwd=2, lty=3)
 ```
+
+Baixa correlació
+
 ```{r}
 #Multivariant linear regresion between all deaths (segregated) and the average size of army:
 reg4 <- lm(avg_size_army ~ data$zymotic+data$injuries+data$other, data=data)
@@ -362,6 +376,9 @@ resid4 <- as.numeric(reg4$residuals)
 qqnorm(resid4, col="tomato", main="Model 4: Avg Size Army vs. Zymotic, Injuries and Other")
 qqline(resid4, lwd=2, lty=3)
 ```
+
+Baixa correlació en totes
+
 ```{r}
 cor(data$avg_size_army, data$total_deaths) #Valor absolut entre 0 i 1? Com més properes a 1 en valor absolut més correlacionades estan.
 reg5 <- lm(avg_size_army ~ total_deaths, data=data)
@@ -372,6 +389,9 @@ resid5 <- as.numeric(reg5$residuals)
 qqnorm(resid5, col="tomato", main="Model 5: Avg Size Army vs. Total Deaths")
 qqline(resid5, lwd=2, lty=3)
 ```
+
+Baixa correlació
+
 ```{r}
 cor(data$zymotic, data$time_period)
 reg6 <- lm(zymotic ~ time_period, data=data)
@@ -382,6 +402,9 @@ resid6 <- as.numeric(reg6$residuals)
 qqnorm(resid6, col="tomato", main="Model 6: Zymotic vs. Time Period")
 qqline(resid6, lwd=2, lty=3)
 ```
+
+Alta correlació
+
 ```{r}
 cor(data$injuries, data$time_period)
 reg7 <- lm(injuries ~ time_period, data=data)
@@ -392,6 +415,9 @@ resid7 <- as.numeric(reg7$residuals)
 qqnorm(resid7, col="tomato", main="Model 7: Injuries vs. Time Period")
 qqline(resid7, lwd=2, lty=3)
 ```
+
+Baixa correlació
+
 ```{r}
 cor(data$other, data$time_period)
 reg8 <- lm(other ~ time_period, data=data)
@@ -402,6 +428,9 @@ resid8 <- as.numeric(reg8$residuals)
 qqnorm(resid8, col="tomato", main="Model 8: Other vs. Time Period")
 qqline(resid8, lwd=2, lty=3)
 ```
+
+Alta correlació
+
 ```{r}
 reg9 <- lm(total_deaths ~ time_period, data=data)
 summary(reg9)
@@ -411,8 +440,12 @@ resid9 <- as.numeric(reg9$residuals)
 qqnorm(resid9, col="tomato", main="Model 9: Total Deaths vs. Time Period")
 qqline(resid9, lwd=2, lty=3)
 ```
+
+Alta correlació
+
 ```{r}
-#Si no fem plot de total_deaths a l'apartat 2 fer-lo aquí juntament amb l'estudi de l'estacionarietat (si no és estacionària no podem aplicar-li un model autoregressiu)
+#Si no fem plot de total_deaths a l'apartat 2 fer-lo aquí juntament amb l'estudi de l'estacionarietat (si no és estacionària no podem aplicar-li un model autoregressiu). decidir!!!!!!!
+
 adf.test(data$total_deaths)
 # Segons el test és estacionària però tbh mirant el gràfic a mi no m'ho sembla
 
@@ -439,9 +472,23 @@ qqline(resid11, lwd=2, lty=3)
 
 #Veiem que tant una regressió lineal calculada amb la funció lm() dóna el mateix model que quan apliquem un model AR(1) aplicant la funció arima()
 ```
+```{r}
+#Podem posar-lo abaix si vols a regressions.
+data_plot_3 <- data.frame(
+  Time=data$time_period,
+  Total=data$total_deaths)
+dygraph(data_plot_3, main="Total deaths (all causes aggregated)")
+#No sé si deixar aquest gràfic aquí o graficar les morts totals a l'apartat 4 mentre expliquem l'estacionarietat de la variable per aplicar un model autoregressiu
+```
+
+Comentar: Els títols d'alguns gràfics surten tallats
 
 Seasonality: mirar si hi ha algun time period que té mñés significació que alguna altra!
 Timeseries o forecast llibreries!
+
+Comentar els resultats juntes.
+
+Deixem aquesta part? Comentar!!
 
 ```{r}
 # Diagnosi dels models: --> Penso que potser hauriem d'escollir el model que funciona millor/té més correlació i fer-ho sobre aquest!
@@ -460,24 +507,6 @@ qqline(residual.values)
 ```
 Queden més amunt o més avall en un costat o en un altre? Com a quin costat és més asimètrica?
 Per revisar!
-
-```{r}
-reg3 <- lm(formula=data$avg_size_army~data$injuries, data=data) 
-summary(reg3)
-```
-
-
-```{r}
-#Podem posar-lo abaix si vols a regressions.
-data_plot_3 <- data.frame(
-  Time=data$time_period,
-  Total=data$total_deaths)
-dygraph(data_plot_3, main="Total deaths (all causes aggregated)")
-#No sé si deixar aquest gràfic aquí o graficar les morts totals a l'apartat 4 mentre expliquem l'estacionarietat de la variable per aplicar un model autoregressiu
-```
-
-Provem amb regressions logistiques?
-
 
 *****
 # Predictions
