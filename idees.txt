@@ -69,15 +69,12 @@ NOTES ESTHER:
 0. Intro. Ok
 
 1. Data exploration. Ok
-
-- Seasonality analysis.
+- Seasonality analysis revisar. <-- Esther (En ello)
 
 2. Data visualization. Ok
 - Algu extra de Shiny si tenim temps.
 
 3. Regressions:
-- Comentar amb Laura si les conclusions/interpretacions del models son correctes.
-- Comentar seasonality apartat. 
 - Entendre si els models ens esta dient alguna cosa. En sobra o en falta algún? Comentar.
 - Revisar si volem la última part o no fa falta. Volem alguna cosa més?
 
@@ -92,14 +89,12 @@ Tenim:
 8. Lm time period vs other
 9. Lm time period vs all deaths aggregated
 10. Lm total deaths vs total deaths lagged
-11. Lm total deaths vs total deaths lagged AR 1 ?
+11. Lm total deaths vs total deaths lagged AR 1
 
 --> A tenir en compte per quan fem les interpretacions dels models:
 - Dades dels soldats nous que entraven? Com afectava que morissin i entressin soldats nous?
 - Aquestes dues variables no estan correlacionades.
 - Comentem que no tenen relació. Possibles raons de perquè no tenen correlació. Info que podria faltar i no tenim?
-
-Test per mirar si els resides son normals o no.
 
 
 4. Predictions:
@@ -107,39 +102,15 @@ Test per mirar si els resides son normals o no.
 - Falta acabar de mirar com podem afegir mês coses interessants.
 - Agafaria un model que donés bons resultats per fer aquesta part. Comentar.
 
-La correlcio es positiva porque és superior a 0 (hoef de Corr entre -1 i 1.
--1 a 0 core neg I 0 a 1 core positiva. Com mes proper a 0 menys intensa la corrupción i com més aprop de 1 o -1 menys intensa es la correlación. Si totes les x pujen, el 0.55 de la y pujaria. Es moura en la mateixa direcció.
-
-Mirar la correlación abano de Fer la regreso
-
-Intercept es beta 0 I coef es beta 1.
-
-Core es una cosa i significado es una altra cosa.
-
-Mirar newywest!! Vol no ignorar que els valors d'ahir impactin en els valor d'avi.
-
-Intercept I estimadors son posits amb graus differente I llavors les enfermerais zymotiques impacten si average size de l'army cries. Pero pq? No te sent I leavers vol dir que ens flat info.
-
-0.05 de significado. Un, dos o tres asterisco.
-
-Establim que el grau de sgnificacio es 0.05. Tres, dos o un asterisco.
-
-
-Per veer ccim haguessin evolucionat les morts si la guerra Hugues continuait. El model de l'estacionalitat.
-
 
 5. Conclusions:
 - Relacionar les conclusions amb el que realment va pasar històricament.
 - Guerra de Crimea. Exèrcit anglès. Relacionar amb info a la intro.
 
-
-(6. Comentaris generals):
-- Faltarà esborrar algun troç de condi comentat en varia apartats.
-- Perquè quan fem HTML a vegades no es veu el codi? Crec que s'entén millor amb tot el codi visible. Omg cada vegada que faig HTML veig menys coses hahaha
-	--> L: Això vaig canviar-ho jo amb les opcions generals posant echo=FALSE per no omplir massa el report. Podem incloure-ho si vols però potser queda més net així. Al final l'arxiu HTML és un extra, l'arxiu obligatori i que més es miraran és l'arxiu en R. Per tant, per no repetir-ho vaig    	desactivar l'opció que es veiés en l'arxiu html però com vegis.
 	
 	
 *** COSES PENDENTS DE FER ***
+
 - Revisar llibreries. Calen totes?
 - Feature engineering table: Després de la taula no queda espai (salt de línia) i el paràgraf següent està massa enganxat a la taula (ARREGLAR) --> La única manera que he trobat després de molts intents és posant un . abaix u.u
 - Seasonality --> En funció del que surti caldrà avaluar les regressions d'una manera o altra

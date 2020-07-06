@@ -175,23 +175,11 @@ the time period with the highest number of deaths is January 1855, the 10th time
 ```{r}
 #Abans de comentar les regressions caldria fer l'anàlisi de la seasonality
 
-#Importing dataset:
-#data <- read_excel("../nightingale-competition/datos_florence.xlsx", skip=1)
+y <- ts(data$avg_size_army, frequency=12)
 
-#data('datos_florence.xlsx')
-#dat <- datos_florence
-
-#boxplot(data ~ cycle(data))
-
-#plot(data, ylab="Years (1000s)", type="o", pch =20)
-
-#ts (data, frequency = 12, start = c(1854, 4)) # freq 12 => Monthly data. 
-
-#tsData <- data[, 1] # ts data
-#decomposedRes <- decompose(tsData, type="additive") # use type = "additive" for additive components
-#plot (decomposedRes) # see plot below
-#stlRes <- stl(tsData, s.window = "periodic")
-
+ggseasonplot(y) +
+  ylab("average_size_army") +
+  ggtitle("Seasonal plot: Number of Soldiers per Period")
 ```
 
 ## Missing Values and Outliers
