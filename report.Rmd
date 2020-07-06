@@ -133,7 +133,7 @@ time_vars %>%
   gt() %>%
     tab_header(title = md("**Time periods**"), subtitle = md("Equivalence between both variables"))
 
-#Després de la taula no queda espai (salt de línia) i el paràgraf següent està massa enganxat a la taula
+#Després de la taula no queda espai (salt de línia) i el paràgraf següent està massa enganxat a la taula (ARREGLAR)
 ```
 ```{r}
 #Adding new variables to the dataset:
@@ -173,7 +173,7 @@ the time period with the highest number of deaths is January 1855, the 10th time
 ## Seasonality Analysis
 
 ```{r}
-
+#Abans de comentar les regressions caldria fer l'anàlisi de la seasonality
 ```
 
 ## Missing Values and Outliers
@@ -315,9 +315,13 @@ coeftest(reg1, NeweyWest(reg1))
 
 #Residuals calculation:
 resid1 <- as.numeric(reg1$residuals) 
+adjusted.values1 <- fitted(reg1) 
+plot(adjusted.values1, resid1, main="Residual plot Model 1", ylab="Residual Values", xlab="Adjusted Values", col="lightsalmon3", abline(0, 0), pch=19)
 
-qqnorm(resid1, col="tomato", main="Model 1: Avg Size Army vs. Zymotic")
+qqnorm(resid1, col="tomato", main="Quantile-Comparison Plot Model 1")
 qqline(resid1, lwd=2, lty=3)
+
+shapiro.test(resid1)
 ```
 
 Baixa correlació
@@ -329,9 +333,14 @@ reg2 <- lm(avg_size_army ~ injuries, data=data)
 summary(reg2)
 coeftest(reg2, NeweyWest(reg2))
 
-resid2 <- as.numeric(reg2$residuals)
-qqnorm(resid2, col="tomato", main="Model 2: Avg Size Army vs. Injuries")
+resid2 <- as.numeric(reg2$residuals) 
+adjusted.values2 <- fitted(reg2) 
+plot(adjusted.values2, resid2, main="Residual plot Model 2", ylab="Residual Values", xlab="Adjusted Values", col="lightsalmon3", abline(0, 0), pch=19)
+
+qqnorm(resid2, col="tomato", main="Quantile-Comparison Plot Model 2")
 qqline(resid2, lwd=2, lty=3)
+
+shapiro.test(resid2)
 ```
 
 Baixa correlació
@@ -343,9 +352,14 @@ reg3 <- lm(avg_size_army ~ other, data=data)
 summary(reg3)
 coeftest(reg3, NeweyWest(reg3))
 
-resid3 <- as.numeric(reg3$residuals)
-qqnorm(resid3, col="tomato", main="Model 3: Avg Size Army vs. Other")
+resid3 <- as.numeric(reg3$residuals) 
+adjusted.values3 <- fitted(reg3) 
+plot(adjusted.values3, resid3, main="Residual plot Model 3", ylab="Residual Values", xlab="Adjusted Values", col="lightsalmon3", abline(0, 0), pch=19)
+
+qqnorm(resid3, col="tomato", main="Quantile-Comparison Plot Model 3")
 qqline(resid3, lwd=2, lty=3)
+
+shapiro.test(resid3)
 ```
 
 Baixa correlació
@@ -357,9 +371,14 @@ summary(reg4)
 coeftest(reg4, NeweyWest(reg4))
 #Comentem que totes son negatives excepte una. Les morts d'aquesta causa van fer que reclutessin més soldats?
 
-resid4 <- as.numeric(reg4$residuals)
-qqnorm(resid4, col="tomato", main="Model 4: Avg Size Army vs. Zymotic, Injuries and Other")
+resid4 <- as.numeric(reg4$residuals) 
+adjusted.values4 <- fitted(reg4) 
+plot(adjusted.values4, resid4, main="Residual plot Model 4", ylab="Residual Values", xlab="Adjusted Values", col="lightsalmon3", abline(0, 0), pch=19)
+
+qqnorm(resid4, col="tomato", main="Quantile-Comparison Plot Model 4")
 qqline(resid4, lwd=2, lty=3)
+
+shapiro.test(resid4)
 ```
 
 Baixa correlació en totes
@@ -370,9 +389,14 @@ reg5 <- lm(avg_size_army ~ total_deaths, data=data)
 summary(reg5)
 coeftest(reg5, NeweyWest(reg5))
 
-resid5 <- as.numeric(reg5$residuals)
-qqnorm(resid5, col="tomato", main="Model 5: Avg Size Army vs. Total Deaths")
+resid5 <- as.numeric(reg5$residuals) 
+adjusted.values5 <- fitted(reg5) 
+plot(adjusted.values5, resid5, main="Residual plot Model 5", ylab="Residual Values", xlab="Adjusted Values", col="lightsalmon3", abline(0, 0), pch=19)
+
+qqnorm(resid5, col="tomato", main="Quantile-Comparison Plot Model 5")
 qqline(resid5, lwd=2, lty=3)
+
+shapiro.test(resid5)
 ```
 
 Baixa correlació
@@ -383,9 +407,14 @@ reg6 <- lm(zymotic ~ time_period, data=data)
 summary(reg6)
 coeftest(reg6, NeweyWest(reg6))
 
-resid6 <- as.numeric(reg6$residuals)
-qqnorm(resid6, col="tomato", main="Model 6: Zymotic vs. Time Period")
+resid6 <- as.numeric(reg6$residuals) 
+adjusted.values6 <- fitted(reg6) 
+plot(adjusted.values6, resid6, main="Residual plot Model 6", ylab="Residual Values", xlab="Adjusted Values", col="lightsalmon3", abline(0, 0), pch=19)
+
+qqnorm(resid6, col="tomato", main="Quantile-Comparison Plot Model 6")
 qqline(resid6, lwd=2, lty=3)
+
+shapiro.test(resid6)
 ```
 
 Alta correlació
@@ -396,9 +425,14 @@ reg7 <- lm(injuries ~ time_period, data=data)
 summary(reg7)
 coeftest(reg7, NeweyWest(reg7))
 
-resid7 <- as.numeric(reg7$residuals)
-qqnorm(resid7, col="tomato", main="Model 7: Injuries vs. Time Period")
+resid7 <- as.numeric(reg7$residuals) 
+adjusted.values7 <- fitted(reg7) 
+plot(adjusted.values7, resid7, main="Residual plot Model 7", ylab="Residual Values", xlab="Adjusted Values", col="lightsalmon3", abline(0, 0), pch=19)
+
+qqnorm(resid7, col="tomato", main="Quantile-Comparison Plot Model 7")
 qqline(resid7, lwd=2, lty=3)
+
+shapiro.test(resid7)
 ```
 
 Baixa correlació
@@ -409,9 +443,14 @@ reg8 <- lm(other ~ time_period, data=data)
 summary(reg8)
 coeftest(reg8, NeweyWest(reg8))
 
-resid8 <- as.numeric(reg8$residuals)
-qqnorm(resid8, col="tomato", main="Model 8: Other vs. Time Period")
+resid8 <- as.numeric(reg8$residuals) 
+adjusted.values8 <- fitted(reg8) 
+plot(adjusted.values8, resid8, main="Residual plot Model 8", ylab="Residual Values", xlab="Adjusted Values", col="lightsalmon3", abline(0, 0), pch=19)
+
+qqnorm(resid8, col="tomato", main="Quantile-Comparison Plot Model 8")
 qqline(resid8, lwd=2, lty=3)
+
+shapiro.test(resid8)
 ```
 
 Alta correlació
@@ -421,9 +460,14 @@ reg9 <- lm(total_deaths ~ time_period, data=data)
 summary(reg9)
 coeftest(reg9, NeweyWest(reg9))
 
-resid9 <- as.numeric(reg9$residuals)
-qqnorm(resid9, col="tomato", main="Model 9: Total Deaths vs. Time Period")
+resid9 <- as.numeric(reg9$residuals) 
+adjusted.values9 <- fitted(reg9) 
+plot(adjusted.values9, resid9, main="Residual plot Model 9", ylab="Residual Values", xlab="Adjusted Values", col="lightsalmon3", abline(0, 0), pch=19)
+
+qqnorm(resid9, col="tomato", main="Quantile-Comparison Plot Model 9")
 qqline(resid9, lwd=2, lty=3)
+
+shapiro.test(resid9)
 ```
 
 Alta correlació
@@ -440,11 +484,11 @@ dygraph(data_plot_5, main="Total deaths (all causes aggregated)")
 ```{r, include = FALSE}
 #The series depicted does not seem very stationary. Nonetheless, we counduct a Dickey-Fuller test.
 adf.test(data$total_deaths)
-#As we cannot reject the null hypotheses of non-stationarity, we will differenciate the data in order to obtain stationarity and be able to run an autoregressive model
+#As we cannot reject the null hypotheses of non-stationarity, we will differenciate the data in order to obtain stationarity and be able to run an autoregressive model:
 
 total_deaths_diff <- diff(data$total_deaths)
 adf.test(total_deaths_diff)
-#By looking at the p-value returned by the test, we can state that the differenced series is not stationary at a 0.05 significance. We differenciate again
+#By looking at the p-value returned by the test, we can state that the differenced series is not stationary at a 0.05 significance. We differenciate again:
 
 total_deaths_diff2 <- diff(total_deaths_diff)
 adf.test(total_deaths_diff2)
@@ -456,7 +500,7 @@ pacf(total_deaths_diff, ylim=c(-0.2,1), lwd=5, xlim=c(0,15), col="darkorange2", 
 acf(total_deaths_diff2, ylim=c(-0.2,1), lwd=5, xlim=c(0,15), col="darkorange2", main="Autocorrelation function total deaths") 
 pacf(total_deaths_diff2, ylim=c(-0.2,1), lwd=5, xlim=c(0,15), col="darkorange2", main="Parcial autocorrelation function total deaths") 
 
-#Drama: amb la data no estacionària no es pot aplicar el model autoregressiu però un cop la diferencio i es converteicx en estacionària (total_deaths_diff) o quasi-estacionària (total_death_diff2) no hi ha cap lag (potencials regressors aquí) que semblin ser significatius. Per tant, a la regressió tampoc ho seran --> No afegim aquests dos models? Jo deixaria el raonament aquest explicant why not
+#Drama: amb la data no estacionària no es pot aplicar el model autoregressiu però un cop la diferencio i es converteix en estacionària (total_deaths_diff) o quasi-estacionària (total_death_diff2) no hi ha cap lag (potencials regressors) que semblin ser significatius. Per tant, a la regressió tampoc ho seran --> No afegim aquests dos models? Jo deixaria el raonament aquest explicant why not
 
 tra_death <- data.frame(y=data$total_deaths[2:L], lag1=data$total_deaths[1:(L-1)]) 
 cor(tra_death$y, tra_death$lag1)
@@ -483,8 +527,8 @@ Revisar si deixar aquesta part:
 ```{r}
 # Diagnosi dels models: --> Penso que potser hauriem d'escollir el model que funciona millor/té més correlació i fer-ho sobre aquest!
 residual.values <- rstandard(reg1) 
-adjusted.values <- fitted(reg1) 
-plot(adjusted.values, residual.values, main="Residual plot reg1 (canviar nom maybe)", ylab="Residual Values", xlab="Adjusted Values", col="lightsalmon3", abline(0, 0), pch=19)
+
+
 #He afegit colors al gràfic, poden ser aquests o es poden canviar. Podríem utilitzar els mateixos colors per tots els plots d'un mateix tipus
 # Fer diagnosi del model per totes els models i comentar.
 ```
