@@ -38,7 +38,7 @@ We check the different types of data on our dataset. The aim is to understand th
 ```{r}
 rm(list=ls()) 
 
-#Libraries used across the whole project:     (haurem de revisar quins no fem servir al final i treure'ls)
+#Libraries used across the whole project:
 library(readxl)
 library(dplyr)
 library(tidyverse)
@@ -124,7 +124,7 @@ As the periods in our dataset are prior to January 1900, R cannot handle them as
 ```{r}
 #Creating a numeric variable to account for time period:
 L <- nrow(data)
-time_period <- seq(0,(L-1)) #Podríem passar-ho de 1 a L
+time_period <- seq(0,(L-1)) #Changing from 1 to L
 data$time_period <- time_period
 data <- as.data.frame(data)
 
@@ -132,9 +132,8 @@ time_vars <- select(data, month, time_period)
 time_vars %>% 
   gt() %>%
     tab_header(title = md("**Time periods**"), subtitle = md("Equivalence between both variables"))
-
-#Després de la taula no queda espai (salt de línia) i el paràgraf següent està massa enganxat a la taula (ARREGLAR)
 ```
+.
 ```{r}
 #Adding new variables to the dataset:
 deaths <- vector() 
@@ -147,6 +146,7 @@ cum_deaths <- vector()
 cum_deaths <- cumsum(deaths)
 data$cum_deaths <- cum_deaths #Cumulative deaths over time
 ```
+
 In order to have a better understanding of the data presented, we created a new variable which contains the sum of the different death causes (zymotic, injuries and other) combined. Each entry of this variable will be seggregated by period/month of the year. The name of this new variable is "total_deaths".
 
 In addition, we created another new variable that aims to explain the cumulative deaths over time. Thus, using the new variable of deaths generated just before, we create a new one in order to explain how this aggregated deaths perform over time. The name of this variable is "cum_deaths". 
@@ -163,7 +163,7 @@ table_deaths <- data.frame(
   TimePeriod = ordered_deaths$time_period)
 
 formattable(table_deaths, list(
-  Month = color_tile("lightpink", "lightpink4"),
+  Month = color_tile("lightblue", "lightpink4"),
   TotalDeaths = color_bar("grey")))
 ```
 
@@ -174,6 +174,24 @@ the time period with the highest number of deaths is January 1855, the 10th time
 
 ```{r}
 #Abans de comentar les regressions caldria fer l'anàlisi de la seasonality
+
+#Importing dataset:
+#data <- read_excel("../nightingale-competition/datos_florence.xlsx", skip=1)
+
+#data('datos_florence.xlsx')
+#dat <- datos_florence
+
+#boxplot(data ~ cycle(data))
+
+#plot(data, ylab="Years (1000s)", type="o", pch =20)
+
+#ts (data, frequency = 12, start = c(1854, 4)) # freq 12 => Monthly data. 
+
+#tsData <- data[, 1] # ts data
+#decomposedRes <- decompose(tsData, type="additive") # use type = "additive" for additive components
+#plot (decomposedRes) # see plot below
+#stlRes <- stl(tsData, s.window = "periodic")
+
 ```
 
 ## Missing Values and Outliers
@@ -253,49 +271,41 @@ dygraph(data_plot_4, main="Accumulated number of deaths")
 
 The number of deaths just keeps increasing as long as the war takes place. Especially from periods 9 to 15 we can appreciate an accelerated increase in the accumulated deaths of the army. However, in the last period, we can see a stabilization of sich number, meaning that the war is arriving at its end.
 
-
-Comentar si ens agraden els nous gràfics i com treure'n més partit!
+Let's analyze now the number of deaths by period and disease in absolute values:
 
 ```{r}
+#We display the data that is more suitable for the graphs:
 data=data[1:12,]
 data1=data.frame(t(data))
-data2=data1[3:8,]
-colnames(data2)=month.name
+data2=data1[3:5,]
+colnames(data2)=month.abb
 data2$group=row.names(data2)
 data3=melt(data2,id="group")
 data3$value=as.numeric(data3$value)
 head(data3)
-
-#Treballar als gràfics de sota amb les variables en nivell absolut (no rates)
 ```
 ```{r}
-ggplot(data=data3,aes(x=variable,y=value,fill=group))+
-        geom_bar(stat="identity")
-```
-```{r}
+#Bar graph:
 ggplot(data=data3,aes(x=variable,y=value,fill=group))+
         geom_bar(stat="identity")+
-        scale_fill_brewer(palette="Greens")+xlab("")+ylab("")
+        scale_fill_brewer(palette="RdBu")+xlab("")+ylab("")
 ```
 ```{r}
+#Coordenades polar graph:
 ggplot(data=data3,aes(x=variable,y=value,fill=group))+
         geom_bar(stat="identity")+
         coord_polar()+
-        scale_fill_brewer(palette="Greens")+xlab("")+ylab("")
+        scale_fill_brewer(palette="BuPu")+xlab("")+ylab("")
 ```
 ```{r}
-ggplot(data=data3,aes(x=variable,y=value,fill=group))+
-        geom_bar(stat="identity",width=1,colour="black",size=0.1)+
-        coord_polar()+
-        scale_fill_brewer(palette="Greens")+
-        xlab("")+ylab("")
-```
-```{r}
+#Heatmap graph:
 ggplot(data=data3,aes(x=variable,y=group,fill=value))+
         geom_tile(colour="black",size=0.1)+
-        scale_fill_gradientn(colours=c("white","steelblue"))+
+        scale_fill_gradientn(colours=c("white","deepskyblue3"))+
         coord_polar()+xlab("")+ylab("")
 ```
+
+All three last graph display the same data from different angles. Taking into consideration that the first data we have is from April 1854 and the last one from March 1855, this completes a whole year from different period. Thus, from the data displayed in the graphs, we can identify that the number of deaths experience an exponential increment from April (the war is starting) until October, where it reaches its maximum. From there, is decreases until there is barely any death at the end of March, meaning as well that the war is arriving to an end.
 
 *****
 # Regression Analysis

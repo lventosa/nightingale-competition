@@ -66,26 +66,14 @@ Si se t'acut alguna altra relació que pot ser interessant investigar afegeix-la
 NOTES ESTHER:
 
 
-0. Intro:
-- Afegim alguna cosa més? Repassada final i esborrem el que no necessitem.
+0. Intro. Ok
 
+1. Data exploration. Ok
 
-1. Variables Analysis:
-- Afegim alguna cosa més? Repassada final i esborrem el que no necessitem.
+- Seasonality analysis.
 
---> L: Jo fins i tot canviaria la manera com està ordenat aquest apartat:
-	1. Data exploration
-		1.1 Basic information
-		1.2 Data treatment/feature engineering
-		1.3 Missing value and outliers
-		1.4 Seasonality
-
-
-2. Plots:
-- Afegim alguna cosa més? Repassada final i esborrem el que no necessitem.
-- Falten plots amb Shiny. Provem. Comentar abans quines variables seria guai analitzar i donarien bons resultats gràficament.
-- Comentar els nous gràfics i com millorar-los si els volem deixar.
-
+2. Data visualization. Ok
+- Algu extra de Shiny si tenim temps.
 
 3. Regressions:
 - Comentar amb Laura si les conclusions/interpretacions del models son correctes.
@@ -152,6 +140,8 @@ Per veer ccim haguessin evolucionat les morts si la guerra Hugues continuait. El
 	
 	
 *** COSES PENDENTS DE FER ***
+- Revisar llibreries. Calen totes?
+- Feature engineering table: Després de la taula no queda espai (salt de línia) i el paràgraf següent està massa enganxat a la taula (ARREGLAR) --> La única manera que he trobat després de molts intents és posant un . abaix u.u
 - Seasonality --> En funció del que surti caldrà avaluar les regressions d'una manera o altra
 - Plots amb ggplot revisar-lo si escollir quins deixem
 - Comentar regressions
