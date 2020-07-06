@@ -149,3 +149,12 @@ Per veer ccim haguessin evolucionat les morts si la guerra Hugues continuait. El
 - Faltarà esborrar algun troç de condi comentat en varia apartats.
 - Perquè quan fem HTML a vegades no es veu el codi? Crec que s'entén millor amb tot el codi visible. Omg cada vegada que faig HTML veig menys coses hahaha
 	--> L: Això vaig canviar-ho jo amb les opcions generals posant echo=FALSE per no omplir massa el report. Podem incloure-ho si vols però potser queda més net així. Al final l'arxiu HTML és un extra, l'arxiu obligatori i que més es miraran és l'arxiu en R. Per tant, per no repetir-ho vaig    	desactivar l'opció que es veiés en l'arxiu html però com vegis.
+	
+	
+*** COSES PENDENTS DE FER ***
+- Seasonality --> En funció del que surti caldrà avaluar les regressions d'una manera o altra
+- Plots amb ggplot revisar-lo si escollir quins deixem
+- Comentar regressions
+- Bondat d'ajust i corba ROC
+- Conclusions
+
