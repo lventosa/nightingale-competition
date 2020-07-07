@@ -112,10 +112,14 @@ Tenim:
 *** COSES PENDENTS DE FER ***
 
 - Revisar llibreries. Calen totes?
-- Feature engineering table: Després de la taula no queda espai (salt de línia) i el paràgraf següent està massa enganxat a la taula (ARREGLAR) --> La única manera que he trobat després de molts intents és posant un . abaix u.u
+- Feature engineering table: Després de la taula no queda espai (salt de línia) i el paràgraf següent està massa enganxat a la taula (ARREGLAR) --> La única manera que he trobat després de molts intents és posant un . abaix u.u --> GENIAL MERCI DONE
 - Seasonality --> En funció del que surti caldrà avaluar les regressions d'una manera o altra
 - Plots amb ggplot revisar-lo si escollir quins deixem
 - Comentar regressions
 - Bondat d'ajust i corba ROC
 - Conclusions
+
+Anotacions random (Laura 7 juiol):
+- He canviat l'ordre dels subapartats del primer apartat i he posat el subapartat de NAs i outliers abans del feature engineering perquè en el cas que haguéssim tingut NAs ho hauríem hagut de saber abans de començar a tractar la data
+- Al fer la seasonality, trobo que no podem fiar-nos del que diu R perquè al final R no agafa les dates nostres (pel lio aquell que és una variable caràcter que no es pot transformar a data) i per tant, si detecta 24 períodes i li diem que la data és mensual agafa dos anys sencers de gener a desembre. Que és el que es veu al gràfic que vas fer tu. Per tant, el que crec que podríem fer és fer plot de les variables per separat i visualment analitzar si són estacionàries. Les funcions i tests per estacionalitat també donen coses rares i NA
 

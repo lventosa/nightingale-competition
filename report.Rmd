@@ -102,9 +102,6 @@ Nightingale's original dataset consists of the following variables:
 
 In order to make the data more readeable and understandable, we will make some changes in the variables as well as some variable additions.
 
-
-## Feature Engineering 
-
 ```{r}
 #Making everything more readable and column names more manageable:
 colnames(data)[1] <- "month"
@@ -115,7 +112,40 @@ colnames(data)[5] <- "other"
 colnames(data)[6] <- "zymotic_rate"
 colnames(data)[7] <- "injuries_rate"
 colnames(data)[8] <- "other_rate"
+```
 
+## Missing Values and Outliers
+
+We are interested in knowing whether we have missing observations before start treating our data.
+
+```{r}
+#Checking missing values:
+colSums(is.na(data)) 
+```
+
+As we can see, there are no missing values in our dataset.
+
+```{r}
+#Checking outliers:
+par(mfrow=c(1,3)) 
+boxplot(data$injuries, col="lightgoldenrod", main="Deaths by injuries")
+boxplot(data$zymotic, col="mistyrose", main="Deaths by zymotic disease")
+boxplot(data$other, col="powderblue", main="Deaths by other causes")
+```
+
+Let's recall what we can appreciate in the plots above:
+
+- The majority of deaths by injury are compressed by 0 and 130, approximately. Additionally, there are some exceptional periods where deaths by injury amounted up to 300.
+
+- The majority of deaths by zymotic disease are compressed between 50 and 800 approximately. However, we can see a long tail of cases up to 1700, with some additional outliers of 2100 and 2800.
+
+- The majority of deaths by other alternative causes are compressed between 25 and 75 approximately. We can also appreciate a long tail up to 175 and some outliers of 300 and 350.
+
+To sum up, it seems for now that most of the deaths included in our dataset were caused by zymotic diseases.
+
+## Feature Engineering 
+
+```{r}
 data[17,1] <- "Aug 1855" #We modify this entry as in the original dataset it appeared as Aug_1855.
 ```
 
@@ -133,7 +163,8 @@ time_vars %>%
   gt() %>%
     tab_header(title = md("**Time periods**"), subtitle = md("Equivalence between both variables"))
 ```
-.
+.  
+
 ```{r}
 #Adding new variables to the dataset:
 deaths <- vector() 
@@ -172,42 +203,25 @@ the time period with the highest number of deaths is January 1855, the 10th time
 
 ## Seasonality Analysis
 
-```{r}
-#Abans de comentar les regressions caldria fer l'anàlisi de la seasonality
-
-y <- ts(data$avg_size_army, frequency=12)
-
-ggseasonplot(y) +
-  ylab("average_size_army") +
-  ggtitle("Seasonal plot: Number of Soldiers per Period")
-```
-
-## Missing Values and Outliers
+As we are working with time series, we must first check for stationarity in the data. Depending on whether the variables present a seasonal component or not, the analysis techniques and their interpretations will differ.
 
 ```{r}
-#Checking missing values:
-colSums(is.na(data)) 
+#y <- ts(data$avg_size_army, frequency=12)
+
+#ggseasonplot(y) +
+  #ylab("average_size_army") +
+  #ggtitle("Seasonal plot: Number of Soldiers per Period")
+
+#Explicació de la research que he fet sobre tests de seasonality a idees.txt. Jo ho deixaria així i au jajajjaja:
+
+par(mfrow=c(2,2)) 
+plot(data$avg_size_army, type="line", main="Average Size Army", xlab="Time", ylab="Average Size Army", col="azure4")
+plot(data$zymotic, type="line", main="Zymotic Diseases", xlab="Time", ylab="Zymotic Diseases", col="firebrick4")
+plot(data$injuries, type="line", main="Injuries", xlab="Time", ylab="Injuries", col="gold4")
+plot(data$other, type="line", main="Other Causes", xlab="Time", ylab="Other Causes", col="cyan4")
 ```
 
-As we can see, there are no missing values in our dataset.
-
-```{r}
-#Checking outliers:
-par(mfrow=c(1,3)) 
-boxplot(data$injuries, col="lightgoldenrod", main="Deaths by injuries")
-boxplot(data$zymotic, col="mistyrose", main="Deaths by zymotic disease")
-boxplot(data$other, col="powderblue", main="Deaths by other causes")
-```
-
-Let's recall what we can appreciate in the plots above:
-
-- The majority of deaths by injury are compressed by 0 and 130, approximately. Additionally, there are some exceptional periods where deaths by injury amounted up to 300.
-
-- The majority of deaths by zymotic disease are compressed between 50 and 800 approximately. However, we can see a long tail of cases up to 1700, with some additional outliers of 2100 and 2800.
-
-- The majority of deaths by other alternative causes are compressed between 25 and 75 approximately. We can also appreciate a long tail up to 175 and some outliers of 300 and 350.
-
-To sum up, it seems for now that most of the deaths included in our dataset were caused by zymotic diseases.
+After visually inspecting the four main series, we can state that no seasonal components are observable in any of them. Hence, we will assume that neither of our variables have seasonal effects.
 
 *****
 # Data Visualization
