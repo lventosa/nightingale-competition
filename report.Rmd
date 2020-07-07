@@ -206,14 +206,6 @@ the time period with the highest number of deaths is January 1855, the 10th time
 As we are working with time series, we must first check for stationarity in the data. Depending on whether the variables present a seasonal component or not, the analysis techniques and their interpretations will differ.
 
 ```{r}
-#y <- ts(data$avg_size_army, frequency=12)
-
-#ggseasonplot(y) +
-  #ylab("average_size_army") +
-  #ggtitle("Seasonal plot: Number of Soldiers per Period")
-
-#Explicació de la research que he fet sobre tests de seasonality a idees.txt. Jo ho deixaria així i au jajajjaja:
-
 par(mfrow=c(2,2)) 
 plot(data$avg_size_army, type="line", main="Average Size Army", xlab="Time", ylab="Average Size Army", col="azure4")
 plot(data$zymotic, type="line", main="Zymotic Diseases", xlab="Time", ylab="Zymotic Diseases", col="firebrick4")
@@ -307,7 +299,7 @@ ggplot(data=data3,aes(x=variable,y=group,fill=value))+
         coord_polar()+xlab("")+ylab("")
 ```
 
-All three last graph display the same data from different angles. Taking into consideration that the first data we have is from April 1854 and the last one from March 1855, this completes a whole year from different period. Thus, from the data displayed in the graphs, we can identify that the number of deaths experience an exponential increment from April (the war is starting) until October, where it reaches its maximum. From there, is decreases until there is barely any death at the end of March, meaning as well that the war is arriving to an end.
+All three last graphs display the same data from different angles. Taking into consideration that the first data we have is from April 1854 and the last one from March 1855, this completes a whole year from different period. Thus, from the data displayed in the graphs, we can identify that the number of deaths experience an exponential increment from April (the war is starting) until October, where it reaches its maximum. From there, is decreases until there is barely any death at the end of March, meaning as well that the war is arriving to an end.
 
 *****
 # Regression Analysis
@@ -315,7 +307,7 @@ All three last graph display the same data from different angles. Taking into co
 
 The aim on this section is to show how the variables correlate to each other. Morever, we explore through regressions whether some variables have a significant impact on other variables.
 
-```{r, include = FALSE}
+```{r}
 #Regression and residuals values calculations of average size army vs zymotic disease:
 cor(data$avg_size_army, data$zymotic)  
 reg1 <- lm(avg_size_army ~ zymotic, data=data)
