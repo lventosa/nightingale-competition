@@ -16,62 +16,20 @@ PUNTS IMPORTANTS ENTREGA:
 - Timings equip:
 	5 Juliol: tots punts ok, comentem conclusions.
 	6-8 Juliol: Shiny + extres.
-	8-9 Juliol: revivió total	
+	8-9 Juliol: revisió total	
 	10-12 Juliol: gravar video.
 
 - Triar nom de l'equip.
 
 
-*** Laura says ***
-
-El drama de les dates:
-Vale okay el que passa amb les dates és que no es poden tractar com a Date/POSIXct ja que fan referència a mesos anteriors a 1900 (l'1 de gener de 1900 es considera l'"inici dels temps" per qualsevol cosa que involucri computació) per tant R (i Excel, el format amb el qual van passar les dates) consideren les dates del dataset que tenim com caràcters i és impossible passar-les a format Date/POSIXct i tractar-les com a dates. Crec que haurem d'utilitzar l'"apanyo" aquell de la variable numèrica del 0 al 23. He afegit una taula d'equivalències entre el valor numèric i el mes que representa perquè siguin més fàcils d'interpretar els gràfics. De moment no se m'acut altra manera de fer-ho...
-
---> E: D'acord!
-
-Una altra cosa important: 
-He estat buscant què són exactament les "zymotic diseases" i són un grup de malalties infeccioses i contagioses. Per tant, es podria esperar certa correlació entre les morts d'un mes per aquestes malalties i les morts del següent. De fet, a l'estar tractant amb series temporals podríem esperar autocorrelació en les pròpies variables. Per tant, potser hauríem d'avaluar els models amb standard errors que siguin robustos a aquesta autocorrelació. No canviarà els valors estimats dels paràmetres però sí que poden haver canvis en els standard errors i per tant en la significació. En les regressions que hi ha fetes afegiré els standard errors calculats amb newey west per  veure com canvien. Makes sense to you?
-
---> E: Sí, totalment d'acord :)
-
-Pel que fa a les regressions, jo faria (almenys ara de moment):
-- Efecte de cada causa de mort sobre l'average size of the army per separat (univariate regression) DONE
-- Same però efecte de les tres causes (multivariate regression) DONE
-- Same però incloent només la variabe total_deaths (univariate regression) DONE
-- Efecte del time period sobre cada causa de mort per separat (univariate regression) DONE
-- Same però sobre la variable total_deaths (univariate regression) DONE
-- Model autoregressiu amb lags de les variables DONE (he fet el model amb el lag manual i també amb la funció arima i donen el mateix)
-
---> E: Quanta feina, perfecte, moltes gràcies!
-
-Per totes (l'últim model autoregressiu no) he provat de calcular els coef amb els standard errors normals i amb els més robustos per autocorrelació. També he calculat i fet QQplots dels residus de tots els models. No sé si és òptim deixar-los tots perquè de moment portem 11 models i potser es fa pesat. Potser es podrien encabir en un sol gràfic i veure's més petits. O, si de cas, ja els traurem. 
-
-Una altra cosa, hi ha a saco de comentaris al codi que es barregen amb anotacions random, les explicacions/interpretacions etc, potser podríem fer neteja d'aquells comentaris que no siguin necessaris. 
-
---> E: Totalment d'acord. Puc començar a esborrar els més irrelevants.
-
-Pendent de fer pel proper cop (si creus que falta res més feel free d'afegir-ho):
-- Pensar més coses a fer a la part d'exploració de les dades
-- Pensar maybe algun altre plot o manera de fer-los?
-- Regressions (completar les que ja hi ha i afegir nous models)
-- Prediccions (en funció del millor o millors models regressius que trobem)
-- Interpretacions i anar comentant resultats de les coses que ens hagin anat sortint 
-
-Si se t'acut alguna altra relació que pot ser interessant investigar afegeix-la a la llista i en fem una regressió.
-
---> E: Guai! Ara em poso a repassar el que tenim fins ara i a fer una miqueta més i afegeixo comentaris sota si calen :)
-
-
-
 NOTES ESTHER:
-
 
 0. Intro. Ok
 
 1. Data exploration. Ok
 
 2. Data visualization. Ok
-- Algu extra de Shiny si tenim temps.
+- Algu extra de Shiny si tenim temps. --> Objectivament crec que no arribem jajajaj, millor deixar altres parts més assegurades
 
 3. Regressions:
 - Entendre si els models ens esta dient alguna cosa. En sobra o en falta algún? Comentar.
@@ -89,6 +47,7 @@ Tenim:
 9. Lm time period vs all deaths aggregated
 10. Lm total deaths vs total deaths lagged
 11. Lm total deaths vs total deaths lagged AR 1
+(10 i 11 no té realment sentit que els fem ja que la data no és stationary --> jo deixaria però la comprovació de per què no ho és i perquè no els fem)
 
 --> A tenir en compte per quan fem les interpretacions dels models:
 - Dades dels soldats nous que entraven? Com afectava que morissin i entressin soldats nous?
@@ -111,15 +70,12 @@ Tenim:
 *** COSES PENDENTS DE FER ***
 
 - Revisar llibreries. Calen totes?
-- Seasonality --> En funció del que surti caldrà avaluar les regressions d'una manera o altra
-- Plots amb ggplot revisar-lo si escollir quins deixem
+- Plots amb ggplot revisar-los i escollir quins deixem
 - Comentar regressions
+	L: He pensat d'afegir al report en html només els models que acabin donant residus distribuïts de manera normal (però deixar-los tots a la notebook). 		I pels que deixem al report en html comentar què és significatiu i què no i possibles raons
+- Prediccions (o provar de fer-les amb algun/s model/s regressius que hagin donat resultats decents)
 - Bondat d'ajust i corba ROC
 - Conclusions
 
-Anotacions random (Laura 7 juiol):
-
-- He canviat l'ordre dels subapartats del primer apartat i he posat el subapartat de NAs i outliers abans del feature engineering perquè en el cas que haguéssim tingut NAs ho hauríem hagut de saber abans de començar a tractar la data. E: Good point, gràcies!
-
-- Al fer la seasonality, trobo que no podem fiar-nos del que diu R perquè al final R no agafa les dates nostres (pel lio aquell que és una variable caràcter que no es pot transformar a data) i per tant, si detecta 24 períodes i li diem que la data és mensual agafa dos anys sencers de gener a desembre. Que és el que es veu al gràfic que vas fer tu. Per tant, el que crec que podríem fer és fer plot de les variables per separat i visualment analitzar si són estacionàries. Les funcions i tests per estacionalitat també donen coses rares i NA. E: D'acord! :)
-
+DUBTES LAURA (8 juliol):
+- En el bloc de codi que hi ha sota el gràfic de les deaths acumulades es modifica la data original, potser jo crearia una nova taula per no modificar l'original. Els gràfics de sota tampoc sabria com interpretar-los perquè amb el drama de les dates no sé si R les pilla bé.
