@@ -29,7 +29,6 @@ NOTES ESTHER:
 1. Data exploration. Ok
 
 2. Data visualization. Ok
-- Algu extra de Shiny si tenim temps. --> Objectivament crec que no arribem jajajaj, millor deixar altres parts més assegurades
 
 3. Regressions:
 - Entendre si els models ens esta dient alguna cosa. En sobra o en falta algún? Comentar.
@@ -47,7 +46,7 @@ Tenim:
 9. Lm time period vs all deaths aggregated
 10. Lm total deaths vs total deaths lagged
 11. Lm total deaths vs total deaths lagged AR 1
-(10 i 11 no té realment sentit que els fem ja que la data no és stationary --> jo deixaria però la comprovació de per què no ho és i perquè no els fem)
+(10 i 11 no té realment sentit que els fem ja que la data no és stationary --> jo deixaria però la comprovació de per què no ho és i perquè no els fem) E: Agree.
 
 --> A tenir en compte per quan fem les interpretacions dels models:
 - Dades dels soldats nous que entraven? Com afectava que morissin i entressin soldats nous?
@@ -72,10 +71,10 @@ Tenim:
 - Revisar llibreries. Calen totes?
 - Plots amb ggplot revisar-los i escollir quins deixem
 - Comentar regressions
-	L: He pensat d'afegir al report en html només els models que acabin donant residus distribuïts de manera normal (però deixar-los tots a la notebook). 		I pels que deixem al report en html comentar què és significatiu i què no i possibles raons
+	L: He pensat d'afegir al report en html només els models que acabin donant residus distribuïts de manera normal (però deixar-los tots a la notebook). 		I pels que deixem al report en html comentar què és significatiu i què no i possibles raons. E: D'acord ^^
 - Prediccions (o provar de fer-les amb algun/s model/s regressius que hagin donat resultats decents)
 - Bondat d'ajust i corba ROC
 - Conclusions
 
 DUBTES LAURA (8 juliol):
-- En el bloc de codi que hi ha sota el gràfic de les deaths acumulades es modifica la data original, potser jo crearia una nova taula per no modificar l'original. Els gràfics de sota tampoc sabria com interpretar-los perquè amb el drama de les dates no sé si R les pilla bé.
+- En el bloc de codi que hi ha sota el gràfic de les deaths acumulades es modifica la data original, potser jo crearia una nova taula per no modificar l'original. Els gràfics de sota tampoc sabria com interpretar-los perquè amb el drama de les dates no sé si R les pilla bé. E: D'accord, m'ho miro.
