@@ -269,14 +269,14 @@ Let's analyze now the number of deaths by period and disease in absolute values:
 
 ```{r}
 #We display the data that is more suitable for the graphs:
-data=data[1:12,]
-data1=data.frame(t(data))
-data2=data1[3:5,]
-colnames(data2)=month.abb
-data2$group=row.names(data2)
-data3=melt(data2,id="group")
-data3$value=as.numeric(data3$value)
-head(data3)
+#data=data[1:12,]
+#data1=data.frame(t(data))
+#data2=data1[3:5,]
+#colnames(data2)=month.abb
+#data2$group=row.names(data2)
+#data3=melt(data2,id="group")
+#data3$value=as.numeric(data3$value)
+#head(data3)
 ```
 ```{r}
 #Bar graph:
@@ -327,17 +327,23 @@ qqline(resid1, lwd=2, lty=3)
 
 shapiro.test(resid1)
 
-#The correlation for this model is 0.55, meaning that the correlation will be positive and intens (its nearest point is 1). In plain text, correlation is explaining that if the intercept variable (avg_size_army) is growing at 1%, zymotic diseases will grow at 0.55%.
+#The correlation for this model is 0.55, meaning that the correlation will be positive [and intens (its nearest point is 1)] between both variables. [In plain text, correlation is explaining that if the intercept variable (avg_size_army) is growing at 1%, zymotic diseases will grow at 0.55%.] 
 
-#After calculating the correlation and the simple regression of these two variable, NeweyWest test is applied. This test provides an estimate of the covariance matrix of the parameters of a regression-type model when this model is applied in situations where the standard assumptions of regression analysis do not apply. Summarizing, NeweyWest test wants not to ignore how yesterday's values may impact today's values.
+#[After calculating the correlation and the simple regression of these two variable, NeweyWest test is applied. This test provides an estimate of the covariance matrix of the parameters of a regression-type model when this model is applied in situations where the standard assumptions of regression analysis do not apply. Summarizing, NeweyWest test wants not to ignore how yesterday's values may impact today's values.] --> l'explicació aquesta la podem posar abans de totes les interpretacions per no repetir-ho tota l'estona
 
-#From the t test of coefficients regression, taking into consideration the NeweyWest method applied, we can see that the average size of the army is positively related to zymotic diseases. For each soldier added in the army, zymotic diseases increased by 4.16 (soldiers killed?). There is a certain level of signification between the two variables.
+#[From the t test of coefficients regression, taking into consideration the NeweyWest method applied, we can see that the average size of the army is positively related to zymotic diseases. For each soldier added in the army, zymotic diseases increased by 4.16 (soldiers killed?). There is a certain level of signification between the two variables.] --> en aquest cas només l'intercept és significatiu. Crec que et donen valors dierents perquè la data original se t'actualitza al córrer la línia 272 del codi (he agafat tot el bloc i l'he posat de moment com a comentari perquè no passés això)
 
-#The residual plot of this model let us see, in a graphical way, the distributions of those residuals, which are in this case normal. On the other hand, from the quartile-comparison plot model we can see a normal distribution, although with some outliers in the ends.
+#The residual plot of this model lets us see, in a graphical way, the distributions of those residuals, which are in this case normal. On the other hand, from the quartile-comparison plot model we can see a normal distribution, although with some outliers in the ends.
 
 #Finally, Shapiro-Wilk test performed is understood as a test of normality in which the null-hypothesis of this test is that the population is normally distributed. Thus, if the p value is less than the chosen alpha level, then the null hypothesis is rejected and there is evidence that the data tested are not normally distributed. On the other hand, if the p value is greater than the chosen alpha level, then the null hypothesis that the data came from a normally distributed population can not be rejected. In our case, as we assume the significance level to be at least 0.05 and our significance is 0.001, we will retain the null hypothesis of population normality as p > 0.05.
 
 #Like most statistical significance tests, if the sample size is sufficiently large this test may detect even trivial departures from the null hypothesis (i.e., although there may be some statistically significant effect, it may be too small to be of any practical significance); thus, additional investigation of the effect size is typically advisable, e.g., a Q–Q plot in this case.
+
+#Respecte aquests últims tres paràgrafs, jo potser inclouria aquesta explicació un cop al principi per no repetir-ho per tots els models i en cada model comentar:
+  #Correlació (positiva o negativa)
+  #Quins coeficients són significatius
+  #Interpretació dels significatius
+  #Dir si els residus són normals o no (i aleshores, si els residus no són normals tornaria a posar include=FALSE i que aquell model no surti al report ja cuqui, però just an idea)
 ```
 ```{r}
 #Average Size Army vs Deaths by Injuries:
