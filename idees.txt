@@ -22,62 +22,23 @@ PUNTS IMPORTANTS ENTREGA:
 - Triar nom de l'equip.
 
 
-NOTES ESTHER:
-
-0. Intro. Ok
-
-1. Data exploration. Ok
-
-2. Data visualization. Ok
-
-3. Regressions:
-- Entendre si els models ens esta dient alguna cosa. En sobra o en falta algún? Comentar.
-- Revisar si volem la última part o no fa falta. Volem alguna cosa més?
-
-Tenim:
-1. Lm avg size army vs zymotic
-2. Lm avg size army vs injuries
-3. Lm avg size army vs other
-4. Lm avg size army vs zymotic, injuries and other separated
-5. Lm avg size army vs all deaths aggregated
-6. Lm time period vs zymotic
-7. Lm time period vs injuries
-8. Lm time period vs other
-9. Lm time period vs all deaths aggregated
-10. Lm total deaths vs total deaths lagged
-11. Lm total deaths vs total deaths lagged AR 1
-(10 i 11 no té realment sentit que els fem ja que la data no és stationary --> jo deixaria però la comprovació de per què no ho és i perquè no els fem) E: Agree.
-
---> A tenir en compte per quan fem les interpretacions dels models:
-- Dades dels soldats nous que entraven? Com afectava que morissin i entressin soldats nous?
-- Aquestes dues variables no estan correlacionades.
-- Comentem que no tenen relació. Possibles raons de perquè no tenen correlació. Info que podria faltar i no tenim?
 
 
-4. Predictions:
-- Falta comentar el que hem trobat. Mini conclusions després de veure els resultats.
-- Falta acabar de mirar com podem afegir mês coses interessants.
-- Agafaria un model que donés bons resultats per fer aquesta part. Comentar.
-
-
-5. Conclusions:
-- Relacionar les conclusions amb el que realment va pasar històricament.
-- Guerra de Crimea. Exèrcit anglès. Relacionar amb info a la intro.
-
-	
-	
-*** COSES PENDENTS DE FER ***
+PUNTS A TRACTAR REUNIÓ DIVENDRES:
 
 - Revisar llibreries. Calen totes?
-- Plots amb ggplot revisar-los i escollir quins deixem
-- Comentar regressions
-	L: He pensat d'afegir al report en html només els models que acabin donant residus distribuïts de manera normal (però deixar-los tots a la notebook). 		I pels que deixem al report en html comentar què és significatiu i què no i possibles raons. E: D'acord ^^
-- Prediccions (o provar de fer-les amb algun/s model/s regressius que hagin donat resultats decents)
-- Bondat d'ajust i corba ROC
-- Conclusions
 
-DUBTES LAURA (8 juliol):
-- En el bloc de codi que hi ha sota el gràfic de les deaths acumulades es modifica la data original, potser jo crearia una nova taula per no modificar l'original. Els gràfics de sota tampoc sabria com interpretar-los perquè amb el drama de les dates no sé si R les pilla bé. E: D'accord, m'ho miro.
+- En el bloc de codi que hi ha sota el gràfic de les deaths acumulades es modifica la data original, potser jo crearia una nova taula per no modificar l'original. Els gràfics de sota tampoc sabria com interpretar-los perquè amb el drama de les dates no sé si R les pilla bé.
+
+- Com deixem els models 10 i 11? Afegim al report HTML el raonament de non-stationarity? E: Jo ho faria, ja que ho hem comprovat.
+
+- Com deixem els últims plots de l'apartat 2? Com comentar-los? Assegurar que no hi ha problemes amb les dates. E: Comentem el problema i si vols me'ls torno a mirar. Si no han de servir els podem treure.
+
+- Prediccions. E: Entenc que els fem amb els dos models que hem "presentat" a l'apartat 3?
+
+- Començar conclusions:
+- Relacionar les conclusions amb el que realment va pasar històricament.
+- Guerra de Crimea. Exèrcit anglès. Relacionar amb info a la intro.
 
 
 
@@ -95,11 +56,3 @@ Copio aquí els comentaris que vas escriure en l'apartat de les regressions perq
 #Finally, Shapiro-Wilk test performed is understood as a test of normality in which the null-hypothesis of this test is that the population is normally distributed. Thus, if the p value is less than the chosen alpha level, then the null hypothesis is rejected and there is evidence that the data tested are not normally distributed. On the other hand, if the p value is greater than the chosen alpha level, then the null hypothesis that the data came from a normally distributed population can not be rejected. In our case, as we assume the significance level to be at least 0.05 and our significance is 0.001, we will retain the null hypothesis of population normality as p > 0.05.
 
 #Like most statistical significance tests, if the sample size is sufficiently large this test may detect even trivial departures from the null hypothesis (i.e., although there may be some statistically significant effect, it may be too small to be of any practical significance); thus, additional investigation of the effect size is typically advisable, e.g., a Q–Q plot in this case.
-
-
-
-PUNTS A TRACTAR REUNIÓ DIVENDRES:
-- Com deixem els models 10 i 11? Afegim al report HTML el raonament de non-stationarity?
-- Com deixem els últims plots de l'apartat 2? Com comentar-los? Assegurar que no hi ha problemes amb les dates
-- Prediccions
-- Començar conclusions
