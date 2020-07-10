@@ -28,11 +28,11 @@ PUNTS A TRACTAR REUNIÓ DIVENDRES:
 
 - Revisar llibreries. Calen totes?
 
-- En el bloc de codi que hi ha sota el gràfic de les deaths acumulades es modifica la data original, potser jo crearia una nova taula per no modificar l'original. Els gràfics de sota tampoc sabria com interpretar-los perquè amb el drama de les dates no sé si R les pilla bé.
+- En el bloc de codi que hi ha sota el gràfic de les deaths acumulades es modifica la data original, potser jo crearia una nova taula per no modificar l'original. Els gràfics de sota tampoc sabria com interpretar-los perquè amb el drama de les dates no sé si R les pilla bé. --> Linia 272.
+
+- Com deixem els últims plots de l'apartat 2? Com comentar-los? Assegurar que no hi ha problemes amb les dates. E: Comentem el problema i si vols me'ls torno a mirar. Si no han de servir els podem treure. Tenir en compte el seton any.
 
 - Com deixem els models 10 i 11? Afegim al report HTML el raonament de non-stationarity? E: Jo ho faria, ja que ho hem comprovat.
-
-- Com deixem els últims plots de l'apartat 2? Com comentar-los? Assegurar que no hi ha problemes amb les dates. E: Comentem el problema i si vols me'ls torno a mirar. Si no han de servir els podem treure.
 
 - Prediccions. E: Entenc que els fem amb els dos models que hem "presentat" a l'apartat 3?
 

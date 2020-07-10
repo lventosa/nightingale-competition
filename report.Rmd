@@ -269,7 +269,8 @@ Let's analyze now the number of deaths by period and disease in absolute values:
 
 ```{r}
 #We display the data that is more suitable for the graphs:
-#data=data[1:12,]
+#data_1year=data[1:12,]
+#data_2year=[13:24,]
 #data1=data.frame(t(data))
 #data2=data1[3:5,]
 #colnames(data2)=month.abb
@@ -299,7 +300,7 @@ Let's analyze now the number of deaths by period and disease in absolute values:
         #coord_polar()+xlab("")+ylab("")
 ```
 
-All three last graph display the same data from different angles. Taking into consideration that the first data we have is from April 1854 and the last one from March 1855, this completes a whole year from different period. Thus, from the data displayed in the graphs, we can identify that the number of deaths experience an exponential increment from April (the war is starting) until October, where it reaches its maximum. From there, is decreases until there is barely any death at the end of March, meaning as well that the war is arriving to an end.
+All three last graph display the same data from different angles. Taking into consideration that the first data we have is from April 1854 and the last one from March 1855, this completes a whole year from different periods. Thus, from the data displayed in the graphs, we can identify that the number of deaths experience an exponential increment from April (the war is starting) until October, where it reaches its maximum. From there, is decreases until there is barely any death at the end of March, meaning as well that the war is arriving to an end.
 
 *****
 # Regression Analysis
