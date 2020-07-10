@@ -33,7 +33,7 @@ One of her most important discoveries was the fact that "deaths caused by diseas
 # Data Exploration
 *****
 
-We check the different types of data on our dataset. The aim is to understand the nature of our variables (i.e. the proportion of numerical and categorical variables) to be able to develope a better model afterwards. Checks on missing values and outliers will be performed in addition.
+We check the different types of data on our dataset. We want to understand the nature of our variables (i.e. the proportion of numerical and categorical variables) to be able to develope a better model afterwards. Checks on missing values and outliers will be performed in addition.
 
 ```{r}
 rm(list=ls()) 
@@ -280,23 +280,23 @@ Let's analyze now the number of deaths by period and disease in absolute values:
 ```
 ```{r}
 #Bar graph:
-ggplot(data=data3,aes(x=variable,y=value,fill=group))+
-        geom_bar(stat="identity")+
-        scale_fill_brewer(palette="RdBu")+xlab("")+ylab("")
+#ggplot(data=data3,aes(x=variable,y=value,fill=group))+
+        #geom_bar(stat="identity")+
+        #scale_fill_brewer(palette="RdBu")+xlab("")+ylab("")
 ```
 ```{r}
 #Coordenades polar graph:
-ggplot(data=data3,aes(x=variable,y=value,fill=group))+
-        geom_bar(stat="identity")+
-        coord_polar()+
-        scale_fill_brewer(palette="BuPu")+xlab("")+ylab("")
+#ggplot(data=data3,aes(x=variable,y=value,fill=group))+
+        #geom_bar(stat="identity")+
+        #coord_polar()+
+        #scale_fill_brewer(palette="BuPu")+xlab("")+ylab("")
 ```
 ```{r}
 #Heatmap graph:
-ggplot(data=data3,aes(x=variable,y=group,fill=value))+
-        geom_tile(colour="black",size=0.1)+
-        scale_fill_gradientn(colours=c("white","deepskyblue3"))+
-        coord_polar()+xlab("")+ylab("")
+#ggplot(data=data3,aes(x=variable,y=group,fill=value))+
+        #geom_tile(colour="black",size=0.1)+
+        #scale_fill_gradientn(colours=c("white","deepskyblue3"))+
+        #coord_polar()+xlab("")+ylab("")
 ```
 
 All three last graph display the same data from different angles. Taking into consideration that the first data we have is from April 1854 and the last one from March 1855, this completes a whole year from different period. Thus, from the data displayed in the graphs, we can identify that the number of deaths experience an exponential increment from April (the war is starting) until October, where it reaches its maximum. From there, is decreases until there is barely any death at the end of March, meaning as well that the war is arriving to an end.
@@ -305,13 +305,19 @@ All three last graph display the same data from different angles. Taking into co
 # Regression Analysis
 *****
 
-The aim on this section is to show how the variables correlate to each other. Morever, we explore through regressions whether some variables have a significant impact on other variables.
+The aim of this section is to show how the variables correlate to each other. Morever, we explore through regressions whether some variables have a significant impact on other variables. 
+
+As the variables in our data set represent time series, some degree of autocorrelation within each variable is expected. For this reason, and to be able to better asses significance of the variables when used in regression models, standard errors are computed using the Newey West method, which accounts for this autocorrelation. 
+
+We have also analyzed the normality of the residuals after fitting the model and discarded those models with non-normal residuals. Normality is assed graphically with a QQPlot and running the Shapiro-Wilk test (null hypothesis: normality). For the interpretation of this test and for when assessing statistical significance of coefficients, we set a 0.05 (5%) significance level. 
+
+This knitted report only includes the regression models that, after being fitting, had normally distributed residuals.
 
 ```{r}
 #Some of the regression models performed below will not appear in the final HTML report as some of them have regressors that are far from being significant and residuals that are not normally distributed. Hence, below we present different regression models we thought were worth running and investigating even though some yield non satisfactory results.
-```
+``` 
 
-```{r}
+```{r, include = FALSE}
 #Average Size Army vs Zymotic Diseases:
 cor(data$avg_size_army, data$zymotic)  
 reg1 <- lm(avg_size_army ~ zymotic, data=data)
@@ -320,33 +326,22 @@ coeftest(reg1, NeweyWest(reg1))
 #Residuals:
 resid1 <- as.numeric(reg1$residuals) 
 adjusted.values1 <- fitted(reg1) 
-plot(adjusted.values1, resid1, main="Residual plot Model 1", ylab="Residual Values", xlab="Adjusted Values", col="lightsalmon3", abline(0, 0), pch=19)
+plot(adjusted.values1, resid1, main="Residual Plot", ylab="Residual Values", xlab="Adjusted Values", col="lightsalmon3", abline(0, 0), pch=19)
 
-qqnorm(resid1, col="tomato", main="Quantile-Comparison Plot Model 1")
+qqnorm(resid1, col="tomato", main="Quantile-Comparison Plot")
 qqline(resid1, lwd=2, lty=3)
 
 shapiro.test(resid1)
 
-#The correlation for this model is 0.55, meaning that the correlation will be positive [and intens (its nearest point is 1)] between both variables. [In plain text, correlation is explaining that if the intercept variable (avg_size_army) is growing at 1%, zymotic diseases will grow at 0.55%.] 
+#The correlation coefficient for this model is 0.55, meaning that the amount of deaths caused by zymotic diseases and the average size of the army will be positively correlated.
 
-#[After calculating the correlation and the simple regression of these two variable, NeweyWest test is applied. This test provides an estimate of the covariance matrix of the parameters of a regression-type model when this model is applied in situations where the standard assumptions of regression analysis do not apply. Summarizing, NeweyWest test wants not to ignore how yesterday's values may impact today's values.] --> l'explicació aquesta la podem posar abans de totes les interpretacions per no repetir-ho tota l'estona
+#By looking at the table of coefficients, we can state that only the intercept is statistically significant and that the amount of deaths by zymotic diseases does not have a significant effect on the average size of the army.
 
-#[From the t test of coefficients regression, taking into consideration the NeweyWest method applied, we can see that the average size of the army is positively related to zymotic diseases. For each soldier added in the army, zymotic diseases increased by 4.16 (soldiers killed?). There is a certain level of signification between the two variables.] --> en aquest cas només l'intercept és significatiu. Crec que et donen valors dierents perquè la data original se t'actualitza al córrer la línia 272 del codi (he agafat tot el bloc i l'he posat de moment com a comentari perquè no passés això)
-
-#The residual plot of this model lets us see, in a graphical way, the distributions of those residuals, which are in this case normal. On the other hand, from the quartile-comparison plot model we can see a normal distribution, although with some outliers in the ends.
-
-#Finally, Shapiro-Wilk test performed is understood as a test of normality in which the null-hypothesis of this test is that the population is normally distributed. Thus, if the p value is less than the chosen alpha level, then the null hypothesis is rejected and there is evidence that the data tested are not normally distributed. On the other hand, if the p value is greater than the chosen alpha level, then the null hypothesis that the data came from a normally distributed population can not be rejected. In our case, as we assume the significance level to be at least 0.05 and our significance is 0.001, we will retain the null hypothesis of population normality as p > 0.05.
-
-#Like most statistical significance tests, if the sample size is sufficiently large this test may detect even trivial departures from the null hypothesis (i.e., although there may be some statistically significant effect, it may be too small to be of any practical significance); thus, additional investigation of the effect size is typically advisable, e.g., a Q–Q plot in this case.
-
-#Respecte aquests últims tres paràgrafs, jo potser inclouria aquesta explicació un cop al principi per no repetir-ho per tots els models i en cada model comentar:
-  #Correlació (positiva o negativa)
-  #Quins coeficients són significatius
-  #Interpretació dels significatius
-  #Dir si els residus són normals o no (i aleshores, si els residus no són normals tornaria a posar include=FALSE i que aquell model no surti al report ja cuqui, però just an idea)
+#By the Shapiro test, we reject the null hypothesis of normality in the residuals and hence conclude that this model is not very trustworthy. 
 ```
+
+## Average size army vs Deaths by injuries
 ```{r}
-#Average Size Army vs Deaths by Injuries:
 cor(data$avg_size_army, data$injuries)
 reg2 <- lm(avg_size_army ~ injuries, data=data)
 coeftest(reg2, NeweyWest(reg2))
@@ -354,23 +349,17 @@ coeftest(reg2, NeweyWest(reg2))
 #Residuals:
 resid2 <- as.numeric(reg2$residuals) 
 adjusted.values2 <- fitted(reg2) 
-plot(adjusted.values2, resid2, main="Residual plot Model 2", ylab="Residual Values", xlab="Adjusted Values", col="lightsalmon3", abline(0, 0), pch=19)
+plot(adjusted.values2, resid2, main="Residual Plot", ylab="Residual Values", xlab="Adjusted Values", col="lightsalmon3", abline(0, 0), pch=19)
 
-qqnorm(resid2, col="tomato", main="Quantile-Comparison Plot Model 2")
+qqnorm(resid2, col="tomato", main="Quantile-Comparison Plot")
 qqline(resid2, lwd=2, lty=3)
 
 shapiro.test(resid2)
-
-#The correlation for this model is 0.34, meaning that the correlation will be positive but not so intens as its nearest point is 0. Thus, correlation is explaining that if the intercept variable (avg_size_army) is growing at 1%, deaths caused by injuries will grow at 0.34%.
-
-#After calculating the correlation and the simple regression of these two variable, NeweyWest test is applied as before. NeweyWest test wants not to ignore how yesterday's values may impact today's values.
-
-#From the t test of coefficients regression, taking into consideration the NeweyWest method applied, we can see that the average size of the army is positively, however slightly related to deaths by injuries. For each soldier added in the army, deaths by injuries increased by 26.83 (soldiers killed?). There is a certain level of signification between the two variables.
-
-#The residual plot of this model let us see, in a graphical way, the distributions of those residuals, which appears not to be normal. On the other hand, from the quartile-comparison plot model we can see a normal distribution, although with some outliers in the ends.
-
-#Finally, Shapiro-Wilk test performed is understood as a test of normality. In our case, as we assume the significance level to be at least 0.05 and our significance is 0.00035, we will retain the null hypothesis of population normality as p > 0.05.
 ```
+The correlation coefficient between deaths by injuries and the average size of the army is aprox 0.25, quite low but positive. 
+
+This model is reliable judging by the results of the Shapiro test (we do not reject the null hypotheses of normally distributed residuals). The above plots also show that the residuals do not happen to be normally distributed. Nonetheless, only the intercept is significant. Hence, we conclude by saying that the amount of deaths by injuries does not have a significant effect on the average size of the army.
+
 ```{r, include = FALSE}
 #Average Size Army vs Other Causes:
 cor(data$avg_size_army, data$other)
@@ -380,34 +369,40 @@ coeftest(reg3, NeweyWest(reg3))
 #Residuals:
 resid3 <- as.numeric(reg3$residuals) 
 adjusted.values3 <- fitted(reg3) 
-plot(adjusted.values3, resid3, main="Residual plot Model 3", ylab="Residual Values", xlab="Adjusted Values", col="lightsalmon3", abline(0, 0), pch=19)
+plot(adjusted.values3, resid3, main="Residual Plot", ylab="Residual Values", xlab="Adjusted Values", col="lightsalmon3", abline(0, 0), pch=19)
 
-qqnorm(resid3, col="tomato", main="Quantile-Comparison Plot Model 3")
+qqnorm(resid3, col="tomato", main="Quantile-Comparison Plot")
 qqline(resid3, lwd=2, lty=3)
 
 shapiro.test(resid3)
+
+#Since the correlation coefficient is -0.16, these two variables move in opposite directions. That is, when one variable increases, the other one is expected to decrease.
+
+#Again, only the intercept is statistically significant in this regression model. Thus, deaths by causes other than injuries and wounds and symotic diseases do not appear to have a significant impact on the average size of the army.
+
+#The residuals do not look normally distributed. Moreover, the Shapiro test shows that we must reject the null hypothesis of normality. Consequently, we can state that this regression model is not very reliable.
 ```
 
-Baixa correlació
-
-```{r, include = FALSE}
-#Average Size Army vs. all deaths (segregated):
-#falta cor
+## Average size army vs. All deaths (multilinear regression model)
+```{r}
 reg4 <- lm(avg_size_army ~ data$zymotic+data$injuries+data$other, data=data)
 coeftest(reg4, NeweyWest(reg4))
 
 #Residuals:
 resid4 <- as.numeric(reg4$residuals) 
 adjusted.values4 <- fitted(reg4) 
-plot(adjusted.values4, resid4, main="Residual plot Model 4", ylab="Residual Values", xlab="Adjusted Values", col="lightsalmon3", abline(0, 0), pch=19)
+plot(adjusted.values4, resid4, main="Residual Plot", ylab="Residual Values", xlab="Adjusted Values", col="lightsalmon3", abline(0, 0), pch=19)
 
-qqnorm(resid4, col="tomato", main="Quantile-Comparison Plot Model 4")
+qqnorm(resid4, col="tomato", main="Quantile-Comparison Plot")
 qqline(resid4, lwd=2, lty=3)
 
 shapiro.test(resid4)
 ```
+Despite the previous results, when we regress the average size of the army against all three causes of death in the dataset, we obtain that the fitted model has normally distributed residuals. 
 
-Baixa correlació en totes
+Nonetheless, neither of the coefficients are significant, allowing us to conclude that neither deaths by injuries, deaths by zymotic diseases nor deaths by other causes appear to have a significant effect on the average size of the army.
+
+This may appear surprising, as we would expect that the more deaths (no matter the cause), the lower the average size of the army. However, we must also bear in mind that the variables in the dataset do not explain the whole story. The dataset does not include information of the new soldiers that month after month joined the army. Having soldiers killed may cause the average size of the army to decrease but it may also caused more men to join the army, increasing its average size. Without information of new soldiers, we cannot know the real impact of the causes of death on the average size of the army.
 
 ```{r, include = FALSE}
 #Average Size Army vs. Total Deaths:
@@ -418,16 +413,19 @@ coeftest(reg5, NeweyWest(reg5))
 #Residuals:
 resid5 <- as.numeric(reg5$residuals) 
 adjusted.values5 <- fitted(reg5) 
-plot(adjusted.values5, resid5, main="Residual plot Model 5", ylab="Residual Values", xlab="Adjusted Values", col="lightsalmon3", abline(0, 0), pch=19)
+plot(adjusted.values5, resid5, main="Residual Plot", ylab="Residual Values", xlab="Adjusted Values", col="lightsalmon3", abline(0, 0), pch=19)
 
-qqnorm(resid5, col="tomato", main="Quantile-Comparison Plot Model 5")
+qqnorm(resid5, col="tomato", main="Quantile-Comparison Plot")
 qqline(resid5, lwd=2, lty=3)
 
 shapiro.test(resid5)
+
+#We wanted to compare the results of the previous regression model with the results of regressing the average size of the army against total deaths (aggregated in the new variable we created).
+
+#The correlation between total deaths and the average size of the army is negative and not very strong.
+
+#As for the regression coefficients, only the intercept is statistically significant and thus, total deaths do not have a statistically signifcant effect on the average size of the army. Nonetheless, this is not a very reliable model since we reject the null hypotheses of normally distributed residuals.
 ```
-
-Baixa correlació
-
 ```{r, include = FALSE}
 #Zymotic Diseases vs. Time Period:
 cor(data$zymotic, data$time_period)
@@ -437,16 +435,17 @@ coeftest(reg6, NeweyWest(reg6))
 #Residuals:
 resid6 <- as.numeric(reg6$residuals) 
 adjusted.values6 <- fitted(reg6) 
-plot(adjusted.values6, resid6, main="Residual plot Model 6", ylab="Residual Values", xlab="Adjusted Values", col="lightsalmon3", abline(0, 0), pch=19)
+plot(adjusted.values6, resid6, main="Residual Plot", ylab="Residual Values", xlab="Adjusted Values", col="lightsalmon3", abline(0, 0), pch=19)
 
-qqnorm(resid6, col="tomato", main="Quantile-Comparison Plot Model 6")
+qqnorm(resid6, col="tomato", main="Quantile-Comparison Plot")
 qqline(resid6, lwd=2, lty=3)
 
 shapiro.test(resid6)
+
+#Negative correlation between deaths by zymotic diseases and time period mean that over time we expect the amount of deaths by zymotic diseases to decrease, which by one of the plots of section 2 this is true from period 9 (January 1855) onwards.
+
+#Only the intercept of the regression model is significant. Hence, the time period does not have a significant effect on the number of deaths by zymotinc diseases. Morover, this model is not very reliable as residuals are not normally distributed.
 ```
-
-Alta correlació
-
 ```{r, include = FALSE}
 #Deaths by Injuries vs. Time Period:
 cor(data$injuries, data$time_period)
@@ -456,16 +455,17 @@ coeftest(reg7, NeweyWest(reg7))
 #Residuals:
 resid7 <- as.numeric(reg7$residuals) 
 adjusted.values7 <- fitted(reg7) 
-plot(adjusted.values7, resid7, main="Residual plot Model 7", ylab="Residual Values", xlab="Adjusted Values", col="lightsalmon3", abline(0, 0), pch=19)
+plot(adjusted.values7, resid7, main="Residual Plot", ylab="Residual Values", xlab="Adjusted Values", col="lightsalmon3", abline(0, 0), pch=19)
 
-qqnorm(resid7, col="tomato", main="Quantile-Comparison Plot Model 7")
+qqnorm(resid7, col="tomato", main="Quantile-Comparison Plot")
 qqline(resid7, lwd=2, lty=3)
 
 shapiro.test(resid7)
+
+#Time period and the amount of deaths by injuries are negatively correlated, even though the correlation coefficient i very low and near to 0.
+
+#Regarding the regression model, neither the intercept nor the estimated coefficient for the time period variable are statistically significant. This allows us to conclude that deaths by injuries are not significantly affected by the time period. Moreover, this is not a very trustworthy model as residuals ar not normally distributed, judging by the plots and the Shapiro test.
 ```
-
-Baixa correlació
-
 ```{r, include = FALSE}
 #Other Causes vs. Time Period:
 cor(data$other, data$time_period)
@@ -475,36 +475,37 @@ coeftest(reg8, NeweyWest(reg8))
 #Residuals:
 resid8 <- as.numeric(reg8$residuals) 
 adjusted.values8 <- fitted(reg8) 
-plot(adjusted.values8, resid8, main="Residual plot Model 8", ylab="Residual Values", xlab="Adjusted Values", col="lightsalmon3", abline(0, 0), pch=19)
+plot(adjusted.values8, resid8, main="Residual Plot", ylab="Residual Values", xlab="Adjusted Values", col="lightsalmon3", abline(0, 0), pch=19)
 
-qqnorm(resid8, col="tomato", main="Quantile-Comparison Plot Model 8")
+qqnorm(resid8, col="tomato", main="Quantile-Comparison Plot")
 qqline(resid8, lwd=2, lty=3)
 
 shapiro.test(resid8)
+
+#The correlation coefficient is negative, which means that over time, fewer deaths by causes that are not injuries nor zymotic diseases are expected. However, the plots in section 2 tell another story.
+
+#Just as the previous model, none of the coefficients estimated are statistically significant and the residuals are not normally distributed.
 ```
-
-Alta correlació
-
 ```{r, include = FALSE}
 #Total Deaths vs. Time Period
-#cor?
+cor(data$total_deaths, data$time_period)
 reg9 <- lm(total_deaths ~ time_period, data=data)
 coeftest(reg9, NeweyWest(reg9))
 
 #Residuals:
 resid9 <- as.numeric(reg9$residuals) 
 adjusted.values9 <- fitted(reg9) 
-plot(adjusted.values9, resid9, main="Residual plot Model 9", ylab="Residual Values", xlab="Adjusted Values", col="lightsalmon3", abline(0, 0), pch=19)
+plot(adjusted.values9, resid9, main="Residual Plot", ylab="Residual Values", xlab="Adjusted Values", col="lightsalmon3", abline(0, 0), pch=19)
 
-qqnorm(resid9, col="tomato", main="Quantile-Comparison Plot Model 9")
+qqnorm(resid9, col="tomato", main="Quantile-Comparison Plot")
 qqline(resid9, lwd=2, lty=3)
 
 shapiro.test(resid9)
+
+#A negative correlation coefficient between these two variables, even though it is not close to 1 in absolute value, shows that total deaths are expected to decrease over time. Again, this is not what the plots shown earlier tell.
+
+#Once again, only the intercept is statistically significant. Thus, the amount of deaths (by all causes) cannot be explained by the time period. In addition, non-normally distributed residuals tell us that this is model si not very trustworthy.
 ```
-
-Alta correlació
-
-
 ```{r, include = FALSE}
 #For the following model we are interested in total deaths in terms of previous values of the same variable. That is, we want to lag the variable and regress total death on its lags to look for significance. The first step, though, is assess for stationarity of the series.
 
@@ -555,8 +556,6 @@ coeftest(reg11)
 resid11 <- as.numeric(reg11$residuals)
 qqnorm(resid11, col="tomato", main="Model 11: Total Deaths vs. Total Deaths Lagged AR(1)") 
 qqline(resid11, lwd=2, lty=3)
-
-#Veiem que tant una regressió lineal calculada amb la funció lm() dóna el mateix model que quan apliquem un model AR(1) aplicant la funció arima()
 ```
 
 *****
