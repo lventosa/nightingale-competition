@@ -277,6 +277,7 @@ data2=data1[3:5,]
 #data2.1=data1.1[3:5,]
 
 colnames(data2)=c("Apr 1854","May 1854","Jun 1854","Jul 1854","Aug 1854","Sep 1854","Oct 1854","Nov 1854","Dec 1854","Jan 1855","Feb 1855","Mar 1855","Apr 1855","May 1855","Jun 1855","Jul 1855","Aug 1855","Sep 1855","Oct 1855","Nov 1855","Dec 1855","Jan 1856","Feb 1856","Mar 1856")
+#colnames(data2)=month.abb
 #data2$group=row.names(data2)
 #colnames(data2.1)=month.abb
 #data2.1$group=row.names(data2.1)
@@ -607,32 +608,45 @@ qqline(resid11, lwd=2, lty=3)
 # Predictions
 *****
 
-Triar model!
+Models 2 and 4 were chosen as the models able to do perform the highest correlations between varaibles. For these reasons, we will be performing the predictions with these two same models as well.
 
 ```{r}
-#Accuracy de reg1 per fer prediccions (he provat de fer la del número de morts basant-me només en un lag d'aquesta mateixa variable per provar de fer-ne alguna)
+#Accuracy of reg2 to perform the predictions (number of deaths with one lag):
 train_data <- subset(data, time_period<=round(0.7*L)) #70% training data
 test_data <- subset(data, time_period>round(0.7*L)) #30% test/validation data
 training1 <- data.frame(y=train_data$total_deaths, lag1=train_data$total_deaths) 
-model1 <- lm(y ~ lag1, data=training1)
-y.hat1 <- predict(model1, data=test_data) 
+#model1 <- lm(y ~ lag1, data=training1)
+y.hat1 <- predict(reg2, data=test_data)
 error1 <- abs(y.hat1 - test_data$total_deaths)
-rmse1 <- sqrt((sum(error1)**2)/nrow(test_data)) 
+rmse1 <- sqrt((sum(error1)**2)/nrow(test_data))
+
+head(y.hat1)
 ```
 ```{r}
-# Ho hem de fer amb un model que funcioni però... Quina seria la probabilitat de X si Y és això i Z és això altre?
-#pred<-predict(reg1, data.frame(Y="1",Z=90),type = "response")
-#pred
+#Accuracy of reg4 to perform the predictions (number of deaths with one lag):
+train_data <- subset(data, time_period<=round(0.7*L)) #70% training data
+test_data <- subset(data, time_period>round(0.7*L)) #30% test/validation data
+training1 <- data.frame(y=train_data$total_deaths, lag1=train_data$total_deaths) 
+#model1 <- lm(y ~ lag1, data=training1)
+y.hat2 <- predict(reg4, data=test_data)
+error2 <- abs(y.hat2 - test_data$total_deaths)
+rmse2 <- sqrt((sum(error2)**2)/nrow(test_data))
+
+head(y.hat2)
+
+#Add predictions:
+mydata <- cbind(data, y.hat2)
+
+# Regression line + confidence intervals:
+mydata$group=row.names(mydata)
+colnames(mydata)=month.abb
+p <- ggplot(mydata, aes(group, data$avg_size_army)) +
+  geom_point() +
+  stat_smooth(method = lm)
+p
 ```
-```{r}
-# Calculem la bondat de l'ajust: <- s'ha de tocar la data
-#hoslem.test(X,fitted(modelX))
-```
-```{r}
-# Dibuixem la corba ROC: <- s'ha de tocar la data
-#prob_low=predict(logit_model_2, datA3, type="response")
-#r=roc(BW_RE,prob_low, data=datA3)
-```
+
+We can appreciate that the results of both predictions are not accurate. This fact is produced due to the size of the dataset and the number of variables we are working with. It is known that, in order to have much more accurate and reliable results, more variable need to be taken in account, however this informationwas not given in the dataset. It is also important to highlight the time in which we data was collected (1854-1856) to better understand the lack of information compiled by Nightingale and the tools he used to process this data.
 
 *****
 # Conclusions
