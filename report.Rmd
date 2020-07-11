@@ -614,43 +614,47 @@ Models 2 and 4 were chosen as the models able to do perform the highest correlat
 #Accuracy of reg2 to perform the predictions (number of deaths with one lag):
 train_data <- subset(data, time_period<=round(0.7*L)) #70% training data
 test_data <- subset(data, time_period>round(0.7*L)) #30% test/validation data
-training1 <- data.frame(y=train_data$total_deaths, lag1=train_data$total_deaths) 
-#model1 <- lm(y ~ lag1, data=training1)
-y.hat1 <- predict(reg2, data=test_data)
-error1 <- abs(y.hat1 - test_data$total_deaths)
-rmse1 <- sqrt((sum(error1)**2)/nrow(test_data))
+model1 <- lm(avg_size_army ~ injuries, data=train_data)
+y.hat1 <- predict(model1, data=test_data, interval="confidence")
+rmse1 <- sqrt((sum(abs(y.hat1 - test_data$total_deaths))**2)/nrow(test_data))
 
-head(y.hat1)
+rmse1
 ```
 ```{r}
 #Accuracy of reg4 to perform the predictions (number of deaths with one lag):
-train_data <- subset(data, time_period<=round(0.7*L)) #70% training data
-test_data <- subset(data, time_period>round(0.7*L)) #30% test/validation data
-training1 <- data.frame(y=train_data$total_deaths, lag1=train_data$total_deaths) 
-#model1 <- lm(y ~ lag1, data=training1)
-y.hat2 <- predict(reg4, data=test_data)
-error2 <- abs(y.hat2 - test_data$total_deaths)
-rmse2 <- sqrt((sum(error2)**2)/nrow(test_data))
+model2 <- lm(avg_size_army ~ zymotic + injuries + other, data=train_data)
+y.hat2 <- predict(model2, data=test_data, interval="confidence")
+rmse2 <- sqrt((sum(abs(y.hat2 - test_data$total_deaths))**2)/nrow(test_data))
 
-head(y.hat2)
-
-#Add predictions:
-mydata <- cbind(data, y.hat2)
+rmse2
+```
+```{r}
+#Agreggate predictions:
+preds <- data.frame(cbind(y.hat1, y.hat2))
 
 # Regression line + confidence intervals:
-mydata$group=row.names(mydata)
-colnames(mydata)=month.abb
-p <- ggplot(mydata, aes(group, data$avg_size_army)) +
+preds$group=row.names(preds)
+colnames(preds)=month.abb
+ggplot(preds, aes(group, y.hat1)) +
   geom_point() +
   stat_smooth(method = lm)
-p
+
+preds$group=row.names(preds)
+colnames(preds)=month.abb
+ggplot(preds, aes(group, y.hat2)) +
+  geom_point() +
+  stat_smooth(method = lm)
+
+#Em surten punts random i no puc fer lo dels intervals de confiança
 ```
 
-We can appreciate that the results of both predictions are not accurate. This fact is produced due to the size of the dataset and the number of variables we are working with. It is known that, in order to have much more accurate and reliable results, more variable need to be taken in account, however this informationwas not given in the dataset. It is also important to highlight the time in which we data was collected (1854-1856) to better understand the lack of information compiled by Nightingale and the tools he used to process this data.
+For both prediction models, the resulting mean squared errors are extremely large Thus, we can state that the results of both predictions are not accurate. This fact is produced due to the small size of the dataset and the number of variables we are working with. IMaybe we should have obtained more reliable results if we have had more variables in our dataset or just a greater number of observations. 
 
 *****
 # Conclusions
 *****
+
+It is also important to highlight the time in which we data was collected (1854-1856) to better understand the lack of information compiled by Nightingale and the tools he used to process this data.
 
 *****
 # Web References
