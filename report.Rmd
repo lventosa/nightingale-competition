@@ -28,7 +28,6 @@ In 1854, she and 38 other nurses trained by herself traveled to the Crimean peni
 
 One of her most important discoveries was the fact that "deaths caused by diseases were more than seven times the number of deaths due to combat", because of unsanitary hospital conditions, as mentioned. However, knowing numbers alone have limited persuasive powers, Nightingale used her skills in statistical communication to convince the British parliament of the need to act. She avoided the dry tables used by most statisticians of the time, and instead devised a novel graph to illustrate the impact of hospital and nursing practice reform on army mortality rates.
 
-
 *****
 # Data Exploration
 *****
@@ -291,9 +290,9 @@ colnames(data2)=c("Apr 1854","May 1854","Jun 1854","Jul 1854","Aug 1854","Sep 18
 head(data2)
 #head(data3.1)
 
-df2 <- data.frame(t(data2[-1]))
+#df2 <- data.frame(t(data2[-1]))
 
-head(df2)
+#head(df2)
 ```
 ```{r}
 #Bar graph:
@@ -632,27 +631,8 @@ rmse2 <- sqrt((sum(error2)**2)/nrow(test_data))
 
 rmse2
 ```
-```{r}
-#Agreggate predictions:
-preds <- data.frame(cbind(y.hat1, y.hat2))
 
-# Regression line + confidence intervals:
-preds$group=row.names(preds)
-colnames(preds)=month.abb
-ggplot(preds, aes(group, y.hat1)) +
-  geom_point() +
-  stat_smooth(method = lm)
-
-preds$group=row.names(preds)
-colnames(preds)=month.abb
-ggplot(preds, aes(group, y.hat2)) +
-  geom_point() +
-  stat_smooth(method = lm)
-
-#Em surten punts random i no puc fer lo dels intervals de confiança
-```
-
-For both prediction models, the resulting mean squared errors are extremely large Thus, we can state that the results of both predictions are not accurate. This fact is produced due to the small size of the dataset and the number of variables we are working with. IMaybe we should have obtained more reliable results if we have had more variables in our dataset or just a greater number of observations. 
+For both prediction models, the resulting mean squared errors are extremely large Thus, we can state that the results of both predictions are not accurate. This fact is produced due to the small size of the dataset and the number of variables we are working with. Maybe we should have obtained more reliable results if we have had more variables in our dataset or just a greater number of observations. 
 
 *****
 # Conclusions
