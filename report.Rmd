@@ -616,7 +616,9 @@ train_data <- subset(data, time_period<=round(0.7*L)) #70% training data
 test_data <- subset(data, time_period>round(0.7*L)) #30% test/validation data
 model1 <- lm(avg_size_army ~ injuries, data=train_data)
 y.hat1 <- predict(model1, data=test_data, interval="confidence")
-rmse1 <- sqrt((sum(abs(y.hat1 - test_data$total_deaths))**2)/nrow(test_data))
+error1 <- abs(y.hat1 - test_data$avg_size_army)
+rmse1 <- sqrt((sum(error1)**2)/nrow(test_data)) 
+#rmse1 <- sqrt((sum(abs(y.hat1 - test_data$total_deaths))**2)/nrow(test_data))
 
 rmse1
 ```
@@ -624,7 +626,9 @@ rmse1
 #Accuracy of reg4 to perform the predictions (number of deaths with one lag):
 model2 <- lm(avg_size_army ~ zymotic + injuries + other, data=train_data)
 y.hat2 <- predict(model2, data=test_data, interval="confidence")
-rmse2 <- sqrt((sum(abs(y.hat2 - test_data$total_deaths))**2)/nrow(test_data))
+#rmse2 <- sqrt((sum(abs(y.hat2 - test_data$total_deaths))**2)/nrow(test_data))
+error2 <- abs(y.hat2 - test_data$avg_size_army)
+rmse2 <- sqrt((sum(error2)**2)/nrow(test_data)) 
 
 rmse2
 ```
