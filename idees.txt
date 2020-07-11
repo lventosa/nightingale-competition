@@ -13,11 +13,8 @@ PUNTS IMPORTANTS ENTREGA:
 	Enviar un correo electrónico a bcn@rladies.org con el asunto “FLORENCE_COMPETITION_2020” 	indicando los datos del equipo: participantes (nombre del equipo, nombre participantes, y 	correo 	electrónico de contacto).
 	Também Dropbox o Wetransfer. Al mail s'haurem d'adjuntar els docs mencionats abans.
 
-- Timings equip:
-	5 Juliol: tots punts ok, comentem conclusions.
-	6-8 Juliol: Shiny + extres.
-	8-9 Juliol: revisió total	
-	10-12 Juliol: gravar video.
+- Timings equip:	
+	10-12 Juliol: revisió total + gravar video.
 
 - Triar nom de l'equip.
 
@@ -32,9 +29,11 @@ PUNTS A TRACTAR REUNIÓ DIVENDRES:
 
 - Com deixem els últims plots de l'apartat 2? Com comentar-los? Assegurar que no hi ha problemes amb les dates. E: Comentem el problema i si vols me'ls torno a mirar. Si no han de servir els podem treure. Tenir en compte el seton any.
 
-- Com deixem els models 10 i 11? Afegim al report HTML el raonament de non-stationarity? E: Jo ho faria, ja que ho hem comprovat.
+- Prediccions:
+Primer apart el deixem?
 
-- Prediccions. E: Entenc que els fem amb els dos models que hem "presentat" a l'apartat 3?
+
+
 
 - Començar conclusions:
 - Relacionar les conclusions amb el que realment va pasar històricament.
