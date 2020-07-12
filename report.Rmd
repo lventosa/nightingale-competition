@@ -22,17 +22,17 @@ knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
 # Introduction
 *****
 
-**Florence Nightingale** (1820-1910), known as *The Lady With the Lamp*, was a British nurse, social reformer and statistician best known as the founder of modern nursing. Her experiences as a nurse during the Crimean War were foundational in her views about sanitation. She established St. Thomas’ Hospital and the Nightingale Training School for Nurses in 1860. Her efforts to reform healthcare greatly influenced the quality of care in the 19 and 20 centuries.
+**Florence Nightingale** (1820-1910), known as *The Lady With the Lamp*, was a British nurse, social reformer and statistician best known as the founder of modern nursing. Her experience as a nurse during the Crimean War was foundational in her views about sanitation. She established St. Thomas’ Hospital and the Nightingale Training School for Nurses in 1860. Her efforts to reform healthcare greatly influenced the quality of care in the 19th and 20th centuries.
 
-In 1854, she and 38 other nurses trained by herself traveled to the Crimean peninsula to treat the wounded British soldiers in the Crimean War (October 1853 - March 1856). After their arrival, the nurses discovered that the treatments the injured soldiers were receiving were inaccurate and that the overall hygenic conditions and medical supplies were insufficient. Florence kept a record of the monthly deaths by injuries, zymotic diseases and other causes among the soldiers between April 1854 and March 1856. These data were going to be later used for her rose diagrams.
+In 1854, she and 38 other nurses trained by herself traveled to the Crimean peninsula to treat the wounded British soldiers in the Crimean War (October 1853 - March 1856). After their arrival, the nurses discovered that the treatments the injured soldiers were receiving were inaccurate and that the overall hygenic conditions and medical supplies were insufficient. Florence kept a record of the monthly deaths by injuries, zymotic diseases and other causes among the soldiers between April 1854 and March 1856. 
 
-One of her most important discoveries was the fact that "deaths caused by diseases were more than seven times the number of deaths due to combat", because of unsanitary hospital conditions, as mentioned. However, knowing numbers alone have limited persuasive powers, Nightingale used her skills in statistical communication to convince the British parliament of the need to act. She avoided the dry tables used by most statisticians of the time, and instead devised a novel graph to illustrate the impact of hospital and nursing practice reform on army mortality rates.
+One of her most important discoveries was the fact that "deaths caused by diseases were more than seven times the number of deaths due to combat", the reason being unsanitary hospital conditions. However, knowing numbers alone have limited persuasive powers, Nightingale used her skills in statistical communication to convince the British parliament of the need to act. She avoided the dry tables used by most statisticians at the time, and instead devised a novel graph, polar-area diagram, to illustrate the impact of hospital and nursing practice reform on army mortality rates. 
 
 *****
 # Data Exploration
 *****
 
-We check the different types of data on our dataset. We want to understand the nature of our variables (i.e. the proportion of numerical and categorical variables) to be able to develope a better model afterwards. Checks on missing values and outliers will be performed in addition.
+In this first section, we will check the different types of data on our dataset. We want to understand the nature of our variables (i.e. the proportion of numerical and categorical variables) to be able to develope a better model afterwards. In addition, we will check on missing values and outliers.
 
 ```{r}
 rm(list=ls()) 
@@ -48,10 +48,7 @@ library(xts)
 library(lmtest)
 library(tseries)
 library(sandwich)
-library(forecast)
-library(ResourceSelection)
-library(pROC)
-library(reshape2)
+library(forecast) 
 ```
 ```{r}
 #Importing dataset:
@@ -89,15 +86,15 @@ Nightingale's original dataset consists of the following variables:
 
 - Zymotic diseases (3): Numeric variable which states the number of soldiers who died in such period of time for zymotic disease causes in absolute values.
 
-- Wounds & injuries (4): Numeric variable which states the number of soldiers who died in such period of time for wounds and injuries causes in absolute values.
+- Wounds & injuries (4): Numeric variable which indicates the number of soldiers who died in such period of time for wounds and injuries causes in absolute values.
 
-- All other causes (5): Numeric variable which states the number of soldiers who died in such period of time for any other causes in absolute values.
+- All other causes (5): Numeric variable which shows the number of soldiers who died in such period of time for any other causes in absolute values.
 
 - Zymotic diseases (6): Numeric variable which states the number of soldiers who died in such period of time for zymotic disease causes in rate values.
 
-- Wounds & injuries (7): Numeric variable which states the number of soldiers who died in such period of time for wounds and injuries causes in rate values.
+- Wounds & injuries (7): Numeric variable which indicates the number of soldiers who died in such period of time for wounds and injuries causes in rate values.
 
-- All other causes (8): Numeric variable which states the number of soldiers who died in such period of time for any other causes in rate values.
+- All other causes (8): Numeric variable which shows the number of soldiers who died in such period of time for any other causes in rate values.
 
 In order to make the data more readeable and understandable, we will make some changes in the variables as well as some variable additions.
 
@@ -132,13 +129,13 @@ boxplot(data$zymotic, col="mistyrose", main="Deaths by zymotic disease")
 boxplot(data$other, col="powderblue", main="Deaths by other causes")
 ```
 
-Let's recall what we can appreciate in the plots above:
+By looking at the plots above:
 
-- The majority of deaths by injury are compressed by 0 and 130, approximately. Additionally, there are some exceptional periods where deaths by injury amounted up to 300.
+- The majority of deaths by injuries are compressed between 0 and 130, approximately. Additionally, there are some exceptional periods where deaths by injury amounted up to 300.
 
-- The majority of deaths by zymotic disease are compressed between 50 and 800 approximately. However, we can see a long tail of cases up to 1700, with some additional outliers of 2100 and 2800.
+- Most of deaths by zymotic diseases are compressed between 50 and 800, approximately. However, we can see a long tail of cases up to 1700, with some additional outliers of 2100 and 2800.
 
-- The majority of deaths by other alternative causes are compressed between 25 and 75 approximately. We can also appreciate a long tail up to 175 and some outliers of 300 and 350.
+- The majority of deaths by other alternative causes are compressed between 25 and 75, approximately. We can also appreciate a long tail up to 175 and some outliers of 300 and 350.
 
 To sum up, it seems for now that most of the deaths included in our dataset were caused by zymotic diseases.
 
@@ -148,7 +145,7 @@ To sum up, it seems for now that most of the deaths included in our dataset were
 data[17,1] <- "Aug 1855" #We modify this entry as in the original dataset it appeared as Aug_1855.
 ```
 
-As the periods in our dataset are prior to January 1900, R cannot handle them as proper dates. For this reason, we are going to treat time as a numerical variable taking integer value from 0 to 23 in chronological order. This table of equivalences may be useful for the interpretation of the results in this report.
+As the periods in our dataset are prior to January 1900, R cannot handle them as proper dates. For this reason, we are going to treat time as a numeric variable taking integer value from 0 to 23 in chronological order. This table of equivalences may be useful for the interpretation of the results in this report.
 
 ```{r}
 #Creating a numeric variable to account for time period:
@@ -163,6 +160,8 @@ time_vars %>%
     tab_header(title = md("**Time periods**"), subtitle = md("Equivalence between both variables"))
 ```
 .  
+
+Taking into consideration that the first data we have is from April 1854 and the last one from March 1856, this completes two whole years, accounted in a monthly basis, and no month is missing. As we have already mentioned, this does not come as a surprise as we have already observed that our dataset consists of 24 rows.
 
 ```{r}
 #Adding new variables to the dataset:
@@ -216,11 +215,11 @@ After visually inspecting the four main series, we can state that no seasonal co
 # Data Visualization
 *****
 
-Florence Nightingale is famous for its polar graphs plot, then named Nightingale rose plots in her honor. The image below show the original plots made by her in 1856 with data collected during the Crimean War.
+Florence Nightingale is famous for its polar-area diagrams, as mentioned earlier. This kind of plots, where she represented the different causes of mortality among British soldiers, were then named Nightingale rose plots in her honor. The image below show the original plots made by her in 1856 with data collected during the Crimean War.
 
 ![Nightingale Rose Plot](./pictures/nightingale.jpg)
 
-In this section, we are going to explore the dataset in a visual way to see the impacts some variables had on some others using a different approach than her own:
+In this section, we are going to explore the dataset in a visual way to see the impacts some variables had on some others using a different approach than Nightingale's. We first plot three barplots, one per each cause of death:
 
 ```{r}
 ggplot(data, aes(x=time_period, y=zymotic))+
@@ -232,11 +231,11 @@ ggplot(data, aes(x=time_period, y=injuries))+
   xlab("Time period")+ylab("Deaths by wounds and injuries")
   
 ggplot(data, aes(x=time_period, y=other))+
-  geom_bar(stat="identity", position="dodge", width=0.6, fill="darkorange")+
+  geom_bar(stat="identity", position="dodge", width=0.6, fill="chocolate3")+
   xlab("Time period")+ylab("Deaths by other causes")
 ```
 
-An alternative approach is to represent the above three barplots in one signle graph. All three graphs display the different deaths causes over the whole time period. Taking into consideration that the first data we have is from April 1854 and the last one from March 1856, this completes two whole years. Thus, from the data displayed in the graphs, we can identify that the number of deaths experience an exponential increment from period 8 (the war is really starting - Dec 1854) until aproximately period 15 (July 1855), where it starts to decrease. From there, is decreases until there is barely any death at the end of March 1856, meaning as well that the war is arriving to an end.
+By looking at the bar plots above, we can appreciate that as deaths by zymotic diseases and deaths by other causes follow a similar pattern, this is not true for deaths by injuries. From the data displayed in the graphs, we can identify that the number of deaths experience an exponential increment from period 8 (the war is really starting - Dec 1854) until aproximately period 15 (July 1855), where it starts to decrease. From there, is decreases until there is barely any death at the end of March 1856, meaning as well that the war is arriving to an end.
 
 The following plot is an interactive graph that shows the evolution of the three series (zymotic diseases, injuries and other) depicted all together:
 
@@ -250,7 +249,7 @@ data_plot_1 <- data.frame(
 dygraph(data_plot_1, main="Death causes (absolute values)")
 ```
 
-Zymotic disease, with the exception of preriod 17, is the disease that generated more deaths per period. In period 9, the number of deaths for zymotic disease were more than 5 times higher than injuries and other disease.
+Zymotic diseases, with the exception of period 17, is the cause that generated more deaths per period. In period 9, the number of deaths for zymotic disease were more than 5 times higher than injuries and other causes of death.
 
 ```{r}
 #How did the different type of deaths measured in rate values evolve in time?
@@ -272,7 +271,7 @@ data_plot_3 <- data.frame(
 dygraph(data_plot_3, main="Average size of the army")
 ```
 
-Despite the high amount of deaths that we observed in the graphs above, especially in period 9, the size of the army seems not to be that much affected. This can be caused by some hidden information not captured by the variables given in the dataset, such as for example the incorporation of new soldiers along the war to substitute their dead counterparts.
+Despite the high amount of deaths observed in the graphs above, especially in period 9, the size of the army keeps increasing, generally, month after month. This can be caused by some hidden information not captured by the variables given in the dataset, such as for example the incorporation of new soldiers during the war to substitute their dead counterparts.
 
 ```{r}
 #How did the accumulated number of deaths evolve in time?
@@ -282,22 +281,22 @@ data_plot_4 <- data.frame(
 dygraph(data_plot_4, main="Accumulated number of deaths")
 ```
 
-The number of deaths keeps increasing as the war takes place. Especially from periods 9 to 15 we can appreciate an accelerated increase in the accumulated deaths of the army. However, in the last period, we can see a stabilization of sich number, meaning that the war is arriving at its end.
+The number of deaths keeps increasing as the war takes place. Especially from periods 9 to 15 we can appreciate an accelerated increase in the accumulated deaths of the army. However, in the last periods, we can appreciate a slight stabilization of such number, meaning that the war is arriving at its end.
 
 *****
 # Regression Analysis
 *****
 
-The aim of this section is to show how the variables correlate to each other. Morever, we explore through regressions whether some variables have a significant impact on other variables. 
+The aim of this section is to understand the relationship between variables. We start by studying the correlation coefficient between two variables. Morever, we explore through different regression models whether one of these variables has a significant impact on the other variable. 
 
-As the variables in our data set represent time series, some degree of autocorrelation within each variable is expected. For this reason, and to be able to better asses significance of the variables when used in regression models, standard errors are computed using the Newey West method, which accounts for this autocorrelation. 
+As the variables in our data set represent time series, some degree of autocorrelation within each variable is expected. For this reason, and to be able to better assess the statistical significance of the variables when used in regression models, standard errors are computed using the Newey West method, which accounts for this autocorrelation. 
 
-We have also analyzed the normality of the residuals after fitting the model and discarded those models with non-normal residuals. Normality is assed graphically with a QQPlot and running the Shapiro-Wilk test (null hypothesis: normality). For the interpretation of this test and for when assessing statistical significance of coefficients, we set a 0.05 (5%) significance level. 
+We have also analyzed the normality of the residuals after fitting the model and discarded those models with non-normal residuals. Normality is checked graphically with a QQPlot and running the Shapiro-Wilk test (null hypothesis: normality). For the interpretation of this test and for when assessing statistical significance of coefficients, we set a 0.05 (5%) significance level. 
 
-This knitted report only includes the regression models that, after being fitting, had normally distributed residuals.
+This HTML report only includes the regression models that, after being fitting, had normally distributed residuals.
 
 ```{r}
-#Some of the regression models performed below will not appear in the final HTML report as some of them have regressors that are far from being significant and residuals that are not normally distributed. Hence, below we present different regression models we thought were worth running and investigating even though some yield non satisfactory results.
+#Some of the regression models performed below will not appear in the final knitted HTML report as some of them have regressors that are far from being significant and residuals that are not normally distributed. Hence, below we present different regression models we thought were worth running and investigating even though some yield non satisfactory results.
 ``` 
 
 ```{r, include = FALSE}
@@ -316,11 +315,16 @@ qqline(resid1, lwd=2, lty=3)
 
 shapiro.test(resid1)
 
+#Goodness of fit:
+summary(reg1)
+
 #The correlation coefficient for this model is 0.55, meaning that the amount of deaths caused by zymotic diseases and the average size of the army will be positively correlated.
 
 #By looking at the table of coefficients, we can state that only the intercept is statistically significant and that the amount of deaths by zymotic diseases does not have a significant effect on the average size of the army.
 
 #By the Shapiro test, we reject the null hypothesis of normality in the residuals and hence conclude that this model is not very trustworthy. 
+
+#The very low (and even negative in this case) adjusted R-squared shows a poor goodness of fit for the model.
 ```
 
 ## Average size army vs Deaths by injuries
@@ -339,11 +343,16 @@ qqnorm(resid2, col="tomato", main="Quantile-Comparison Plot")
 qqline(resid2, lwd=2, lty=3)
 
 shapiro.test(resid2)
+
+#Goodness of fit:
+summary(reg2)
 ```
 
-The correlation coefficient between deaths by injuries and the average size of the army is aprox 0.25, quite low but positive. 
+The correlation coefficient between deaths by injuries and the average size of the army is aprox 0.25, slightly low but positive. 
 
-This model is reliable judging by the results of the Shapiro test (we do not reject the null hypotheses of normally distributed residuals). The above plots also show that the residuals do not happen to be normally distributed. Nonetheless, only the intercept is significant. Hence, we conclude by saying that the amount of deaths by injuries does not have a significant effect on the average size of the army.
+This model is reliable judging by the results of the Shapiro test, as we do not reject the null hypotheses of normally distributed residuals. The above plots also show that the residuals do not happen to be normally distributed. Nonetheless, only the intercept is statistically significant. Hence, we conclude by saying that the amount of deaths by injuries does not have a significant effect on the average size of the army.
+
+The adjusted R-squared takes the value 0.02, approximately, showing a poor goodness of fit of this model.
 
 ```{r, include = FALSE}
 #Average Size Army vs Other Causes:
@@ -361,16 +370,22 @@ qqline(resid3, lwd=2, lty=3)
 
 shapiro.test(resid3)
 
+#Goodness of fit
+summary(reg3)
+
 #Since the correlation coefficient is -0.16, these two variables move in opposite directions. That is, when one variable increases, the other one is expected to decrease.
 
 #Again, only the intercept is statistically significant in this regression model. Thus, deaths by causes other than injuries and wounds and symotic diseases do not appear to have a significant impact on the average size of the army.
 
 #The residuals do not look normally distributed. Moreover, the Shapiro test shows that we must reject the null hypothesis of normality. Consequently, we can state that this regression model is not very reliable.
+
+#The very low (and even negative in this case) adjusted R-squared shows a poor goodness of fit of this model.
 ```
 
 ## Average size army vs. All deaths (multilinear regression model)
 
 ```{r}
+#Average Size Army vs All Causes:
 reg4 <- lm(avg_size_army ~ data$zymotic+data$injuries+data$other, data=data)
 coeftest(reg4, NeweyWest(reg4))
 
@@ -383,13 +398,18 @@ qqnorm(resid4, col="tomato", main="Quantile-Comparison Plot")
 qqline(resid4, lwd=2, lty=3)
 
 shapiro.test(resid4)
+
+#Goodness of fit:
+summary(reg4)
 ```
 
 Despite the previous results, when we regress the average size of the army against all three causes of death in the dataset, we obtain that the fitted model has normally distributed residuals. 
 
-Nonetheless, neither of the coefficients are significant, allowing us to conclude that neither deaths by injuries, deaths by zymotic diseases nor deaths by other causes appear to have a significant effect on the average size of the army.
+Nonetheless, neither of the coefficients are statistically significant, allowing us to conclude that neither deaths by injuries, deaths by zymotic diseases nor deaths by other causes appear to have a significant effect on the average size of the army.
 
 This may appear surprising, as we would expect that the more deaths (no matter the cause), the lower the average size of the army. However, we must also bear in mind that the variables in the dataset do not explain the whole story. The dataset does not include information of the new soldiers that month after month joined the army. Having soldiers killed may cause the average size of the army to decrease but it may also caused more men to join the army, increasing its average size. Without information of new soldiers, we cannot know the real impact of the causes of death on the average size of the army.
+
+Moreover, the very low (and even negative in this case) adjusted R-squared shows that this model does not fit our data very well.
 
 ```{r, include = FALSE}
 #Average Size Army vs. Total Deaths:
@@ -407,11 +427,16 @@ qqline(resid5, lwd=2, lty=3)
 
 shapiro.test(resid5)
 
+#Goodness of fit:
+summary(reg5)
+
 #We wanted to compare the results of the previous regression model with the results of regressing the average size of the army against total deaths (aggregated in the new variable we created).
 
 #The correlation between total deaths and the average size of the army is negative and not very strong.
 
 #As for the regression coefficients, only the intercept is statistically significant and thus, total deaths do not have a statistically signifcant effect on the average size of the army. Nonetheless, this is not a very reliable model since we reject the null hypotheses of normally distributed residuals.
+
+#The negative adjusted R-squared shows that this model does not fit our data very well.
 ```
 ```{r, include = FALSE}
 #Zymotic Diseases vs. Time Period:
@@ -429,9 +454,14 @@ qqline(resid6, lwd=2, lty=3)
 
 shapiro.test(resid6)
 
+#Goodness of fit:
+summary(reg6)
+
 #Negative correlation between deaths by zymotic diseases and time period mean that over time we expect the amount of deaths by zymotic diseases to decrease, which by one of the plots of section 2 this is true from period 9 (January 1855) onwards.
 
 #Only the intercept of the regression model is significant. Hence, the time period does not have a significant effect on the number of deaths by zymotinc diseases. Morover, this model is not very reliable as residuals are not normally distributed.
+
+#The adjusted R-squared is very low, showing that this model does not fit our data very good.
 ```
 ```{r, include = FALSE}
 #Deaths by Injuries vs. Time Period:
@@ -449,9 +479,14 @@ qqline(resid7, lwd=2, lty=3)
 
 shapiro.test(resid7)
 
+#Goodness of fit:
+summary(reg7)
+
 #Time period and the amount of deaths by injuries are negatively correlated, even though the correlation coefficient i very low and near to 0.
 
 #Regarding the regression model, neither the intercept nor the estimated coefficient for the time period variable are statistically significant. This allows us to conclude that deaths by injuries are not significantly affected by the time period. Moreover, this is not a very trustworthy model as residuals ar not normally distributed, judging by the plots and the Shapiro test.
+
+#The negative adjusted R-squared shows that this model does not fit our data very well.
 ```
 ```{r, include = FALSE}
 #Other Causes vs. Time Period:
@@ -469,9 +504,14 @@ qqline(resid8, lwd=2, lty=3)
 
 shapiro.test(resid8)
 
+#Goodness of fit:
+summary(reg8)
+
 #The correlation coefficient is negative, which means that over time, fewer deaths by causes that are not injuries nor zymotic diseases are expected. However, the plots in section 2 tell another story.
 
 #Just as the previous model, none of the coefficients estimated are statistically significant and the residuals are not normally distributed.
+
+#The negative adjusted R-squared shows that this model has a poor goodness of fit.
 ```
 ```{r, include = FALSE}
 #Total Deaths vs. Time Period
@@ -489,12 +529,17 @@ qqline(resid9, lwd=2, lty=3)
 
 shapiro.test(resid9)
 
-#A negative correlation coefficient between these two variables, even though it is not close to 1 in absolute value, shows that total deaths are expected to decrease over time. Again, this is not what the plots shown earlier tell.
+#Goodness of fit:
+summary(reg9)
+
+#A negative correlation coefficient between these two variables shows that total deaths are expected to decrease over time. Again, this is not what the plots shown earlier tell.
 
 #Once again, only the intercept is statistically significant. Thus, the amount of deaths (by all causes) cannot be explained by the time period. In addition, non-normally distributed residuals tell us that this is model si not very trustworthy.
+
+#The negative adjusted R-squared shows that this model does not fit our data very well.
 ```
 ```{r, include = FALSE}
-#For the following model we are interested in total deaths in terms of previous values of the same variable. That is, we want to lag the variable and regress total death on its lags to look for significance. The first step, though, is assess for stationarity of the series.
+#For the following model we are interested in total deaths in terms of previous values of the same variable. That is, we want to lag the variable and regress total death on its lags to look for significance. The first step, though, is assessing for stationarity of the series.
 
 data_plot_5 <- data.frame(
   Time=data$time_period,
@@ -507,7 +552,7 @@ adf.test(data$total_deaths)
 
 total_deaths_diff <- diff(data$total_deaths)
 adf.test(total_deaths_diff)
-#By looking at the p-value returned by the test, we can state that the differenced series is not stationary at a 0.05 significance. We differenciate again:
+#By looking at the p-value returned by the test, we can state that the differenced series is not stationary at a 0.05 significance level. We differenciate again:
 
 total_deaths_diff2 <- diff(total_deaths_diff)
 adf.test(total_deaths_diff2)
@@ -521,44 +566,24 @@ pacf(total_deaths_diff2, ylim=c(-0.2,1), lwd=5, xlim=c(0,15), col="darkorange2",
 acf(total_deaths_diff, ylim=c(-0.2,1), lwd=5, xlim=c(0,15), col="darkorange2", main="Autocorrelation function total deaths") 
 pacf(total_deaths_diff, ylim=c(-0.2,1), lwd=5, xlim=c(0,15), col="darkorange2", main="Parcial autocorrelation function total deaths") 
 #Again, no lags are significant and thus we will not be able to construct a good autoregressive model in this case.
-
-
-
-#Drama: amb la data no estacionària no es pot aplicar el model autoregressiu però un cop la diferencio i es converteix en estacionària (total_deaths_diff2) o quasi-estacionària (total_death_diff) no hi ha cap lag (potencials regressors) que semblin ser significatius. Per tant, a la regressió tampoc ho seran --> No afegim aquests dos models? Jo deixaria el raonament aquest explicant why not (el que ja he explicat més amunt) --> Esborrem tot lo de sota?
-
-tra_death <- data.frame(y=data$total_deaths[2:L], lag1=data$total_deaths[1:(L-1)]) 
-cor(tra_death$y, tra_death$lag1)
-reg10 <- lm(y ~ lag1, data=tra_death)
-summary(reg10)
-coeftest(reg10, NeweyWest(reg10))
-
-resid10 <- as.numeric(reg10$residuals)
-qqnorm(resid10, col="tomato", main="Model 10: Total Deaths vs. Total Deaths Lagged")
-qqline(resid10, lwd=2, lty=3)
-
-#Una altra manera de crear models autoregressius:
-reg11 <- arima(data$total_deaths, c(1,0,0))
-coeftest(reg11)
-
-resid11 <- as.numeric(reg11$residuals)
-qqnorm(resid11, col="tomato", main="Model 11: Total Deaths vs. Total Deaths Lagged AR(1)") 
-qqline(resid11, lwd=2, lty=3)
 ```
 
 *****
 # Predictions
 *****
 
-The models presented in the previous section as reliable models are the ones chosen for making predictions of future values. The training set corresponds to the first 70% of observations from the original dataset whereas the remaining 30% are treated as the test or validation set. The loss function we choose to minimize and use to determine the accuracy of our prediction model is the root mean squared error.
+The models presented in the previous section as reliable models are the ones chosen for making predictions of future values. The training set corresponds to the first 70% of observations from the original dataset whereas the remaining 30% are treated as the test or validation set. The loss function we choose to minimize and use to determine the accuracy of our prediction models is the root mean squared error.
 
 ## Predicting the average size of the army from deaths by injuries
 
-This first prediction model attempts to predict the average size of the army from the deaths by injuries. After testing the fitted model on the test data, we obtain the following value for the root mean squared error:
+This first prediction model attempts to predict the average size of the army from the deaths by injuries. After testing the fitted model on the data set aside for testing, we obtain the following value for the root mean squared error:
 
 ```{r}
-#Accuracy of reg2 to perform the predictions (number of deaths with one lag):
+#Splitting the data between the training set and the test or validation set:
 train_data <- subset(data, time_period<=round(0.7*L)) #70% training data
 test_data <- subset(data, time_period>round(0.7*L)) #30% test/validation data
+
+#Accuracy of reg2 to perform the predictions:
 model1 <- lm(avg_size_army ~ injuries, data=train_data)
 y.hat1 <- predict(model1, data=test_data, interval="confidence")
 rmse1 <- sqrt((sum(abs(y.hat1 - test_data$avg_size_army))**2)/nrow(test_data))
@@ -571,7 +596,7 @@ rmse1
 This second prediction model attempts to predict the average size of the army but now from all death causes: injuries, zymotic diseases and other causes. The following root mean squared error is obtained when comparing the predictions with the test data:
 
 ```{r}
-#Accuracy of reg4 to perform the predictions (number of deaths with one lag):
+#Accuracy of reg4 to perform the predictions:
 model2 <- lm(avg_size_army ~ zymotic + injuries + other, data=train_data)
 y.hat2 <- predict(model2, data=test_data, interval="confidence")
 rmse2 <- sqrt((sum(abs(y.hat2 - test_data$avg_size_army))**2)/nrow(test_data))
@@ -579,7 +604,7 @@ rmse2 <- sqrt((sum(abs(y.hat2 - test_data$avg_size_army))**2)/nrow(test_data))
 rmse2
 ```
 
-For both prediction models, the resulting mean squared errors are extremely large. Thus, we can state that the results of both predictions are not accurate. One would blame such bad results on the low significance of predictors, as the previous section showed. However, when predicting future values of a variable we are not concerned with significance but rather with best fit. 
+For both prediction models, the resulting root mean squared errors are extremely large. Thus, we can state that the results of both predictions are not accurate. One would blame such bad results on the low significance of predictors, as the previous section showed. However, when predicting future values of a variable we are not concerned with significance but rather with best fit. 
 
 Hence, getting low accuracy prediction models is due to the small size of the dataset and the number of variables we are working with. Perhaps we would have obtained more reliable results if we had more variables in our dataset or just a greater number of observations. 
 
@@ -589,15 +614,15 @@ Hence, getting low accuracy prediction models is due to the small size of the da
 
 We conclude this project with the following findings and highlights:
 
-- We found out that the most predominant cause of death among soldiers was zymotic diseases. Zymotic diseases are infectious diseases that were spread in war hospitals due to bad hygenic conditions. Nightingale, after finding out, went to the British Parliament to denounce this issue.
+- We discovered that the most predominant cause of death among soldiers was zymotic diseases. Zymotic diseases are infectious diseases that were spread in war hospitals due to bad hygenic conditions. Nightingale, after finding out and with her graphs and data as evidence, denounced this issue to the British parliament. These results are undoubtedly suprising as when considering deaths of war soldiers one would expect the number one cause of death to be injuries and wounds at combat.
 
 - Between the other two causes of death she took into consideration, injuries and other causes, the difference is not really apparent.
 
-- We can appreciate sudden increases in the data on average size of army although deaths are high, one could assume that larger deaths caused the size of the army to move in two opposite directions. On the one hand, more deaths caused the size of the army to decrease. On the other hand, the more deaths the more new soldiers that were recruited to join the army, making the average size of the army to increase. Apparently, this last effect was stronger than the other. Nevertheless, we do not have data to sustain this theory and to calculate the exact size of the impact these two effects had.
+- We can appreciate sudden increases in the data on average size of army although deaths are high. As we have already discussed, one could assume that larger deaths caused the size of the army to move in two opposite directions. On the one hand, more deaths caused the size of the army to decrease. On the other hand, the larger the number of deaths, the more new soldiers that were recruited to join the army, making the average size of the army to increase. Apparently, this last effect was stronger than the first one. Nevertheless, we do not have data to sustain this theory and to calculate the exact impact these two effects had.
 
-Besides, it is very important to take into account when the data was collected, years 1854-1856, to better understand the lack of information collected by Nightingale. Due to this fact, it is difficult to identify clear patterns in the overall data.
+Besides, it is very important to take into account the moment in history the data was collected (1854-1856) to better understand Nightingale's data analysis techniques as well as the lack of information/other relevant variables. Due to this fact, it is difficult to identify clear patterns in the overall data and to obtain unbiased, reliable and well-fitted regression models.
 
-Moreover, due to the few data points collected and the lack of other important variables, most of the regessions performed are very poor, showing no relevant significance between the variables analyzed. The small size of the dataset also poses a problem when trying predict future values using some of the best regression models as the accuracy obtained is extremely low judging by the resulting root mean squared error values.
+Moreover, the small size of the dataset poses a problem when trying to predict future values as the accuracy obtained is extremely low judging by the resulting root mean squared error values.
 
 *****
 # Web References
