@@ -12,6 +12,8 @@ In 1854, she and 38 other nurses trained by herself traveled to the Crimean peni
 
 This project is an analysis of the data she collected during her time at the Crimean peninsula. We have performed basic data exploration techniques as well as linear regression models to understand the relationship between variables. We have further tried to perform some sort of prediction model but we have obtained unsatisfactory results due to constraints of the original dataset, mainly its small size.
 
+The analysis was performed using R and the full code can be found [here](./report.Rmd). The report containing the most important results of our project can be downloaded [here](./report.html). 
+
 ## Participants
 
 [Esther Manzano](https://github.com/esthermanz)
