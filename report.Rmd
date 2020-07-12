@@ -193,8 +193,7 @@ table_deaths <- data.frame(
   TimePeriod = ordered_deaths$time_period)
 
 formattable(table_deaths, list(
-  Month = color_tile("lightblue", "lightpink4"),
-  TotalDeaths = color_bar("grey")))
+  TotalDeaths = color_bar("lightgrey")))
 ```
 
 The above table shows our dataset but sorted by the number of total deaths in descending order. We can observe that the time period with the highest number of deaths is January 1855, the 10th time period in chronological order. Not surprisingly, April 1854, the first period in our dataset, is the one with the fewest deaths.
@@ -217,9 +216,12 @@ After visually inspecting the four main series, we can state that no seasonal co
 # Data Visualization
 *****
 
-In this section, we are going to explore the dataset in a visual way to see the impacts some variables had on some others. EXPLICACIO + FOTO DELS ROSE PLOTS QUE ELLA VA FER ORIGINALMENT.
+Florence Nightingale is famous for its polar graphs plot, then named Nightingale rose plots in her honor. The image below show the original plots made by her in 1856 with data collected during the Crimean War.
 
-The causes of death can be represented in barplots such as the following ones:
+![Nightingale Rose Plot](./pictures/nightingale.jpg)
+
+In this section, we are going to explore the dataset in a visual way to see the impacts some variables had on some others using a different approach than her own:
+
 ```{r}
 ggplot(data, aes(x=time_period, y=zymotic))+
   geom_bar(stat="identity", position="dodge", width=0.6, fill="steelblue4")+
@@ -234,7 +236,9 @@ ggplot(data, aes(x=time_period, y=other))+
   xlab("Time period")+ylab("Deaths by other causes")
 ```
 
-An alternative approach is to represent the above three barplots in one signle graph. The following plot is an interactive graph that shows the evolution of the three series (zymotic diseases, injuries and other) depicted all together:
+An alternative approach is to represent the above three barplots in one signle graph. All three graphs display the different deaths causes over the whole time period. Taking into consideration that the first data we have is from April 1854 and the last one from March 1856, this completes two whole years. Thus, from the data displayed in the graphs, we can identify that the number of deaths experience an exponential increment from period 8 (the war is really starting - Dec 1854) until aproximately period 15 (July 1855), where it starts to decrease. From there, is decreases until there is barely any death at the end of March 1856, meaning as well that the war is arriving to an end.
+
+The following plot is an interactive graph that shows the evolution of the three series (zymotic diseases, injuries and other) depicted all together:
 
 ```{r}
 #How did the different type of deaths measured in absolute values evolve in time?
@@ -279,70 +283,6 @@ dygraph(data_plot_4, main="Accumulated number of deaths")
 ```
 
 The number of deaths keeps increasing as the war takes place. Especially from periods 9 to 15 we can appreciate an accelerated increase in the accumulated deaths of the army. However, in the last period, we can see a stabilization of sich number, meaning that the war is arriving at its end.
-
-Let's analyze now the number of deaths by period and disease in absolute values:
-
-```{r}
-#We display the data that is more suitable for the graphs:
-data_1year=data[1:24,]
-#data_2year=data[13:24,]
-
-#data1=data.frame(t(data_1year))
-#data1.1=data.frame(t(data_2year))
-#data2=data1[3:5,]
-#data2.1=data1.1[3:5,]
-
-data3=melt(data_1year, id="month")
-
-data4=data3[25:48,]
-data4.1=data3[49:73,]
-data4.2=data3[74:98,]
-
-data4
-data4.1
-data4.2
-```
-```{r}
-#Bar graph:
-ggplot(data=data4,aes(x=value, y=month, fill=variable))+
-        geom_bar(stat="identity")+
-        scale_fill_brewer(palette="RdBu")+xlab("")+ylab("")
-
-ggplot(data=data4.1,aes(x=value, y=month, fill=variable))+
-        geom_bar(stat="identity")+
-        scale_fill_brewer(palette="RdBu")+xlab("")+ylab("")
-
-ggplot(data=data4.2,aes(x=value, y=month, fill=variable))+
-        geom_bar(stat="identity")+
-        scale_fill_brewer(palette="RdBu")+xlab("")+ylab("")
-
-#yayyyy! és un avenç jajajaj però com és que queden les dates així desordenades? Quin lio treballar amb dates tan antigues que R no reconeix com a dates jajajaaj
-```
-```{r}
-#Coordenades polar graph:
-
- df1  <-  melt(data, id="month")
-  
-  ggplot(df1, aes(x = month, y = value, fill = variable)) +
-    theme_bw() +
-    geom_bar(stat = "identity") +
-    coord_polar()
-  
-  
-ggplot(data=data4,aes(x=month,y=value,fill=variable))+
-        geom_bar(stat="identity")+
-        coord_polar()+
-        scale_fill_brewer(palette="BuPu")+xlab("")+ylab("")
-```
-```{r}
-#Heatmap graph:
-#ggplot(data=data3,aes(x=variable,y=group,fill=value))+
-        #geom_tile(colour="black",size=0.1)+
-        #scale_fill_gradientn(colours=c("white","deepskyblue3"))+
-        #coord_polar()+xlab("")+ylab("")
-```
-
-All three last graph display the same data from different angles. Taking into consideration that the first data we have is from April 1854 and the last one from March 1855, this completes a whole year from different periods. Thus, from the data displayed in the graphs, we can identify that the number of deaths experience an exponential increment from April (the war is starting) until October, where it reaches its maximum. From there, is decreases until there is barely any death at the end of March, meaning as well that the war is arriving to an end.
 
 *****
 # Regression Analysis
@@ -649,13 +589,13 @@ Hence, getting low accuracy prediction models is due to the small size of the da
 
 We conclude this project with the following findings and highlights:
 
-- 
+- We found out that the most predominant cause of death among soldiers was zymotic diseases. Zymotic diseases are infectious diseases that were spread in war hospitals due to bad hygenic conditions. Nightingale, after finding out, went to the British Parliament to denounce this issue.
 
--
+- Between the other two causes of death she took into consideration, injuries and other causes, the difference is not really apparent.
 
-- 
+- We can appreciate sudden increases in the data on average size of army although deaths are high, one could assume that larger deaths caused the size of the army to move in two opposite directions. On the one hand, more deaths caused the size of the army to decrease. On the other hand, the more deaths the more new soldiers that were recruited to join the army, making the average size of the army to increase. Apparently, this last effect was stronger than the other. Nevertheless, we do not have data to sustain this theory and to calculate the exact size of the impact these two effects had.
 
-Besides, it is very important to take into account when the data was collected, years 1854-1856, to better understand the lack of information collected by Nightingale. Due to this fact, it is difficult to identify clear patterns in the overall data. As a matter of fact, we can appreciate sudden increases in the data on average size army although deaths are high, one could assume that larger deaths caused the size of the army to move in two opposite directions. On the one hand, more deaths caused the size of the army to decrease. On the other hand, the more deaths the more new soldiers that were recruited to join the army, making the average size of the army to increase. Apparently, this last effect was stronger than the other. Nevertheless, we do not have data to sustain this theory and to calculate the exact size of the impact these two effects had.
+Besides, it is very important to take into account when the data was collected, years 1854-1856, to better understand the lack of information collected by Nightingale. Due to this fact, it is difficult to identify clear patterns in the overall data.
 
 Moreover, due to the few data points collected and the lack of other important variables, most of the regessions performed are very poor, showing no relevant significance between the variables analyzed. The small size of the dataset also poses a problem when trying predict future values using some of the best regression models as the accuracy obtained is extremely low judging by the resulting root mean squared error values.
 
@@ -669,3 +609,5 @@ https://theconversation.com/the-healing-power-of-data-florence-nightingales-true
 https://www.history.com/topics/womens-history/florence-nightingale-1
 
 https://mujeresconciencia.com/2017/08/22/florence-nightingale-mucho-mas-la-dama-la-lampara/
+
+http://www.eyemagazine.com/feature/article/lady-with-the-diagram
