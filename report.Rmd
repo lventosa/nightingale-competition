@@ -217,7 +217,24 @@ After visually inspecting the four main series, we can state that no seasonal co
 # Data Visualization
 *****
 
-We are going to explore the dataset in a visual way to see the impacts some variables had on some others:
+In this section, we are going to explore the dataset in a visual way to see the impacts some variables had on some others. EXPLICACIO + FOTO DELS ROSE PLOTS QUE ELLA VA FER ORIGINALMENT.
+
+The causes of death can be represented in barplots such as the following ones:
+```{r}
+ggplot(data, aes(x=time_period, y=zymotic))+
+  geom_bar(stat="identity", position="dodge", width=0.6, fill="steelblue4")+
+  xlab("Time period")+ylab("Deaths by zymotic diseases")
+  
+ggplot(data, aes(x=time_period, y=injuries))+
+  geom_bar(stat="identity", position="dodge", width=0.6, fill="hotpink4")+
+  xlab("Time period")+ylab("Deaths by wounds and injuries")
+  
+ggplot(data, aes(x=time_period, y=other))+
+  geom_bar(stat="identity", position="dodge", width=0.6, fill="darkorange")+
+  xlab("Time period")+ylab("Deaths by other causes")
+```
+
+An alternative approach is to represent the above three barplots in one signle graph. The following plot is an interactive graph that shows the evolution of the three series (zymotic diseases, injuries and other) depicted all together:
 
 ```{r}
 #How did the different type of deaths measured in absolute values evolve in time?
