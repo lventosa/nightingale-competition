@@ -37,7 +37,7 @@ We check the different types of data on our dataset. We want to understand the n
 ```{r}
 rm(list=ls()) 
 
-#Libraries used across the whole project:
+#Libraries used:
 library(readxl)
 library(dplyr)
 library(tidyverse)
@@ -298,6 +298,8 @@ ggplot(data=data4.1,aes(x=value, y=month, fill=variable))+
 ggplot(data=data4.2,aes(x=value, y=month, fill=variable))+
         geom_bar(stat="identity")+
         scale_fill_brewer(palette="RdBu")+xlab("")+ylab("")
+
+#yayyyy! és un avenç jajajaj però com és que queden les dates així desordenades? Quin lio treballar amb dates tan antigues que R no reconeix com a dates jajajaaj
 ```
 ```{r}
 #Coordenades polar graph:
@@ -590,7 +592,11 @@ qqline(resid11, lwd=2, lty=3)
 # Predictions
 *****
 
-Models 2 and 4 were chosen as the models able to do perform the highest correlations between varaibles. For these reasons, we will be performing the predictions with these two same models as well.
+The models presented in the previous section as reliable models are the ones chosen for making predictions of future values. The training set corresponds to the first 70% of observations from the original dataset whereas the remaining 30% are treated as the test or validation set. The loss function we choose to minimize and use to determine the accuracy of our prediction model is the root mean squared error.
+
+## Predicting the average size of the army from deaths by injuries
+
+This first prediction model attempts to predict the average size of the army from the deaths by injuries. After testing the fitted model on the test data, we obtain the following value for the root mean squared error:
 
 ```{r}
 #Accuracy of reg2 to perform the predictions (number of deaths with one lag):
@@ -598,37 +604,43 @@ train_data <- subset(data, time_period<=round(0.7*L)) #70% training data
 test_data <- subset(data, time_period>round(0.7*L)) #30% test/validation data
 model1 <- lm(avg_size_army ~ injuries, data=train_data)
 y.hat1 <- predict(model1, data=test_data, interval="confidence")
-error1 <- abs(y.hat1 - test_data$avg_size_army)
-rmse1 <- sqrt((sum(error1)**2)/nrow(test_data)) 
-#rmse1 <- sqrt((sum(abs(y.hat1 - test_data$total_deaths))**2)/nrow(test_data))
+rmse1 <- sqrt((sum(abs(y.hat1 - test_data$avg_size_army))**2)/nrow(test_data))
 
 rmse1
 ```
+
+## Predicting the average size of the army from all causes of death
+
+This second prediction model attempts to predict the average size of the army but now from all death causes: injuries, zymotic diseases and other causes. The following root mean squared error is obtained when comparing the predictions with the test data:
+
 ```{r}
 #Accuracy of reg4 to perform the predictions (number of deaths with one lag):
 model2 <- lm(avg_size_army ~ zymotic + injuries + other, data=train_data)
 y.hat2 <- predict(model2, data=test_data, interval="confidence")
-#rmse2 <- sqrt((sum(abs(y.hat2 - test_data$total_deaths))**2)/nrow(test_data))
-error2 <- abs(y.hat2 - test_data$avg_size_army)
-rmse2 <- sqrt((sum(error2)**2)/nrow(test_data)) 
+rmse2 <- sqrt((sum(abs(y.hat2 - test_data$avg_size_army))**2)/nrow(test_data))
 
 rmse2
 ```
 
-For both prediction models, the resulting mean squared errors are extremely large Thus, we can state that the results of both predictions are not accurate. This fact is produced due to the small size of the dataset and the number of variables we are working with. Maybe we should have obtained more reliable results if we have had more variables in our dataset or just a greater number of observations. 
+For both prediction models, the resulting mean squared errors are extremely large. Thus, we can state that the results of both predictions are not accurate. One would blame such bad results on the low significance of predictors, as the previous section showed. However, when predicting future values of a variable we are not concerned with significance but rather with best fit. 
+
+Hence, getting low accuracy prediction models is due to the small size of the dataset and the number of variables we are working with. Perhaps we would have obtained more reliable results if we had more variables in our dataset or just a greater number of observations. 
 
 *****
 # Conclusions
 *****
 
 We conclude this project with the following findings and highlights:
-* 
-* 
-*
 
-Besides that, it is very important to mention the time in which the data was collected (1854-1856) to better understand the lack of information compiled by Nightingale and the tools he used to process this data. Due to this fact, it is difficult to identify clear patterns in the overall data. As a matter of example, it is clearly seen that we do not have any data of the soldiers that were coming in the army while the war kept going. We can appreciate sudden increases in the data on average size army although deaths are high, so we assumed the entry of new soldier was happening.
+- 
 
-Also, due to the few data collected the results of most of the regessions performed are as well very poor, showing almost no correlations between the variables analyzed. Same patterns are identified when trying to do predictions when the better regressions.
+-
+
+- 
+
+Besides, it is very important to take into account when the data was collected, years 1854-1856, to better understand the lack of information collected by Nightingale. Due to this fact, it is difficult to identify clear patterns in the overall data. As a matter of fact, we can appreciate sudden increases in the data on average size army although deaths are high, one could assume that larger deaths caused the size of the army to move in two opposite directions. On the one hand, more deaths caused the size of the army to decrease. On the other hand, the more deaths the more new soldiers that were recruited to join the army, making the average size of the army to increase. Apparently, this last effect was stronger than the other. Nevertheless, we do not have data to sustain this theory and to calculate the exact size of the impact these two effects had.
+
+Moreover, due to the few data points collected and the lack of other important variables, most of the regessions performed are very poor, showing no relevant significance between the variables analyzed. The small size of the dataset also poses a problem when trying predict future values using some of the best regression models as the accuracy obtained is extremely low judging by the resulting root mean squared error values.
 
 *****
 # Web References
