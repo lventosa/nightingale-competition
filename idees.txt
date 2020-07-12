@@ -21,15 +21,12 @@ PUNTS IMPORTANTS ENTREGA:
 
 
 
-PUNTS A TRACTAR REUNIÓ DIVENDRES:
+PUNTS A TRACTAR REUNIÓ DIUMENGE:
 
 - Revisar llibreries. Calen totes?
 
-- En el bloc de codi que hi ha sota el gràfic de les deaths acumulades es modifica la data original, potser jo crearia una nova taula per no modificar l'original. Els gràfics de sota tampoc sabria com interpretar-los perquè amb el drama de les dates no sé si R les pilla bé. --> Linia 272.
+- Proposi que traies els gràfic perquè les dates no queden en ordre i lavons els gràfics no es poden llegar bé. He provat de tallar la data de mil maneret differens per veure si així les dates es col·locaven bé, però res.
 
-- Com deixem els últims plots de l'apartat 2? Com comentar-los? Assegurar que no hi ha problemes amb les dates. E: Comentem el problema i si vols me'ls torno a mirar. Si no han de servir els podem treure. Tenir en compte el seton any.
-
-
-- Començar conclusions:
-- Relacionar les conclusions amb el que realment va pasar històricament.
-- Guerra de Crimea. Exèrcit anglès. Relacionar amb info a la intro.
+- Comentar conclusions:
+Relacionar les conclusions amb el que realment va pasar històricament.
+Guerra de Crimea. Exèrcit anglès. Relacionar amb info a la intro.

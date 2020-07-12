@@ -270,67 +270,50 @@ Let's analyze now the number of deaths by period and disease in absolute values:
 data_1year=data[1:24,]
 #data_2year=data[13:24,]
 
-data1=data.frame(t(data_1year))
+#data1=data.frame(t(data_1year))
 #data1.1=data.frame(t(data_2year))
-data2=data1[3:5,]
+#data2=data1[3:5,]
 #data2.1=data1.1[3:5,]
 
-colnames(data2)=c("Apr 1854","May 1854","Jun 1854","Jul 1854","Aug 1854","Sep 1854","Oct 1854","Nov 1854","Dec 1854","Jan 1855","Feb 1855","Mar 1855","Apr 1855","May 1855","Jun 1855","Jul 1855","Aug 1855","Sep 1855","Oct 1855","Nov 1855","Dec 1855","Jan 1856","Feb 1856","Mar 1856")
-#colnames(data2)=month.abb
-#data2$group=row.names(data2)
-#colnames(data2.1)=month.abb
-#data2.1$group=row.names(data2.1)
+data3=melt(data_1year, id="month")
 
+data4=data3[25:48,]
+data4.1=data3[49:73,]
+data4.2=data3[74:98,]
 
-#data3=melt(data2,id="data2")
-#data3$value=as.numeric(data3$value)
-#data3=melt(data2)
-#data3.1$value=as.numeric(data3.1$value)
-
-head(data2)
-#head(data3.1)
-
-#df2 <- data.frame(t(data2[-1]))
-
-#head(df2)
+data4
+data4.1
+data4.2
 ```
 ```{r}
 #Bar graph:
+ggplot(data=data4,aes(x=value, y=month, fill=variable))+
+        geom_bar(stat="identity")+
+        scale_fill_brewer(palette="RdBu")+xlab("")+ylab("")
 
-data2 <- data.frame(
-  name=data$zymotic, data$injuries data$other,
-  value=c("Apr 1854","May 1854","Jun 1854","Jul 1854","Aug 1854","Sep 1854","Oct 1854","Nov 1854","Dec 1854","Jan 1855","Feb 1855","Mar 1855","Apr 1855","May 1855","Jun 1855","Jul 1855","Aug 1855","Sep 1855","Oct 1855","Nov 1855","Dec 1855","Jan 1856","Feb 1856","Mar 1856")
-)
+ggplot(data=data4.1,aes(x=value, y=month, fill=variable))+
+        geom_bar(stat="identity")+
+        scale_fill_brewer(palette="RdBu")+xlab("")+ylab("")
 
-# barplot
-barplot( height=data2$value, names=data2$name , col="brown"   )
-
-
-values=c("Apr 1854","May 1854","Jun 1854","Jul 1854","Aug 1854","Sep 1854","Oct 1854","Nov 1854","Dec 1854","Jan 1855","Feb 1855","Mar 1855","Apr 1855","May 1855","Jun 1855","Jul 1855","Aug 1855","Sep 1855","Oct 1855","Nov 1855","Dec 1855","Jan 1856","Feb 1856","Mar 1856")
-
-hola=c("zymotic", "injuries", "other")
-
-g <- ggplot(data2, aes(x=values))
-# Number of cars in each class:
-g + geom_bar()
-
-subset <- data.frame(data2)
-#barplot(subset, main = "hola", xlab="number fo gears", legend = c("zymotic", "injuries", "other"))
-
-values=c("Apr 1854","May 1854","Jun 1854","Jul 1854","Aug 1854","Sep 1854","Oct 1854","Nov 1854","Dec 1854","Jan 1855","Feb 1855","Mar 1855","Apr 1855","May 1855","Jun 1855","Jul 1855","Aug 1855","Sep 1855","Oct 1855","Nov 1855","Dec 1855","Jan 1856","Feb 1856","Mar 1856")
-
-#hola=c("zymotic", "injuries", "other")
-
-ggplot(data=df2,aes(x=values, y=hola))
+ggplot(data=data4.2,aes(x=value, y=month, fill=variable))+
         geom_bar(stat="identity")+
         scale_fill_brewer(palette="RdBu")+xlab("")+ylab("")
 ```
 ```{r}
 #Coordenades polar graph:
-#ggplot(data=data3,aes(x=variable,y=value,fill=group))+
-        #geom_bar(stat="identity")+
-        #coord_polar()+
-        #scale_fill_brewer(palette="BuPu")+xlab("")+ylab("")
+
+ df1  <-  melt(data, id="month")
+  
+  ggplot(df1, aes(x = month, y = value, fill = variable)) +
+    theme_bw() +
+    geom_bar(stat = "identity") +
+    coord_polar()
+  
+  
+ggplot(data=data4,aes(x=month,y=value,fill=variable))+
+        geom_bar(stat="identity")+
+        coord_polar()+
+        scale_fill_brewer(palette="BuPu")+xlab("")+ylab("")
 ```
 ```{r}
 #Heatmap graph:
@@ -638,7 +621,14 @@ For both prediction models, the resulting mean squared errors are extremely larg
 # Conclusions
 *****
 
-It is also important to highlight the time in which we data was collected (1854-1856) to better understand the lack of information compiled by Nightingale and the tools he used to process this data.
+We conclude this project with the following findings and highlights:
+* 
+* 
+*
+
+Besides that, it is very important to mention the time in which the data was collected (1854-1856) to better understand the lack of information compiled by Nightingale and the tools he used to process this data. Due to this fact, it is difficult to identify clear patterns in the overall data. As a matter of example, it is clearly seen that we do not have any data of the soldiers that were coming in the army while the war kept going. We can appreciate sudden increases in the data on average size army although deaths are high, so we assumed the entry of new soldier was happening.
+
+Also, due to the few data collected the results of most of the regessions performed are as well very poor, showing almost no correlations between the variables analyzed. Same patterns are identified when trying to do predictions when the better regressions.
 
 *****
 # Web References
